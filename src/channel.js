@@ -3,3 +3,7 @@
 function channelMessagesV1(authUserId, channelId, start) {
     return 'authUserId' + 'channelId' + 'start';
 }
+function channelJoinV1(authUserId, channelId) {
+    return authUserId + channelId;
+}
+
