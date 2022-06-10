@@ -1,4 +1,8 @@
-//sample stub for a function 'channelsListallV1' with arguments named 'authUserId'
+function channelsCreateV1(authUserId, name, isPublic) {
+    return authUserId + name + isPublic;
+}
+
+//stub for a function 'channelsListallV1' with arguments named 'authUserId'
 //returns a string with the name "authUserId"
 function channelsListallV1(authUserId) {
     return 'authUserId';
@@ -9,3 +13,4 @@ function channelsListallV1(authUserId) {
 function channelsListV1(authUserId) {
     return 'authUserId';
 }
+
