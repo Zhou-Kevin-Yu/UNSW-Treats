@@ -3,7 +3,7 @@ function channelJoinV1(authUserId, channelId) {
 }
 
 function channelInviteV1(authUserId, channelId, uId) {
-    return 'authUserId' + 'channelId + uId';
+    return 'authUserId' + 'channelId' + 'uId';
 }
 
 function channelDetailsV1(authUserId, channelId) {
