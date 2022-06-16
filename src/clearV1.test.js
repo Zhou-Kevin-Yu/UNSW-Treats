@@ -15,14 +15,19 @@ test('Test successful user clear', () => {
 
   // //test here to see if data is correctly set
   const dataPull = getData();
-  let dataTrue = {users: {
+  let dataTrue = 
+  {users: {
     'test@dream.com': {
       userId: 1,
       password: 'password', 
       name: 'master tetik' 
       }
-    }}
-  expect(dataPull).toMatchObject(dataTrue);
+    },
+  channels: {}
+  }
+  
+  console.log(dataPull);
+  expect(dataPull).toStrictEqual(dataTrue);
   
   //test if clearV1 works
   clearV1();
