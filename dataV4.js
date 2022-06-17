@@ -50,5 +50,5 @@ const data = {
 console.log(data.users[1].email);
 
 //accessing second message of channelId 0
-console.log(data.channels[0].messages[1])
+console.log(data.channels[0].messages[1]);
 
