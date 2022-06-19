@@ -15,7 +15,7 @@ function handleCreate(data, nameFirst, nameLast) {
     if (handle.length > 20) {
         handle = handle.slice(0, 20);
     }
-    let taken = true;x
+    let taken = true;
     let count = 0;
     while (taken) {
     taken = false;
