@@ -1,5 +1,13 @@
+import { getData, setData } from './dataStore.js';
+
 function authLoginV1(email, password) {
-        return 'email' + 'password';
+    let data = getData();
+    for (const user of data.users) {
+        if (user.email === email && user.password === password) {
+            return user.uId;
+        }
+    }
+    return { error: 'error' };
 }
 
 // Stub for a function 'authRegisterV1', with arguements named 'email', 'password', 'nameFirst' and 'nameLast'
