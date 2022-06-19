@@ -2,7 +2,15 @@ import { getData, setData } from './dataStore';
 import isEmail from "validator/lib/isEmail"
 
 function authLoginV1(email, password) {
-        return 'email' + 'password';
+    let data = getData();
+    for (const user of data.users) {
+        if (user.email === email && user.password === password) {
+            return {
+                authUserId: user.uId,
+            };
+        }
+    }
+    return { error: 'error' };
 }
 
 function handleCreate(data, nameFirst, nameLast) {
