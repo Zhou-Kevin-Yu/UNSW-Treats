@@ -69,6 +69,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
         handleStr: handle,
         password: password,
     }
+    setData(data);
     return { authUserId };
 }
 
