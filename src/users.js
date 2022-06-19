@@ -7,7 +7,7 @@ function userProfileV1(authUserId, uId) {
     return { error: 'error' };
   }
 
-  user = dataStore.users[uId];
+  const user = dataStore.users[uId];
 
   return {
     uId: user.uId,
