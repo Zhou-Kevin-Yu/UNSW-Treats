@@ -1,11 +1,16 @@
 import { authLoginV1, authRegisterV1 } from './auth';
+import { clearV1 } from './other';
 
 // TODO: Add ClearV1 to tests
+
+beforeEach(() => {
+    clearV1();
+});
 
 test('Test successful authLoginV1', () => {
     const registeredId = authRegisterV1('test@gmail.com', 'password', 'first', 'last');
     const loggedId = authLoginV1('test@gmail.com', 'password');
-    expect(loggedId).toBe(registeredId);
+    expect(loggedId).toStrictEqual(registeredId);
 });
 
 test('Test wrong password authLoginV1', () => {
