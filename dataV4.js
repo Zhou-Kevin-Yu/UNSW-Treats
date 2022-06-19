@@ -32,7 +32,21 @@ const data = {
             isPublic: false,
             ownerMembers: [],
             allMembers : [],
-            messages : ["hey", "whats up"],
+            messages : [
+                {
+                    messageId: 0,
+                    uId: 2,                     //ben created the most recent message - "hey"
+                    message: "hey",
+                    timeSent: 1641241085833,    //Date.parse('2022-01-03T20:18:05.833Z') === 1641241085833
+                },
+                {
+                    messageId: 1,
+                    uId: 1,
+                    message: "whats up",
+                    timeSent: 1641241085803,    //"whats up" was sent by manav, 30 seconds before ben sent "hey"
+                },
+                        
+            ],
         },
         {
             channelId: 1,
