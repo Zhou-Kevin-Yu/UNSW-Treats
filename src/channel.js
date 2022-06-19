@@ -13,3 +13,5 @@ function channelDetailsV1(authUserId, channelId) {
 function channelMessagesV1(authUserId, channelId, start) {
     return 'authUserId' + 'channelId' + 'start';
 }
+
+export { channelDetailsV1 };

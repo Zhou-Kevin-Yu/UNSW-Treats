@@ -1,37 +1,36 @@
-import { channelsCreateV1 } from channels.js;
-import { clearV1 }          from other.js;
-import { authRegisterV1 }   from auth.js;
+import { channelsCreateV1, channelsListV1 } from './channels.js'
+import { clearV1 }                          from './other.js'
+import { authRegisterV1 }                   from './auth.js'
+import { channelDetailsV1 }                 from './channel.js'
+import { userProfileV1 }                    from './users.js'
+
+let authUserId, name, isPublic;
 
 beforeEach(() => {
-    const Id = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
-    const input = {
-        authUserId: Id,
-        name:       undefined,
-        isPublic:   true
-    };
+    clearV1();
+    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    name;
+    isPublic = true;
 });
 
 
 describe ('Testing return values', () => {
     //valid name test
-    clearV1()
     test('valid channel name return value', () => {
-        input.name = '1531';
+        name = '1531';
         const noErrorOutput = 1;
-        expect(channelsCreateV1(input)).toEqual(noErrorOutput);
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(noErrorOutput);
     });
 
     //invalid name tests
     const errorOutput = { error: 'error' };
-    clearV1();
     test('invalid channel name with less than 1 character return value', () => {
-        input.name = '';
-        expect(channelsCreateV1(input)).toEqual(errorOutput);
+        name = '';
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(errorOutput);
     });
-    clearV1();
     test('invalid channel name with more than 20 chars return value', () => {
-        input.name = '1234567891011121314151617181920';
-        expect(channelsCreateV1(input)).toEqual(errorOutput);
+        name = '1234567891011121314151617181920';
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(errorOutput);
     })
 });
 
@@ -43,44 +42,32 @@ describe ('Testing channel creation', () => {
             name:       '1531'
         },
     ];
-    clearV1();
     test('testing channel in channelsListV1', () => {
-        channelsCreateV1(input);
-        expect(channelsListV1(Id)).toEqual(output);
+        channelsCreateV1(authUserId, name, isPublic);
+        expect(channelsListV1(authUserId)).toEqual(output);
     });
 });
 
-
-/*const authRegisterInput = {
-    email:      'gary.sun@student.unsw.edu.au',
-    password:   '1b2#X',
-    nameFirst:  'Gary',
-    nameLast:   'Sun'
-};
-
-const authUserId = authRegisterV1({authRegisterInput});
-
-
-
 describe ('Testing channel details', () => {
-    input.name = '1531';
-    const output = {
-        name: '1531',
-        isPublic: true,
-        ownerMembers: [
-        {
-            uId:        authUserId,
-            email:      'gary.sun@student.unsw.edu.au',
-            nameFirst:  'Gary',
-            nameLast:   'Sun',
-            handleStr:  
-        },
-        ]
+    const user = userProfileV1(authUserId, authUserId);
+    let output = {
+        name:           '1531',
+        isPublic:       true,
+        ownerMembers:   [user],
+        allMembers:     [user]
     };
-    test('testing if channel is created with channelDetailsV1', () => {
-        clearV1();
-        const channelId = channelsCreateV1(input);
-        expect()
-    }
-
-})*/
+    test('Public channel called "1531"', () => {
+        channelsCreateV1(authUserId, name, isPublic);
+        expect(channelDetailsV1(authUserId, 1)).toEqual(output);
+    });
+    output = {
+        name:           'test channel',
+        isPublic:       false,
+        ownerMembers:   [user],
+        allMembers:     [user]
+    };
+    test('Private channel called "test channel"', () => {
+        channelsCreateV1(authUserId, name, isPUblic);
+        expect(channelDetails(authUserId, 1)).toEqual(output);
+    })
+});
