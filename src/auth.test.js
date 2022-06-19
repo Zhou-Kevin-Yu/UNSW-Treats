@@ -2,8 +2,8 @@ import { authRegisterV1 } from './auth';
 import { clearV1 } from './other';
 
 
+const errorReturn = { error: 'error' };
 describe('testing error cases', () => {
-  const errorReturn = { error: 'error' };
   test('Testing invalid email', () => {
     clearV1();
     const returned = authRegisterV1("benkerno.com", "cosmoIsTheBest", "ben", "kerno");
@@ -25,7 +25,7 @@ describe('testing error cases', () => {
     });
 
     test('Testing valid password (password === 6 characters)', () => {
-      
+      //TODO
     });
   });
 
@@ -58,5 +58,27 @@ describe('testing error cases', () => {
       expect(returned).toStrictEqual(errorReturn);
     });
   });
+});
+
+describe('Testing valid returns from register user', () => {
+  test('3 registered users', () => {
+      clearV1();
+      authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno2@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      const returned = authRegisterV1("ben.kerno3@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      expect(returned.authUserId).toBe(3);
+    });
+
+    test('3 registered users', () => {
+      clearV1();
+      authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno2@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno3@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      authRegisterV1("ben.kerno4@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      const returned = authRegisterV1("ben.kerno5@gmail.com", "dogIsCute", "benjamin", "kernohan");
+      expect(returned.authUserId).toBe(5);
+    });
 });
 
