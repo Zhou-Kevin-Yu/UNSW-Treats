@@ -46,9 +46,9 @@ const data = {
 };
 
 //-------------- usage ---------------//
-//accessing email of user index 1
+//accessing email of user index 1 === "manav.pawar@student.unsw.edu.au"
 console.log(data.users[1].email);
 
-//accessing second message of channelId 0
+//accessing second message of channelId 0 === "whats up"
 console.log(data.channels[0].messages[1]);
 
