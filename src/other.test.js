@@ -4,7 +4,6 @@ import { getData, setData } from './dataStore';
 test('Test successful user clear', () => {
   clearV1();
   const data = getData();
-  console.log(data)
   data.users[0] = {
             uId: 0,
             nameFirst: "Gary",
