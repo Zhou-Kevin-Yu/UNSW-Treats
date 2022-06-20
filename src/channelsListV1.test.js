@@ -11,13 +11,13 @@ beforeEach(() => {
 });
 
 test('Empty array of channels', () => {
-    expect(channelsListV1(authUserId)).toEqual([]);
+    expect(channelsListV1(authUserId)).toEqual({ channels: [] });
 });
 
 
 test('Single public channel in array', () => {
     channelsCreateV1(authUserId, '1531', true);
-    channelId = expect(channelsListV1(authUserId)).toEqual([{channelId: channelId, name: '1531'}]);
+    channelId = expect(channelsListV1(authUserId)).toEqual({ channels: [{ channelId: channelId, name: '1531' }] });
 })
 
 test('multiple channnels in array, created by authUser and a different user', () => {
@@ -27,7 +27,7 @@ test('multiple channnels in array, created by authUser and a different user', ()
     channelsCreateV1(Id, 'test channel 1', true);
     channelInviteV1(Id, 3, authUserId);
 
-    const output = [
+    const output = { channels: [
         {
             channelId:  1,
             name:       '1531'
@@ -40,6 +40,6 @@ test('multiple channnels in array, created by authUser and a different user', ()
             channelId:  3,
             name:       'test channel 1'
         }
-    ];
+    ] };
     expect(channelsListV1(authUserId)).toEqual(output)
 });
