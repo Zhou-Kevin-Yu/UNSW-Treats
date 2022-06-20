@@ -5,8 +5,8 @@ import { clearV1 }                              from './other.js';
 
 // If channelInviteV1 was successful
 test('Test successful channelInviteV1', () => {
-    const validChannelId = channelInviteV1(1, 2, 1);
-    const empty = {};
+    const validChannelId = channelInviteV1(1, 2, 3);
+    const empty = { };
     expect(validChannelId).toEqual(empty);
 });
 
@@ -38,6 +38,7 @@ describe ('Testing invalid uId', () => {
     });
 
     clearV1();
+    // NEED TO FIX THIS STUFF I DON'T THINK THE TEST BELOW MAKES SENSE
     test('Test wrong uId', () => {
         let checkUserId = userProfileV1(1, 3);
         const input = channelInviteV1(1, 1, 2);
@@ -48,7 +49,7 @@ describe ('Testing invalid uId', () => {
     });
 });
 
-
+// NEED TO FIX THIS STUFF I DON'T THINK THE TEST BELOW MAKES SENSE
 // If the user is already a member of the channel
 test('Test uId that is already in channel', () => {
     const checkIfMember = channelDetailsV1(2, 1);
@@ -56,6 +57,7 @@ test('Test uId that is already in channel', () => {
     expect(input).toStrictEqual({error: 'error'})
 });
 
+// NEED TO FIX THIS STUFF I DON'T THINK THE TEST BELOW MAKES SENSE
 // If the channelId is valid but authorised user is not a member
 test('Test authId that is not a member of the channel', () => {
     const checkIfAuthMember = channelDetailsV1(3, 1);
