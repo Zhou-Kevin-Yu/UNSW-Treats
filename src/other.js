@@ -1,5 +1,9 @@
+import { getData, setData } from './dataStore';
+
 function clearV1() {
-  return {};
+  let data = getData();
+  data = { users: [], channels: [] };
+  setData(data);
 }
 
 export { clearV1 };
