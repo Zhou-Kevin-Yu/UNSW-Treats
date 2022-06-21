@@ -21,21 +21,22 @@
         
         test('No error output', () => {
         
-            expect(channelJoinV1(authUserId, channelId)).toEqual('authUserIdchannelId');
-            //expect(channelJoinV1(authUserId, channelId).toEqual({}));
+            expect(channelJoinV1(authUserId, channelId)).toEqual(error);
+            //expect(channelJoinV1(authUserId, channelId)).toEqual({});
+           
         
         }); /*
   
         test('ChannelId does not refer to a valid channel', () => {
         
-       // expect(channelDetailsV1(authUserId, 'fr31').toEqual(error));
+             expect(channelDetailsV1(authUserId, 'fr31').toEqual(error));
         
         
         });
         
         test('User is already member of channel', () => {
         
-        //expect(channelDetailsV1(authUserId, '0').toEqual(error));
+            expect(channelDetailsV1(authUserId, '0').toEqual(error));
         
         
         });
