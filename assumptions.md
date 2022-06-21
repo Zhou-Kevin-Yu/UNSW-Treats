@@ -1,0 +1,1 @@
+> that authRegisterV1 and authRegister return an object in the form {authUserId : 0}
