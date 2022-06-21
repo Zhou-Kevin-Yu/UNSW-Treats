@@ -10,7 +10,7 @@ function channelJoinV1(authUserId, channelId) {
     //if channelId is invalid
     for (const channel of data.channels) {       
         if (channel.channelId === channelId) {
-            exists = 1
+            exists = 1;
         } 
         if (exists = 0) return error;
     }
