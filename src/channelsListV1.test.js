@@ -11,14 +11,14 @@ beforeEach(() => {
 
 test('Empty array of channels', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
-    expect(channelsListV1(authUserId)).toEqual({ channels: [] });
+    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [] });
 });
 
 
 test('Single public channel in array', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     channelsCreateV1(authUserId, '1531', true);
-    expect(channelsListV1(authUserId)).toEqual({ channels: [{ channelId: 0, name: '1531' }] });
+    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [{ channelId: 0, name: '1531' }] });
 })
 
 test('Multiple public channels in array', () => {
