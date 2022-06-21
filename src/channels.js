@@ -7,10 +7,10 @@ function channelsCreateV1(authUserId, name, isPublic) {
     }
     const data = getData();
     const newChannel = {
-        channelId:      data.channels.length,
+        channelId:      data.channels.length,    
         name:           name,
         isPublic:       isPublic,
-        ownerMembers:   [authUserId],
+        ownerMembers:   [authUserId],          
         allMembers:     [authUserId],
         messages:       []
     };

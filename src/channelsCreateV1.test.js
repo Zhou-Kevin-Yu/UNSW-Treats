@@ -68,6 +68,6 @@ describe ('Testing channel details', () => {
     };
     test('Private channel called "test channel"', () => {
         channelsCreateV1(authUserId, name, isPublic);
-        expect(channelDetails(authUserId, 0)).toEqual(output);
+        expect(channelDetailsV1(authUserId, 0)).toEqual(output);
     })
 });
