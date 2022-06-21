@@ -1,6 +1,6 @@
 import { authRegisterV1 } from './auth';
 import { clearV1 } from './other';
-import { channelsCreateV1, channelsListallV1 } from '.channels';
+import { channelsCreateV1, channelsListallV1 } from './channels';
 
 beforeEach(() => {
     clearV1();
@@ -17,4 +17,5 @@ test('Test successful channel List', () => {
   expect(channels[0].name).toStrictEqual("COMP6080");
   expect(channels[1].name).toStrictEqual("COMP1511");
 });
+
 
