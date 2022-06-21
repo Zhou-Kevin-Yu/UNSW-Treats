@@ -41,20 +41,22 @@ describe ('Testing return values', () => {
 });
 
 
-/*describe ('Testing channel creation', () => {
-    const output = [
+describe ('Testing channel creation', () => {
+    const output = { channels: [
         {
             channelId:  0,
             name:       '1531'
         },
-    ];
+    ] };
     test('testing channel in channelsListV1', () => {
+        const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
+        name = '1531';
         channelsCreateV1(authUserId, name, isPublic);
         expect(channelsListV1(authUserId)).toEqual(output);
     });
 });
 
-describe ('Testing channel details', () => {
+/*describe ('Testing channel details', () => {
     const user = userProfileV1(authUserId, authUserId);
     let output = {
         name:           '1531',
@@ -74,6 +76,6 @@ describe ('Testing channel details', () => {
     };
     test('Private channel called "test channel"', () => {
         channelsCreateV1(authUserId, name, isPublic);
-        expect(channelDetails(authUserId, 0)).toEqual(output);
+        expect(channelDetailsV1(authUserId, 1)).toEqual(output);
     })
 });*/
