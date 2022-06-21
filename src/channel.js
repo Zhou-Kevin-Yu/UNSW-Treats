@@ -11,37 +11,48 @@ function channelInviteV1(authUserId, channelId, uId) {
     
     let data = getData();
     // If user Id is invalid
-    if ((data.users).includes(uId) === false) {
+    /*if ((data.users).includes(uId) === false) {
         return { error: 'error' };
     }
     // If channel Id is invalid
     if ((data.channels).includes(channelId) === false) {
         return { error: 'error' };
-    }
+    }*/
+    // when commenting out the above, all error cases fail and success case ok
+    // but then removing the last return value everything is undefined
+    //that means it is not going through the loop 
+    // console.log('${channelId}');
+    console.log(channelId);
+
     // To loop through all the existing channels 
-    for (const channel of data.channels) {
+    for (let channel of data.channels) {
         // If the channel Id exists
         if (channelId === channel.channelId) {
             // To loop through all the members in selected channel
-            for (const members of channel.allMembers) {
+            for (let member of channel.allMembers) {
                 // If user is already a member of the channel before the invite is sent
-                if (uId === members.uId) {
+                if (uId === member.uId) {
                     return { error: 'error' };
                 }
-                else if (authUserId === members.uId) {
+                else if (authUserId === member.uId) {
                     // Add user Id to members array in the channel
-                    members.push(uId);
+                    channel.allMembers.push(uId);
+                    setData(data);
                     return { };
                 }
+                /*
                 // If the auth user is not a member of the channel
                 else {
                     return { error: 'error' };
                 }
+                */
             }
+            return { error: 'error' };
         }
     } 
 
-    return { };
+    return { error: 'error line 53' };
+    // return { };
 }
 
 function channelDetailsV1(authUserId, channelId) {
