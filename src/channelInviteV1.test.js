@@ -1,54 +1,101 @@
-import { channelsListallV1} from './channels.js';
-import { channelInviteV1, channelDetailsV1 } from './channel.js';
-import { userProfileV1 }          from './users.js';
+import { authRegisterV1 }                       from './auth.js';
+import { channelsCreateV1 }                     from './channels.js';
+import { channelInviteV1, channelDetailsV1 }    from './channel.js';
+import { userProfileV1 }                        from './users.js';
+import { clearV1 }                              from './other.js';
 
+// Implement later
+// beforeEach(() => {
+//     clearV1();
+//     authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+// });
 
 // If channelInviteV1 was successful
 test('Test successful channelInviteV1', () => {
-    const noErrorOutput = 1;
-    const validChannelId = channelInviteV1(1, 2, 1);
-    expect(validChannelId).toEqual(noErrorOutput);
-    
-    // or is it expect(validChannelId).toEqual(''); because a success case returns nothing?
+    // Create an authUserId
+    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    // Create an uId
+    const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+    // Create a valid channelId
+    const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
+
+    const validChannelId = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+    const empty = { };
+    // If no error, return an empty object
+    expect(validChannelId).toEqual(empty);
 });
 
 // If the channelId does not refer to a valid channel 
-test('Test wrong channelId', () => {
-    const input = channelInviteV1(1, undefined, 2);
-    const checkChannelId = channelsListallV1(1);
-     // However in the spec it says channels is an array of objects?? do I use .toMatchObject then??
-    expect(input).toEqual(expect.not.arrayContaining(checkChannelId));
-    
-    // can you do const errorOutput = expect(input).toEqual(expect.not.arrayContaining(channels));
-    // then expect(errorOutput).toStrictEqual({error: 'error'})
-    // or expect(input).toStrictEqual({error: 'error'})
+describe ('Testing invalid channelId', () => {
+    test('Test undefined channelId', () => {
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+        const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
+        expect(input).toStrictEqual({error: 'error'})
+    });
+   
+    clearV1();
+    test('Test wrong channelId example 1', () => {
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+        let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
+        checkChannelId.channelId = checkChannelId.channelId + 1;
+        
+        const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+        expect(input).toStrictEqual({error: 'error'})
+    });
+
+    clearV1();
+    test('Test wrong channelId example 2', () => {
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+        let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
+        checkChannelId.channelId = checkChannelId.channelId - 1;
+        
+        const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+        expect(input).toStrictEqual({error: 'error'})
+    });
 });
 
 // If the uId does not refer to a valid user
-test('Test wrong uId', () => {
-    const input = channelInviteV1(1, 1, undefined);
-    const checkUserId = userProfileV1(1, 2);
-    expect(input).toEqual(expect.not.objectContaining(checkUserId));
+describe ('Testing invalid uId', () => {
+    test('Test undefined uId', () => {
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
+
+        let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, undefined);
+        expect(input).toStrictEqual({error: 'error'})
+    });
+
+    clearV1();
+    test('Test null uId', () => {
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
+
+        let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, null);
+        expect(input).toStrictEqual({error: 'error'})
+    });
 });
 
 // If the user is already a member of the channel
 test('Test uId that is already in channel', () => {
-    const input = channelInviteV1(1, 1, 2);
-    const checkIfMember = channelDetailsV1(1, 1);
+    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    const userId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1521', true);
     
-    // Checking if uId is already in the allMembers array
-    expect(input).toEqual(expect.arrayContaining(checkIfMember));
+    // authUserId and userId is the same therefore user is already a member
+    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+    expect(input).toStrictEqual({error: 'error'})
 });
 
 // If the channelId is valid but authorised user is not a member
 test('Test authId that is not a member of the channel', () => {
-    const input = channelInviteV1(1, 1, 2);
-    const checkIfAuthMember = channelDetailsV1(2, 1);
+    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
     
-    // Checking if authId is not in the allMembers array
-    expect(input).toEqual(expect.not.arrayContaining(checkIfAuthMember));
+    // Create channel with userId therefore authuserId is not a part of the channel
+    const checkChannelId = channelsCreateV1(userId.authUserId, 'COMP1521', true);
+
+    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+    expect(input).toStrictEqual({error: 'error'})
 });
-
-
-
-
