@@ -18,10 +18,32 @@ test('Empty array of channels', () => {
 test('Single public channel in array', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     channelsCreateV1(authUserId, '1531', true);
-    const channelId = expect(channelsListV1(authUserId)).toEqual({ channels: [{ channelId: channelId, name: '1531' }] });
+    expect(channelsListV1(authUserId)).toEqual({ channels: [{ channelId: 0, name: '1531' }] });
 })
 
-test('multiple channnels in array, created by authUser and a different user', () => {
+test('Multiple public channels in array', () => {
+    const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
+    channelsCreateV1(authUserId, '1532', true);
+    channelsCreateV1(authUserId, '1533', true);
+    channelsCreateV1(authUserId, '1534', true);
+    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [
+        {
+            channelId:  0,
+            name:       '1532'
+        },
+        {
+            channelId:  1,
+            name:       '1533'
+        },
+        {
+            channelId:  2,
+            name:       '1534'
+        }
+    ]
+    })
+});
+
+/*test('multiple channnels in array, created by authUser and a different user', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     channelsCreateV1(authUserId, '1531', true);
     channelsCreateV1(authUserId, 'test channel', true);
@@ -31,17 +53,17 @@ test('multiple channnels in array, created by authUser and a different user', ()
 
     const output = { channels: [
         {
-            channelId:  1,
+            channelId:  0,
             name:       '1531'
         },
         {
-            channelId:  2,
+            channelId:  1,
             name:       'test channel'
         },
         {
-            channelId:  3,
+            channelId:  2,
             name:       'test channel 1'
         }
     ] };
     expect(channelsListV1(authUserId)).toEqual(output)
-});
+});*/
