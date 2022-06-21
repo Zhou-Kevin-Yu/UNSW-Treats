@@ -5,7 +5,7 @@ function channelJoinV1(authUserId, channelId) {
     return 'authUserId' + 'channelId';
 }
 
-//NEED DOCUMENTATION
+// NEED DOCUMENTATION
 
 function channelInviteV1(authUserId, channelId, uId) {
     
