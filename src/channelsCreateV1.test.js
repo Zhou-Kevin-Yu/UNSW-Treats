@@ -8,7 +8,7 @@ let authUserId, name, isPublic;
 
 beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
     name;
     isPublic = true;
 });
