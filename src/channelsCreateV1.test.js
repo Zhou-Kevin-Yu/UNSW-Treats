@@ -8,7 +8,7 @@ let authUserId, name, isPublic;
 
 beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
     name;
     isPublic = true;
 });
@@ -18,8 +18,14 @@ describe ('Testing return values', () => {
     //valid name test
     test('valid channel name return value', () => {
         name = '1531';
-        const noErrorOutput = {channelId: 0}
+        const noErrorOutput = { channelId: 0 }
         expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(noErrorOutput);
+        name = '2'
+        let output = { channelId: 1 }
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(output);
+        name = '3'
+        output = { channelId: 2 };
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(output);
     });
 
     //invalid name tests
@@ -35,7 +41,7 @@ describe ('Testing return values', () => {
 });
 
 
-describe ('Testing channel creation', () => {
+/*describe ('Testing channel creation', () => {
     const output = [
         {
             channelId:  0,
@@ -70,4 +76,4 @@ describe ('Testing channel details', () => {
         channelsCreateV1(authUserId, name, isPublic);
         expect(channelDetailsV1(authUserId, 1)).toEqual(output);
     })
-});
+});*/
