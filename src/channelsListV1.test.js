@@ -7,7 +7,7 @@ let authUserId, Id, channelId;
 
 beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
 });
 
 test('Empty array of channels', () => {
