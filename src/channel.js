@@ -20,13 +20,14 @@ function channelDetailsV1(authUserId, channelId) {
       
     if ((data.users[authUserId].channels).includes(channelId) === true) {
         
-        let status = data.channels[channelId].isPublic;
-        let owner = data.channels[channelId].ownerMembers;
-        let all = data.channels[channelId].allMembers;
+        const status = data.channels[channelId].isPublic;
+        const name = data.channels[channelId].name;
+        const owner = data.channels[channelId].ownerMembers;
+        const all = data.channels[channelId].allMembers;
            
         return { 
             name: name,
-            isPublic: isPublic,
+            isPublic: status,
             ownerMembers: owner,
             allMembers: all,
         };
