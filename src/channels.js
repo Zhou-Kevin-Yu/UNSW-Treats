@@ -35,7 +35,11 @@ function channelsListV1(authUserId) {
     for (const channel of data.channels) {
         for (const members of channel.allMembers) {
             if (authUserId === members.uId) {
-                channelArr.push(channel);
+                const channelObject = {
+                    channelId:  channel.channelId,
+                    name:       channel.name
+                }
+                channelArr.push(channelObject);
             }
         }
     }
