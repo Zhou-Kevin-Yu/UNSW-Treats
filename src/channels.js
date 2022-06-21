@@ -1,20 +1,21 @@
 import { getData, setData } from './dataStore'
+import { userProfileV1 }    from './users.js'
 
 
 function channelsCreateV1(authUserId, name, isPublic) {
     if (name.length < 1 || name.length > 20) {
         return { error: 'error' };
     }
+    const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
     const newChannel = {
         channelId:      data.channels.length,
         name:           name,
         isPublic:       isPublic,
-        ownerMembers:   [authUserId],
-        allMembers:     [authUserId],
+        ownerMembers:   [authUser],
+        allMembers:     [authUser],
         messages:       []
     };
-    
     data.channels.push(newChannel);
     setData(data);
     return {channelId: newChannel.channelId };
