@@ -7,6 +7,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
         return { error: 'error' };
     }
     const authUser = userProfileV1(authUserId, authUserId);
+    const data = getData();
     const newChannel = {
         channelId:      data.channels.length,
         name:           name,
@@ -15,7 +16,6 @@ function channelsCreateV1(authUserId, name, isPublic) {
         allMembers:     [authUser],
         messages:       []
     };
-    const data = getData();
     data.channels.push(newChannel);
     setData(data);
     return {channelId: newChannel.channelId };
