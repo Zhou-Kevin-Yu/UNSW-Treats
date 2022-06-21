@@ -8,7 +8,7 @@ let authUserId, name, isPublic;
 
 beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
     name;
     isPublic = true;
 });
@@ -18,8 +18,14 @@ describe ('Testing return values', () => {
     //valid name test
     test('valid channel name return value', () => {
         name = '1531';
-        const noErrorOutput = {channelId: 0}
+        const noErrorOutput = { channelId: 0 }
         expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(noErrorOutput);
+        name = '2'
+        let output = { channelId: 1 }
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(output);
+        name = '3'
+        output = { channelId: 2 };
+        expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(output);
     });
 
     //invalid name tests
@@ -36,19 +42,21 @@ describe ('Testing return values', () => {
 
 
 describe ('Testing channel creation', () => {
-    const output = [
+    const output = { channels: [
         {
             channelId:  0,
             name:       '1531'
         },
-    ];
+    ] };
     test('testing channel in channelsListV1', () => {
+        const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
+        name = '1531';
         channelsCreateV1(authUserId, name, isPublic);
         expect(channelsListV1(authUserId)).toEqual(output);
     });
 });
 
-describe ('Testing channel details', () => {
+/*describe ('Testing channel details', () => {
     const user = userProfileV1(authUserId, authUserId);
     let output = {
         name:           '1531',
@@ -68,6 +76,10 @@ describe ('Testing channel details', () => {
     };
     test('Private channel called "test channel"', () => {
         channelsCreateV1(authUserId, name, isPublic);
+<<<<<<< HEAD
         expect(channelDetailsV1(authUserId, 0)).toEqual(output);
+=======
+        expect(channelDetailsV1(authUserId, 1)).toEqual(output);
+>>>>>>> 3542d290ffb7c3ab3d97fda40293d65d31c049ee
     })
-});
+});*/
