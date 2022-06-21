@@ -12,7 +12,7 @@ function channelDetailsV1(authUserId, channelId) {
     return 'authUserId' + 'channelId';
 }
 
-// NEED DOCUMENTATION
+//  NEED DOCUMENTATION
 
 function channelMessagesV1(authUserId, channelId, start) {
     

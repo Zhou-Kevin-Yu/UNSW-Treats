@@ -1,6 +1,6 @@
 import { authRegisterV1 }                       from './auth.js';
 import { channelsCreateV1 }                     from './channels.js';
-import { channelDetailsV1, channelMessagesV1}   from './channel.js';
+import { channelMessagesV1}                     from './channel.js';
 import { clearV1 }                              from './other.js';
 
 // If channelMessagesV1 was successful
