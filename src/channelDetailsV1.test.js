@@ -34,20 +34,20 @@
         
         test('No error output', () => {
         
-            expect(channelDetailsV1(authUserId, channelId).toEqual(correctOutput));
+            expect(channelDetailsV1(authUserId, channelId)).toEqual(correctOutput);
         
         });
   
         test('ChannelId does not refer to a valid channel', () => {
         
-        expect(channelDetailsV1(authUserId, '-5').toEqual(error));
+        expect(channelDetailsV1(authUserId, '-5')).toEqual(error);
         
         
         });
         
         test('ChannelId is valid, but user is not a member of the channel', () => {
         
-        expect(channelDetailsV1('ASc43', channelId).toEqual(error));
+        expect(channelDetailsV1('ASc43', channelId)).toEqual(error);
         
         });
  

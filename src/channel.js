@@ -41,4 +41,6 @@ function channelMessagesV1(authUserId, channelId, start) {
 }
 
 
-export { channelJoinV1, channelDetailsV1 };
+
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
+
