@@ -18,7 +18,7 @@ describe ('Testing return values', () => {
     //valid name test
     test('valid channel name return value', () => {
         name = '1531';
-        const noErrorOutput = 1;
+        const noErrorOutput = {channelId: 0}
         expect(channelsCreateV1(authUserId, name, isPublic)).toEqual(noErrorOutput);
     });
 
@@ -38,7 +38,7 @@ describe ('Testing return values', () => {
 describe ('Testing channel creation', () => {
     const output = [
         {
-            channelId:  1,
+            channelId:  0,
             name:       '1531'
         },
     ];
@@ -58,7 +58,7 @@ describe ('Testing channel details', () => {
     };
     test('Public channel called "1531"', () => {
         channelsCreateV1(authUserId, name, isPublic);
-        expect(channelDetailsV1(authUserId, 1)).toEqual(output);
+        expect(channelDetailsV1(authUserId, 0)).toEqual(output);
     });
     output = {
         name:           'test channel',
