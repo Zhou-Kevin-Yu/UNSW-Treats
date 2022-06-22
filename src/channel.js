@@ -54,7 +54,7 @@ function channelDetailsV1(authUserId, channelId) {
             
     if (exists === 0) return error;
     
-    for (const member in data.channels[channelId].allMembers) {
+    for (const member of data.channels[channelId].allMembers) {
        if (authUserId === member.uId) {
             return { 
                 name:           data.channels[channelId].name,

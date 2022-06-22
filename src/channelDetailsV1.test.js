@@ -4,26 +4,24 @@
   import { userProfileV1 }                    from './users.js'
   import { channelsCreateV1 }                 from './channels.js'
 
-
   const error = {error: 'error'}
   
   let authUserId, name, isPublic, channelId;
    
   beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
-    name =  'COMP1531'
+    authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
+    name =  'COMP1531';
     isPublic = true;
-    channelId = channelsCreateV1(authUserId, name, isPublic);
+    channelId = channelsCreateV1(authUserId.authUserId, name, isPublic);
   });
   
                
   describe('Tests for return type for channelDetailsV1', () => {
      
         test('No error output', () => {  
-                
-           // expect(channelDetailsV1(authUserId, channelId)).toEqual(correctOutput);       
-           expect(channelDetailsV1(authUserId, channelId)).toEqual(
+                            
+           expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toEqual(
            expect.objectContaining({
                 name: name,
                 isPublic: isPublic,
@@ -35,13 +33,13 @@
   
         test('ChannelId does not refer to a valid channel', () => {
         
-        expect(channelDetailsV1(authUserId, '-5')).toEqual(error);
+        expect(channelDetailsV1(authUserId.authUserId, '-5')).toEqual(error);
  
         });
         
         test('ChannelId is valid, but user is not a member of the channel', () => {
         
-        expect(channelDetailsV1('ASc43', channelId)).toEqual(error);
+        expect(channelDetailsV1('ASc43', channelId.channelId)).toEqual(error);
         
         });
  
