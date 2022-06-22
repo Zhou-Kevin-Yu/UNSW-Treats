@@ -6,7 +6,7 @@
 
   const error = {error: 'error'}
   
-  let authUserId, name, isPublic, channelId;
+  let authUserId, name, isPublic, channelId, authUserId2;
    
   beforeEach(() => {
     clearV1();
@@ -14,6 +14,7 @@
     name =  'COMP1531';
     isPublic = true;
     channelId = channelsCreateV1(authUserId.authUserId, name, isPublic);
+    authUserId2 = authRegisterV1('random.name@student.unsw.edu.au', '1b23#X', 'random', 'name');
   });
   
                
@@ -21,30 +22,25 @@
      
         test('No error output', () => {  
                             
-           expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toEqual(
-           expect.objectContaining({
+            expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toEqual(
+            expect.objectContaining({
                 name: name,
                 isPublic: isPublic,
                 ownerMembers: expect.any(Array), 
                 allMembers: expect.any(Array),
                   })
-              );
+            );
         });
   
         test('ChannelId does not refer to a valid channel', () => {
         
-        expect(channelDetailsV1(authUserId.authUserId, '-5')).toEqual(error);
- 
+            expect(channelDetailsV1(authUserId.authUserId, '-5')).toEqual(error); 
         });
         
         test('ChannelId is valid, but user is not a member of the channel', () => {
         
-        expect(channelDetailsV1('ASc43', channelId.channelId)).toEqual(error);
-        
+            expect(channelDetailsV1(authUserId2.authUserId, channelId.channelId)).toEqual(error);       
         });
- 
-  
+
 });
-
-
 

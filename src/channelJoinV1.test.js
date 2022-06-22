@@ -34,8 +34,10 @@
     });
     
     test('Channel is private, and user isnt member nor owner', () => {
-    
-        expect(channelJoinV1('ASc43', '0')).toEqual(error);    
+       
+        isPublic = false;
+        let channelId2 = channelsCreateV1(authUserId.authUserId, name, isPublic);
+        expect(channelJoinV1(authUserId2.authUserId, channelId2.channelId)).toEqual(error);    
     });
 
 

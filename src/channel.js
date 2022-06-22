@@ -1,4 +1,4 @@
-import { getData } from './dataStore.js'
+import { getData, setData } from './dataStore.js'
 
 const error = { error: 'error' };
 
@@ -24,7 +24,7 @@ function channelJoinV1(authUserId, channelId) {
     //if channel is private and user is not a member
     //Assumes that if user is owner, it is also a member
     if (data.channels[channelId].isPublic === false ) {   
-        for (const members of data.channels[channelId].allMembers) {
+        for (const member of data.channels[channelId].allMembers) {
             if (authUserId === member.uId) {
                 exists = 1;
             }
@@ -33,6 +33,7 @@ function channelJoinV1(authUserId, channelId) {
     }
 
     data.channels[channelId].allMembers.push(data.users[authUserId]);
+    setData();
     return {};
 }
 
