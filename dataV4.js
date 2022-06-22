@@ -5,16 +5,18 @@ const data = {
             nameFirst: "Gary",
             nameLast: "Sun",
             email: "gary.sun@student.unsw.edu.au",
-            handleStr: "Gazza",
+            handleStr: "garysun",
             password: "bird27",
+            channels: [0, 1],   //member of 1531 and 2521
         },
         {
             uId: 1,
             nameFirst: "Manav",
             nameLast: "Pawar",
             email: "manav.pawar@student.unsw.edu.au",
-            handleStr: "manny",
+            handleStr: "manavpawar",
             password: "mjerry",
+            channels: [0],      //just member of 1531
         },
         {
             uId: 2,
@@ -23,6 +25,7 @@ const data = {
             email: "b.kerno@student.unsw.edu.au",
             handleStr: "bengy",
             password: "cosmo89",
+            channels: [],
         },
     ],
     channels : [
@@ -30,9 +33,9 @@ const data = {
             channelId: 0,
             name: "COMP1531",
             isPublic: false,
-            ownerMembers: [],
-            allMembers : [],
-            messages : [
+            ownerMembers: [{Manav}],
+            allMembers : [{Gary}, {Manav}],     //the objects {Gary}, {Manav} contain uId, email, nameFirst, nameLast, handleStr 
+            messages : [                        //but they were too much to put in :)
                 {
                     messageId: 0,
                     uId: 2,                     //ben created the most recent message - "hey"
@@ -52,8 +55,8 @@ const data = {
             channelId: 1,
             name: "COMP2521",
             isPublic: false,
-            ownerMembers: [],
-            allMembers : [],
+            ownerMembers: [{Gary}],
+            allMembers : [{Gary}],
             messages : [],
         },
     ]
@@ -65,4 +68,7 @@ console.log(data.users[1].email);
 
 //accessing second most recent message of channelId 0. === "whats up"
 console.log(data.channels[0].messages[1].message);
+
+//checking the userId of member index = 1 in the channel with channelId = 0
+data.channels[0].allMembers[1].uId 
 
