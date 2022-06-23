@@ -77,7 +77,6 @@ test('Listing channels created by both authUser and another user', () => {
     channelsCreateV1(id, '1532', true);
     channelInviteV1(id, 1, authUserId);
     channelsCreateV1(authUserId, '1533', true);
-    console.log(channelsListV1(authUserId));
     expect(channelsListV1(authUserId)).toStrictEqual({channels: [
         {
             channelId:  0,
