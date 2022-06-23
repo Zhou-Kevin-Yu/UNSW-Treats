@@ -38,6 +38,7 @@ function channelJoinV1(authUserId, channelId) {
         nameFirst:  data.users[authUserId].nameFirst,
         nameLast:   data.users[authUserId].nameLast,
         email:      data.users[authUserId].email,
+        handleStr:  data.users[authUserId].handleStr,
     });
 
     setData(data);
