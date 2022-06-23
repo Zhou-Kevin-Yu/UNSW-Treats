@@ -32,7 +32,14 @@ function channelJoinV1(authUserId, channelId) {
         if (exists === 0) return error;
     }
 
-    data.channels[channelId].allMembers.push(data.users[authUserId]);
+    data.channels[channelId].allMembers.push( 
+    {
+        uId:        data.users[authUserId].uId,
+        nameFirst:  data.users[authUserId].nameFirst,
+        nameLast:   data.users[authUserId].nameLast,
+        email:      data.users[authUserId].email,
+    });
+
     setData();
     return {};
 }

@@ -21,35 +21,35 @@
      
         test('No error output', () => {  
                             
-            expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toEqual(
-            expect.objectContaining({
-                name: 'COMP1531',
-                isPublic: true,
-                ownerMembers: expect.any(Array), 
-                allMembers: expect.any(Array),
-                  })
+            expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toStrictEqual(
+                {
+                    name: 'COMP1531',
+                    isPublic: true,
+                    ownerMembers: expect.any(Array), 
+                    allMembers: expect.any(Array),                  
+                }
             );
             
-            expect(channelDetailsV1(authUserId2.authUserId, channelId2.channelId)).toEqual(
-            expect.objectContaining({
-                name: 'COMP1542',
-                isPublic: false,
-                ownerMembers: expect.any(Array), 
-                allMembers: expect.any(Array),
-                  })
+            expect(channelDetailsV1(authUserId2.authUserId, channelId2.channelId)).toStrictEqual(
+                {
+                    name: 'COMP1542',
+                    isPublic: false,
+                    ownerMembers: expect.any(Array), 
+                    allMembers: expect.any(Array),
+                }
             );
             
         });
   
         test('ChannelId does not refer to a valid channel', () => {
         
-            expect(channelDetailsV1(authUserId.authUserId, 'CCMP1541')).toEqual(error); 
+            expect(channelDetailsV1(authUserId.authUserId, 'CCMP1541')).toStrictEqual(error); 
         });
         
         test('ChannelId is valid, but user is not a member of the channel', () => {
         
-            expect(channelDetailsV1(authUserId2.authUserId, channelId.channelId)).toEqual(error);       
-            expect(channelDetailsV1(authUserId.authUserId, channelId2.channelId)).toEqual(error);       
+            expect(channelDetailsV1(authUserId2.authUserId, channelId.channelId)).toStrictEqual(error);       
+            expect(channelDetailsV1(authUserId.authUserId, channelId2.channelId)).toStrictEqual(error);       
         });
 
 });
