@@ -116,3 +116,31 @@ test('multiple channnels in array, created by authUser and a different user', ()
     ]
     })
 });
+
+//peerReview - added test
+test('multiple channnels in array, created by different users and is private', () => {
+    const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
+    const {authUserId2} = authRegisterV1('josh.smith@gmail.com', '1b2a341e', 'Josh', 'Smith');
+    const {authUserId3} = authRegisterV1('student@gmail.com', '1b2#XDne', 'Stud', 'Studen');
+    channelsCreateV1(authUserId2, '1531', false);
+    channelsCreateV1(authUserId3, '1532', false);
+    channelsCreateV1(authUserId2, '1533', false);
+    channelInviteV1(authUserId2, 0, authUserId);
+    channelInviteV1(authUserId3, 1, authUserId);
+    channelInviteV1(authUserId2, 2, authUserId);
+    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [
+        {
+            channelId:  0,
+            name:       '1531'
+        },
+        {
+            channelId:  1,
+            name:       '1532'
+        },
+        {
+            channelId:  2,
+            name:       '1533'
+        }
+    ]
+    })
+});
