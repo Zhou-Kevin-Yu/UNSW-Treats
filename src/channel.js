@@ -79,7 +79,7 @@ function channelInviteV1(authUserId, channelId, uId) {
             nameFirstCopy = user.nameFirst;
             nameLastCopy = user.nameLast;
             emailCopy = user.email;
-            handlestrCopy = user.handlestr;
+            handlestrCopy = user.handleStr;
         }
     }
     
@@ -104,7 +104,7 @@ function channelInviteV1(authUserId, channelId, uId) {
                         nameFirst: nameFirstCopy, 
                         nameLast: nameLastCopy,
                         email:  emailCopy,
-                        handlestr: handlestrCopy,
+                        handleStr: handlestrCopy,
                     });
                     setData(data);
                     return { };
