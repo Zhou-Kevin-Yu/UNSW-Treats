@@ -21,24 +21,6 @@
      
         test('No error output', () => {  
                             
-<<<<<<< HEAD
-            expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toEqual(
-            expect.objectContaining({
-                name: 'COMP1531',
-                isPublic: true,
-                ownerMembers: expect.any(Array), 
-                allMembers: expect.any(Array),
-                  })
-            );
-            
-            expect(channelDetailsV1(authUserId2.authUserId, channelId2.channelId)).toEqual(
-            expect.objectContaining({
-                name: 'COMP1542',
-                isPublic: false,
-                ownerMembers: expect.any(Array), 
-                allMembers: expect.any(Array),
-                  })
-=======
             expect(channelDetailsV1(authUserId.authUserId, channelId.channelId)).toStrictEqual(
                 {
                     name: 'COMP1531',
@@ -55,7 +37,6 @@
                     ownerMembers: expect.any(Array), 
                     allMembers: expect.any(Array),
                 }
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
             );
             
         });

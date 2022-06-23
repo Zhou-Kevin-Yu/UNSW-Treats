@@ -19,41 +19,24 @@
 
     test('No error output', () => {
     
-<<<<<<< HEAD
-        expect(channelJoinV1(authUserId2.authUserId, channelId.channelId)).toEqual({});         
-=======
         expect(channelJoinV1(authUserId2.authUserId, channelId.channelId)).toStrictEqual({});     
     
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     }); 
 
     test('ChannelId does not refer to a valid channel', () => {
     
-<<<<<<< HEAD
-         expect(channelJoinV1(authUserId.authUserId, 'CCMP1564')).toEqual(error); 
-=======
          expect(channelJoinV1(authUserId.authUserId, 'CCMP1564')).toStrictEqual(error); 
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     });
     
     test('User is already member of channel', () => {
     
-<<<<<<< HEAD
-        expect(channelJoinV1(authUserId.authUserId, channelId.channelId)).toEqual(error);
-        expect(channelJoinV1(authUserId2.authUserId, channelId2.channelId)).toEqual(error);    
-=======
         expect(channelJoinV1(authUserId.authUserId, channelId.channelId)).toStrictEqual(error);
         expect(channelJoinV1(authUserId2.authUserId, channelId2.channelId)).toStrictEqual(error);    
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     });
     
     test('Channel is private, and user isnt member nor owner', () => {
       
-<<<<<<< HEAD
-        expect(channelJoinV1(authUserId.authUserId, channelId2.channelId)).toEqual(error);    
-=======
         expect(channelJoinV1(authUserId.authUserId, channelId2.channelId)).toStrictEqual(error);    
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     });
 
 
