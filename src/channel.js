@@ -40,7 +40,7 @@ function channelJoinV1(authUserId, channelId) {
         email:      data.users[authUserId].email,
     });
 
-    setData();
+    setData(data);
     return {};
 }
 
