@@ -9,7 +9,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
     const newChannel = {
-        channelId:      data.channels.length,
+        channelId:      data.channels.length,    
         name:           name,
         isPublic:       isPublic,
         ownerMembers:   [authUser],
@@ -56,3 +56,4 @@ function channelsListV1(authUserId) {
 }
 
 export { channelsCreateV1, channelsListallV1, channelsListV1 };
+
