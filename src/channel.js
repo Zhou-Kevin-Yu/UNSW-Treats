@@ -38,9 +38,10 @@ function channelJoinV1(authUserId, channelId) {
         nameFirst:  data.users[authUserId].nameFirst,
         nameLast:   data.users[authUserId].nameLast,
         email:      data.users[authUserId].email,
+        handleStr:  data.users[authUserId].handleStr,
     });
 
-    setData();
+    setData(data);
     return {};
 }
 
@@ -218,4 +219,5 @@ function channelMessagesV1(authUserId, channelId, start) {
         end: endCopy,
     };
 }
-export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1 }; 
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
+
