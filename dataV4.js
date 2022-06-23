@@ -5,7 +5,7 @@ const data = {
             nameFirst: "Gary",
             nameLast: "Sun",
             email: "gary.sun@student.unsw.edu.au",
-            handleStr: "Gazza",
+            handleStr: "garysun",
             password: "bird27",
             channels: [0, 1],   //member of 1531 and 2521
         },
@@ -14,7 +14,7 @@ const data = {
             nameFirst: "Manav",
             nameLast: "Pawar",
             email: "manav.pawar@student.unsw.edu.au",
-            handleStr: "manny",
+            handleStr: "manavpawar",
             password: "mjerry",
             channels: [0],      //just member of 1531
         },

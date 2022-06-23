@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import isEmail from "validator/lib/isEmail"
+import isEmail from "validator/lib/isEmail";
 
 function authLoginV1(email, password) {
     let data = getData();
