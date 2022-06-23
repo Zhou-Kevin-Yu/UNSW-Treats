@@ -55,4 +55,4 @@ function channelsListV1(authUserId) {
     return { channels: channelArr };
 }
 
-export { channelsCreateV1, channelsListV1 };
+export { channelsCreateV1, channelsListallV1 };
