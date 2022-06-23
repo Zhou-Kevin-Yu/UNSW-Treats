@@ -94,7 +94,7 @@ test('Listing channels created by both authUser and another user', () => {
     ]})
 })
 
-/*test('multiple channnels in array, created by authUser and a different user', () => {
+test('multiple channnels in array, created by authUser and a different user', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     const {id} = authRegisterV1('student@gmail.com', '1b2#XDne', 'Stud', 'Studen');
     channelsCreateV1(authUserId, '1531', true);
@@ -116,4 +116,4 @@ test('Listing channels created by both authUser and another user', () => {
         }
     ]
     })
-});*/
+});
