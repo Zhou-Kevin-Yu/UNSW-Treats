@@ -26,10 +26,20 @@ function channelInviteV1(authUserId, channelId, uId) {
         }
     } 
 
+    // Declare as empty strings
+    let nameFirstCopy = '';
+    let nameLastCopy = '';
+    let emailCopy = '';
+    let handlestrCopy = '';
+
     for (let user of data.users) {
         // If the user Id exists
         if (uId === user.uId) {
             exist_user = 1;
+            nameFirstCopy = user.nameFirst;
+            nameLastCopy = user.nameLast;
+            emailCopy = user.email;
+            handlestrCopy = user.handlestr;
         }
     }
     
@@ -47,8 +57,15 @@ function channelInviteV1(authUserId, channelId, uId) {
             for (let member of channel.allMembers) {
                 // If the auth user is a member
                 if (authUserId === member.uId) {
-                    // Add user Id to members array in the channel
-                    channel.allMembers.push(uId);
+                    
+                    // Push object user into allMembers array
+                    channel.allMembers.push({
+                        uId: uId, 
+                        nameFirst: nameFirstCopy, 
+                        nameLast: nameLastCopy,
+                        email:  emailCopy,
+                        handlestr: handlestrCopy,
+                    });
                     setData(data);
                     return { };
                 }
