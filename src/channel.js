@@ -133,7 +133,6 @@ function channelDetailsV1(authUserId, channelId) {
 
 //  NEED DOCUMENTATION
 function channelMessagesV1(authUserId, channelId, start) {
-<<<<<<< HEAD
     
     let data = getData();
     let exist_channel = 0;
@@ -201,9 +200,6 @@ function channelMessagesV1(authUserId, channelId, start) {
         start: startCopy,
         end: endCopy,
     };
-=======
-    return 'authUserId' + 'channelId' + 'start';
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
 }
 export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
 
