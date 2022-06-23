@@ -32,9 +32,6 @@ function channelJoinV1(authUserId, channelId) {
         if (exists === 0) return error;
     }
 
-<<<<<<< HEAD
-    data.channels[channelId].allMembers.push(data.users[authUserId]);
-=======
     data.channels[channelId].allMembers.push( 
     {
         uId:        data.users[authUserId].uId,
@@ -43,7 +40,6 @@ function channelJoinV1(authUserId, channelId) {
         email:      data.users[authUserId].email,
     });
 
->>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     setData();
     return {};
 }
