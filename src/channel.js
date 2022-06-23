@@ -32,7 +32,18 @@ function channelJoinV1(authUserId, channelId) {
         if (exists === 0) return error;
     }
 
+<<<<<<< HEAD
     data.channels[channelId].allMembers.push(data.users[authUserId]);
+=======
+    data.channels[channelId].allMembers.push( 
+    {
+        uId:        data.users[authUserId].uId,
+        nameFirst:  data.users[authUserId].nameFirst,
+        nameLast:   data.users[authUserId].nameLast,
+        email:      data.users[authUserId].email,
+    });
+
+>>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
     setData();
     return {};
 }
@@ -126,6 +137,7 @@ function channelDetailsV1(authUserId, channelId) {
 
 //  NEED DOCUMENTATION
 function channelMessagesV1(authUserId, channelId, start) {
+<<<<<<< HEAD
     
     let data = getData();
     let exist_channel = 0;
@@ -193,6 +205,9 @@ function channelMessagesV1(authUserId, channelId, start) {
         start: startCopy,
         end: endCopy,
     };
+=======
+    return 'authUserId' + 'channelId' + 'start';
+>>>>>>> b4e5dd70504ecae1a6796762a7252581d1f3ae51
 }
 export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
 
