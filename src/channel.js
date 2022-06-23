@@ -218,5 +218,4 @@ function channelMessagesV1(authUserId, channelId, start) {
         end: endCopy,
     };
 }
-export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
-
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1 }; 
