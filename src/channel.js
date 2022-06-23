@@ -196,7 +196,3 @@ function channelMessagesV1(authUserId, channelId, start) {
 }
 export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
 
-<<<<<<< HEAD
-export { channelJoinV1, channelInviteV1, channelDetailsV1, channelMessagesV1};
-=======
->>>>>>> f4a9ba6e7b1ceb09afbe316e767ae92620f1bc34
