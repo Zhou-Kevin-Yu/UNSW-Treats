@@ -34,7 +34,7 @@ function channelMessagesV1(authUserId, channelId, start) {
                 // If the auth user is a member
                 if (authUserId === member.uId) {
                     exist_auth = 1;
-
+                    
                     // Loop to push messages into msgArray
                     for (let i = startCopy; i < endCopy; i++) {
                         msgArray.push(channel.messages[i]);
@@ -62,8 +62,16 @@ function channelMessagesV1(authUserId, channelId, start) {
         }
     } 
 
-    // If the "start" value is greater than the total number of messages
+    // If the start value is greater than the total number of messages
     if (start > msgArray.length) {
+        return { error: 'error' };
+    }
+    
+    // If the start value is greater than 0 and equal to the total number of messages
+    // The first message in the array is at index 0
+    // If start is equal to 1 and total message is equal to 1, it should return an error
+    // Since the only message is at index 0
+    if (start > 0 && start === msgArray.length) {
         return { error: 'error' };
     }
     
