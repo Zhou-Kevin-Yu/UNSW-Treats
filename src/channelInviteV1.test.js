@@ -97,17 +97,19 @@ describe ('Testing invalid uId', () => {
 
 // If the user is already a member of the channel
 test('Test uId that is already in channel', () => {
+    clearV1();
     const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
-    const userId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
+    // const userId = authRegisterV1('gary.sun1@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
     const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1521', true);
     
     // authUserId and userId is the same therefore user is already a member
-    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, authUserId.authUserId);
     expect(input).toStrictEqual({error: 'error'})
 });
 
 // If the channelId is valid but authorised user is not a member
 test('Test authId that is not a member of the channel', () => {
+    clearV1();
     const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
     const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
     
