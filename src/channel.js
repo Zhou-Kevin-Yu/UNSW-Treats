@@ -187,6 +187,10 @@ function channelMessagesV1(authUserId, channelId, start) {
     let endCopy = start + 50;
     let msgArray = [];
 
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+      }
+
     // To loop through all the existing channels 
     for (let channel of data.channels) {
         // If the channel Id exists
