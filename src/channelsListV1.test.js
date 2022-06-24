@@ -17,26 +17,26 @@ test('Empty array of channels', () => {
 
 test('Single public channel in array', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
-    channelsCreateV1(authUserId, '1531', true);
-    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [{ channelId: 0, name: '1531' }] });
+    const channId = channelsCreateV1(authUserId, '1531', true);
+    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [{ channelId: channId, name: '1531' }] });
 })
 
 test('Multiple public channels in array', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
-    channelsCreateV1(authUserId, '1532', true);
-    channelsCreateV1(authUserId, '1533', true);
-    channelsCreateV1(authUserId, '1534', true);
+    const channId0 = channelsCreateV1(authUserId, '1532', true);
+    const channId1 = channelsCreateV1(authUserId, '1533', true);
+    const channId2 = channelsCreateV1(authUserId, '1534', true);
     expect(channelsListV1(authUserId)).toStrictEqual({ channels: [
         {
-            channelId:  0,
+            channelId:  channId0,
             name:       '1532'
         },
         {
-            channelId:  1,
+            channelId:  channId1,
             name:       '1533'
         },
         {
-            channelId:  2,
+            channelId:  channId2,
             name:       '1534'
         }
     ]
@@ -48,23 +48,23 @@ test('Multiple public channels in array', () => {
 test('Listing channels not created by authUser', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     const {id} = authRegisterV1('student@gmail.com', '1b2#XDne', 'Stud', 'Studen');
-    channelsCreateV1(id, '1531', true);
-    channelsCreateV1(id, '1532', true);
-    channelsCreateV1(id, '1533', true);
-    channelInviteV1(id, 0, authUserId);
-    channelInviteV1(id, 1, authUserId);
-    channelInviteV1(id, 2, authUserId);
+    const channId0 = channelsCreateV1(id, '1531', true);
+    const channId1 = channelsCreateV1(id, '1532', true);
+    const channId2 = channelsCreateV1(id, '1533', true);
+    channelInviteV1(id, channId0, authUserId);
+    channelInviteV1(id, channId1, authUserId);
+    channelInviteV1(id, channId2, authUserId);
     expect(channelsListV1(authUserId)).toStrictEqual;({channels: [
         {
-            channelId:  0,
+            channelId:  channId0,
             name:       '1531'
         },
         {
-            channelId:  1,
+            channelId:  channId1,
             name:       '1532'
         },
         {
-            channelId:  2,
+            channelId:  channId2,
             name:       '1533'
         }
     ]})
@@ -73,10 +73,10 @@ test('Listing channels not created by authUser', () => {
 test('Listing channels created by both authUser and another user', () => {
     const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
     const {id} = authRegisterV1('student@gmail.com', '1b2#XDne', 'Stud', 'Studen');
-    channelsCreateV1(authUserId, '1531', true);
-    channelsCreateV1(id, '1532', true);
-    channelInviteV1(id, 1, authUserId);
-    channelsCreateV1(authUserId, '1533', true);
+    const channId0 = channelsCreateV1(authUserId, '1531', true);
+    const channId1 = channelsCreateV1(id, '1532', true);
+    channelInviteV1(id, channId1, authUserId);
+    const channId2 = channelsCreateV1(authUserId, '1533', true);
     expect(channelsListV1(authUserId)).toStrictEqual({channels: [
         {
             channelId:  0,
@@ -90,29 +90,5 @@ test('Listing channels created by both authUser and another user', () => {
             channelId:  2,
             name:       '1533'
         }
-    ]})
-})
-
-test('multiple channnels in array, created by authUser and a different user', () => {
-    const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XDne', 'Gary', 'Sun');
-    const {id} = authRegisterV1('student@gmail.com', '1b2#XDne', 'Stud', 'Studen');
-    channelsCreateV1(authUserId, '1531', true);
-    channelsCreateV1(authUserId, '1532', true);
-    channelsCreateV1(id, '1533', true);
-    channelInviteV1(id, 2, authUserId);
-    expect(channelsListV1(authUserId)).toStrictEqual({ channels: [
-        {
-            channelId:  0,
-            name:       '1531'
-        },
-        {
-            channelId:  1,
-            name:       '1532'
-        },
-        {
-            channelId:  2,
-            name:       '1533'
-        }
-    ]
-    })
+    ]});
 });
