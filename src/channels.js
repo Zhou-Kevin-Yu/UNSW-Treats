@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore'
+import { getData, setData } from './dataStore.js'
 import { userProfileV1 }    from './users.js'
 
 
