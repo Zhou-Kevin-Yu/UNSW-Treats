@@ -7,7 +7,7 @@ const data = {
             email: "gary.sun@student.unsw.edu.au",
             handleStr: "garysun",
             password: "bird27",
-            permission: 1,
+            channels: [0, 1],   //member of 1531 and 2521
         },
         {
             uId: 1,
@@ -16,7 +16,7 @@ const data = {
             email: "manav.pawar@student.unsw.edu.au",
             handleStr: "manavpawar",
             password: "mjerry",
-            permission: 2, 
+            channels: [0],      //just member of 1531
         },
         {
             uId: 2,
@@ -25,7 +25,7 @@ const data = {
             email: "b.kerno@student.unsw.edu.au",
             handleStr: "bengy",
             password: "cosmo89",
-            permission: 2,
+            channels: [],
         },
     ],
     channels : [
