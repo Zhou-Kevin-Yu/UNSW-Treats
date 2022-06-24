@@ -25,8 +25,15 @@ function channelsCreateV1(authUserId, name, isPublic) {
     return {channelId: newChannel.channelId };
 }
 
-//stub for a function 'channelsListallV1' with arguments named 'authUserId'
-//returns a string with the name "authUserId"
+/**
+ * Return up to 50 messages between index "start" and "start + 50"
+ * in a selected channel
+ * 
+ * @param {number} authUserId - email address to be validated using validator
+ * @return {authUserId: number} - object with key authUserId.
+ * @returns { error : 'error' } - when authUserId is invalid
+ * 
+ */ 
 function channelsListallV1(authUserId) {
     let data = getData();
     if (!(authUserId in data.users)) {
