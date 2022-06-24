@@ -1,9 +1,4 @@
 channelsCreateV1:
-<<<<<<< HEAD
-No messages are in the channel when created.
-Only 3 arguments are passed into the function.
-The creator of the channel is part ownerMembers.
-=======
 - No messages are in the channel when created.
 - The creator of the channel is part of ownerMembers.
 
@@ -20,4 +15,3 @@ General Assumptions:
 - Parameteres aren't passed in as a single object containing keys and values, instead they are just those values
 - all functions shouldn't expect a valid authUserId
 - Return types are an object, with specified keys and values
->>>>>>> e98b3f70c2fcad5b8873b39ceacc1f2dc5ea010d
