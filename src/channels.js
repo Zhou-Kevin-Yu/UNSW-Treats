@@ -29,11 +29,14 @@ function channelsCreateV1(authUserId, name, isPublic) {
 //returns a string with the name "authUserId"
 function channelsListallV1(authUserId) {
     let data = getData();
+    //checking authUserId is valid
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }
+    //list of channels to return
     const channels = [];
     for (const channel of data.channels) {
+        //creating new channel object to add return array
         const channelNew = { 
             channelId: channel.channelId,
             name: channel.name,
