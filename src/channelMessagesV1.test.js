@@ -79,3 +79,14 @@ test('Test authId that is not a member of the channel', () => {
     const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
     expect(input).toStrictEqual({error: 'error'})
 });
+
+test('test with an invalid AuthID', () => {
+    const authUserId = null;
+    const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
+    
+    // Create channel with userId therefore authuserId is not a part of the channel
+    const checkChannelId = channelsCreateV1(userId.authUserId, 'COMP1521', true);
+
+    const input = channelMessagesV1(authUserId, checkChannelId.channelId, 0);
+    expect(input).toStrictEqual({error: 'error'})
+});
