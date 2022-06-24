@@ -2,20 +2,34 @@ import { getData, setData } from './dataStore.js'
 
 const error = { error: 'error' };
 
+/*
+ * ChannelJoinV1 allows an authorised user to join a valid channel if it is 
+ * public but if it is a private channel, only a global owner can join.
+
+ * @param {integer} authUserId - Id of user trying to join
+ * @param {integer} channelId - Id of channel that user wants to join
+ * @return {} - Empty array signifying a successful join to channel
+ * @returns { error : 'error' } - when channelId is invalid
+ *                              - when authUserId does not exist
+                                - when user is trying to join a private 
+                                  channelDetailsV1 but they are not a global owner
+*/
+
 function channelJoinV1(authUserId, channelId) {
     
     const data = getData();   
-    //if authUser is valid
+    //If authUser is valid
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }   
     
     let channel_exists = false;
     let member_exists = false;
+    //Check if user is a global owner (1 = global owner, 2 = normal user)
     const perms = data.users[authUserId].permission;
 
     
-    //if channelId is invalid
+    //If channelId is invalid
     for (const channel of data.channels) {       
         if (channel.channelId === channelId) {
             channel_exists = true;
@@ -23,23 +37,23 @@ function channelJoinV1(authUserId, channelId) {
     }
     if (!channel_exists) return error;
     
-    //check if user is not already a member
+    //check if user is already a member
     for (const member of data.channels[channelId].allMembers) {
        if (authUserId === member.uId) return error;      
     }
     
-    //if channel is private and user is not a member
-    //Assumes that if user is owner, it is also a member
-
+    //Check if channel is private and user is not a member
     if(!(data.channels[channelId].isPublic)) {
         for (const member of data.channels[channelId].allMembers) {
             if (authUserId === member.uId) {
                 member_exists = true;
             }
         }
+        //return error if they are not a member and not a global owner
         if (!member_exists && perms != 1) return error;
     }
 
+    //Add user to channel in allMembers array
     data.channels[channelId].allMembers.push( 
     {
         uId:        data.users[authUserId].uId,
@@ -134,17 +148,35 @@ function channelInviteV1(authUserId, channelId, uId) {
     }
 }
 
+/*
+ * ChannelDetailsV1 provides the details of a valid channel if an authorised 
+ * user exists:
+
+ * @param {integer} authUserId - Id of user trying to view details
+ * @param {integer} channelId - Id of channel that user wants to view
+ * @return {
+                name:           string,
+                isPublic:       boolean,
+                ownerMembers:   array of user objects,
+                allMembers:     array of user objects,
+            }
+ 
+ * @returns { error : 'error' } - when channelId is invalid
+ *                              - when authUserId does not exist
+                                - when user is not a member of that channel
+*/
+
 function channelDetailsV1(authUserId, channelId) {
 
     const data = getData();
-    //if authUser is valid
+    //If authUser is valid
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }   
     
     let exists = 0;
     
-    //if channelId is invalid
+    //If channelId is invalid
     for (const channel of data.channels) {       
         if (channel.channelId === channelId) {
             exists = 1;
@@ -153,7 +185,9 @@ function channelDetailsV1(authUserId, channelId) {
             
     if (exists === 0) return error;
     
+    
     for (const member of data.channels[channelId].allMembers) {
+       //If user if a member of the channel
        if (authUserId === member.uId) {
             return { 
                 name:           data.channels[channelId].name,
@@ -163,7 +197,8 @@ function channelDetailsV1(authUserId, channelId) {
             };
        }
     }
-
+    
+    //If user is not a member of the channel
     return error;
 }
 
