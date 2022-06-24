@@ -8,8 +8,12 @@ function channelsCreateV1(authUserId, name, isPublic) {
     }
     const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
+
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const newChannel = {
-        channelId:      data.channels.length,
+        channelId:      data.channels.length,    
         name:           name,
         isPublic:       isPublic,
         ownerMembers:   [authUser],
@@ -25,6 +29,9 @@ function channelsCreateV1(authUserId, name, isPublic) {
 //returns a string with the name "authUserId"
 function channelsListallV1(authUserId) {
     let data = getData();
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const channels = [];
     for (const channel of data.channels) {
         const channelNew = { 
@@ -40,6 +47,9 @@ function channelsListallV1(authUserId) {
 // returns a string with the name 'authUserId'
 function channelsListV1(authUserId) {
     const data = getData();
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const channelArr = [];
     for (const channel of data.channels) {
         for (const members of channel.allMembers) {
@@ -56,3 +66,4 @@ function channelsListV1(authUserId) {
 }
 
 export { channelsCreateV1, channelsListallV1, channelsListV1 };
+

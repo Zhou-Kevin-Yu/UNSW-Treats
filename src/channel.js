@@ -1,7 +1,53 @@
 import { getData, setData } from './dataStore.js'
 
+const error = { error: 'error' };
+
 function channelJoinV1(authUserId, channelId) {
-    return 'authUserId' + 'channelId';
+
+    const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
+    let exists = 0;
+    
+    //if channelId is invalid
+    for (const channel of data.channels) {       
+        if (channel.channelId === channelId) {
+            exists = 1;
+        } 
+    }
+    if (exists === 0) return error;
+    exists = 0;
+    
+    //check if user is not already a member
+    for (const member of data.channels[channelId].allMembers) {
+       if (authUserId === member.uId) return error;      
+    }
+    
+    //if channel is private and user is not a member
+    //Assumes that if user is owner, it is also a member
+    if (data.channels[channelId].isPublic === false ) {   
+        for (const member of data.channels[channelId].allMembers) {
+            if (authUserId === member.uId) {
+                exists = 1;
+            }
+        }       
+        if (exists === 0) return error;
+    }
+
+    data.channels[channelId].allMembers.push( 
+    {
+        uId:        data.users[authUserId].uId,
+        nameFirst:  data.users[authUserId].nameFirst,
+        nameLast:   data.users[authUserId].nameLast,
+        email:      data.users[authUserId].email,
+        handleStr:  data.users[authUserId].handleStr,
+    });
+
+    setData(data);
+    return {};
 }
 
 // NEED DOCUMENTATION
@@ -9,6 +55,11 @@ function channelJoinV1(authUserId, channelId) {
 function channelInviteV1(authUserId, channelId, uId) {
     
     let data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+
     let exist_channel = 0;
     let exist_user = 0;
     // To loop through all the existing channels 
@@ -38,7 +89,7 @@ function channelInviteV1(authUserId, channelId, uId) {
             nameFirstCopy = user.nameFirst;
             nameLastCopy = user.nameLast;
             emailCopy = user.email;
-            handlestrCopy = user.handlestr;
+            handlestrCopy = user.handleStr;
         }
     }
     
@@ -63,7 +114,7 @@ function channelInviteV1(authUserId, channelId, uId) {
                         nameFirst: nameFirstCopy, 
                         nameLast: nameLastCopy,
                         email:  emailCopy,
-                        handlestr: handlestrCopy,
+                        handleStr: handlestrCopy,
                     });
                     setData(data);
                     return { };
@@ -81,7 +132,36 @@ function channelInviteV1(authUserId, channelId, uId) {
 }
 
 function channelDetailsV1(authUserId, channelId) {
-    return 'authUserId' + 'channelId';
+
+    const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
+    let exists = 0;
+    
+    //if channelId is invalid
+    for (const channel of data.channels) {       
+        if (channel.channelId === channelId) {
+            exists = 1;
+        } 
+    }
+            
+    if (exists === 0) return error;
+    
+    for (const member of data.channels[channelId].allMembers) {
+       if (authUserId === member.uId) {
+            return { 
+                name:           data.channels[channelId].name,
+                isPublic:       data.channels[channelId].isPublic,
+                ownerMembers:   data.channels[channelId].ownerMembers,
+                allMembers:     data.channels[channelId].allMembers,
+            };
+       }
+    }
+
+    return error;
 }
 
 //  NEED DOCUMENTATION
@@ -105,7 +185,7 @@ function channelMessagesV1(authUserId, channelId, start) {
                 // If the auth user is a member
                 if (authUserId === member.uId) {
                     exist_auth = 1;
-
+                    
                     // Loop to push messages into msgArray
                     for (let i = startCopy; i < endCopy; i++) {
                         msgArray.push(channel.messages[i]);
@@ -133,8 +213,16 @@ function channelMessagesV1(authUserId, channelId, start) {
         }
     } 
 
-    // If the "start" value is greater than the total number of messages
+    // If the start value is greater than the total number of messages
     if (start > msgArray.length) {
+        return { error: 'error' };
+    }
+    
+    // If the start value is greater than 0 and equal to the total number of messages
+    // The first message in the array is at index 0
+    // If start is equal to 1 and total message is equal to 1, it should return an error
+    // Since the only message is at index 0
+    if (start > 0 && start === msgArray.length) {
         return { error: 'error' };
     }
     
@@ -154,5 +242,5 @@ function channelMessagesV1(authUserId, channelId, start) {
         end: endCopy,
     };
 }
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
 
-export { channelJoinV1, channelInviteV1, channelDetailsV1, channelMessagesV1};

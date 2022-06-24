@@ -7,7 +7,7 @@ import { clearV1 }                              from './other.js';
 // Implement later
 // beforeEach(() => {
 //     clearV1();
-//     authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+//     authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
 // });
 
 // If channelInviteV1 was successful
@@ -15,11 +15,13 @@ describe ('Testing successful channelInviteV1', () => {
     clearV1();
     test('Test successful input example 1', () => {
         // Create an authUserId
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#$X', 'Gary', 'Sun');
         // Create an uId
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         // Create a valid channelId
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
+
+        console.log("Channel ID IS", checkChannelId);
 
         const validChannelId = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
         const empty = { };
@@ -43,7 +45,7 @@ describe ('Testing successful channelInviteV1', () => {
 describe ('Testing invalid channelId', () => {
     clearV1();
     test('Test undefined channelId', () => {
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
         expect(input).toStrictEqual({error: 'error'})
@@ -51,7 +53,7 @@ describe ('Testing invalid channelId', () => {
    
     clearV1();
     test('Test wrong channelId example 1', () => {
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
         checkChannelId.channelId = checkChannelId.channelId + 1;
@@ -62,7 +64,7 @@ describe ('Testing invalid channelId', () => {
 
     clearV1();
     test('Test wrong channelId example 2', () => {
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
         checkChannelId.channelId = checkChannelId.channelId - 1;
@@ -76,7 +78,7 @@ describe ('Testing invalid channelId', () => {
 describe ('Testing invalid uId', () => {
     clearV1();
     test('Test undefined uId', () => {
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
 
         let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, undefined);
@@ -85,7 +87,7 @@ describe ('Testing invalid uId', () => {
 
     clearV1();
     test('Test null uId', () => {
-        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+        const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
 
         let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, null);
@@ -95,8 +97,8 @@ describe ('Testing invalid uId', () => {
 
 // If the user is already a member of the channel
 test('Test uId that is already in channel', () => {
-    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
-    const userId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
+    const userId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
     const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1521', true);
     
     // authUserId and userId is the same therefore user is already a member
@@ -106,7 +108,7 @@ test('Test uId that is already in channel', () => {
 
 // If the channelId is valid but authorised user is not a member
 test('Test authId that is not a member of the channel', () => {
-    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b2#X', 'Gary', 'Sun');
+    const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
     const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
     
     // Create channel with userId therefore authuserId is not a part of the channel
