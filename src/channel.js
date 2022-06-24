@@ -7,7 +7,7 @@ function channelJoinV1(authUserId, channelId) {
     const data = getData();   
     let channel_exists = false;
     let member_exists = false;
-    let isGlobalOwner = false;
+    let isGlobalOwner = data.users[authUserId].permission === 1;
     
     //if channelId is invalid
     for (const channel of data.channels) {       
@@ -15,7 +15,7 @@ function channelJoinV1(authUserId, channelId) {
             channel_exists = true;
         } 
     }
-    if (channel_exists === false) return error;
+    if (!channel_exists) return error;
     
     //check if user is not already a member
     for (const member of data.channels[channelId].allMembers) {
@@ -25,12 +25,8 @@ function channelJoinV1(authUserId, channelId) {
     //if channel is private and user is not a member
     //Assumes that if user is owner, it is also a member
 
-    if(data.users[authUserId].permission == 1) {
-        isGlobalOwner = true;
-    }
-
-    if (data.channels[channelId].isPublic === false ) {           
-        if (member_exists === false && isGlobalOwner === false) return error;
+    if (!data.channels[channelId].isPublic) {           
+        if (!member_exists && !isGlobalOwner) return error;
     }
 
     data.channels[channelId].allMembers.push( 
