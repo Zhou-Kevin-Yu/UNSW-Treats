@@ -1,6 +1,17 @@
 import { getData, setData } from './dataStore';
 import isEmail from "validator/lib/isEmail";
 
+
+/**
+ * Given a registered user's email and password, 
+ * returns their `authUserId` value.
+ * 
+ * @param {string} email - email address to login with
+ * @param {string} password - password to login with
+ * @return {authUserId: number} - object with key authUserId of the valid user
+ * @returns { error : 'error' } - when email is not registered
+ *                             - when password is incorrect
+*/
 function authLoginV1(email, password) {
     let data = getData();
     for (const user of data.users) {
