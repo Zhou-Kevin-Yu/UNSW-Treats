@@ -18,10 +18,10 @@ describe ('Testing return values', () => {
     //valid name test
     test('valid channel name return value', () => {
         name = '1531';
-        const noErrorOutput = { channelId: 0 }
-        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(noErrorOutput);
+        let output = { channelId: 0 }; //channelIDs are incremented starting at 0 for the first channel created
+        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(output);
         name = '2'
-        let output = { channelId: 1 }
+        output = { channelId: 1 }
         expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(output);
         name = '3'
         output = { channelId: 2 };
@@ -29,14 +29,14 @@ describe ('Testing return values', () => {
     });
 
     //invalid name tests
-    const errorOutput = { error: 'error' };
+    const error = { error: 'error' };
     test('invalid channel name with less than 1 character return value', () => {
         name = '';
-        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(errorOutput);
+        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
     });
     test('invalid channel name with more than 20 chars return value', () => {
         name = '1234567891011121314151617181920';
-        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(errorOutput);
+        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
     })
 });
 
