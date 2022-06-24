@@ -25,8 +25,22 @@ function channelsCreateV1(authUserId, name, isPublic) {
     return {channelId: newChannel.channelId };
 }
 
-//stub for a function 'channelsListallV1' with arguments named 'authUserId'
-//returns a string with the name "authUserId"
+/**
+ * given a valid authUserId, provides an array of all channels, including 
+ * private channels, (and their associated details).
+ * 
+ * @param {number} authUserId - email address to be validated using validator
+ * @return {authUserId: number} - object with key authUserId.
+ * @return {channels:                   
+ *              Array <{
+ *                  channelId: number,
+ *                  name: string,
+ *              }>
+ * }
+ * Returns an object with key 'channels' associated with an array of objects, 
+ * where each objects contains types { channelId, name }.
+ * 
+ */ 
 function channelsListallV1(authUserId) {
     let data = getData();
     if (!(authUserId in data.users)) {
