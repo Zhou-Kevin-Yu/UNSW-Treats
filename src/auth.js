@@ -77,6 +77,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 }
 
 /**
+ * helper function for authRegister.
  * takes in first and last name and returns handleString
  *
  * @param {Object} data - datastore object containing all information about channels and users
