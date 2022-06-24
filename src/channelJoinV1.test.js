@@ -16,7 +16,6 @@
     channelId2 = channelsCreateV1(authUserId2.authUserId, 'COMP1542', false);
   });
 
-describe("Successful Outputs"), () => {
 
   test("successful single user channel join", () => {
     authUserId = authUserId.authUserId;
@@ -47,12 +46,13 @@ describe("Successful Outputs"), () => {
       expect(channelJoinV1(authUserId2.authUserId, channelId.channelId)).toStrictEqual({});     
   }); 
 
-}
+
+
 test('ChannelId does not refer to a valid channel', () => {
   expect(channelJoinV1(authUserId.authUserId, 'CCMP1564')).toStrictEqual(error); 
 });
 
-test('User is already member of channel',   test("successful single user channel join", () => {
+test("successful single user channel join", () => { 
   authUserId = authUserId.authUserId;
   channelId = channelId.channelId;
   const user = userProfileV1(authUserId, authUserId);
@@ -77,16 +77,15 @@ test("successful double user channel join", () => {
   expect(channel.allMembers).toStrictEqual([user1, user2]);
 });
   
-  test('No error output', () => {
-    expect(channelJoinV1(authUserId2.authUserId, channelId.channelId)).toStrictEqual({});     
-}); () => {
-  expect(channelJoinV1(authUserId.authUserId, channelId.channelId)).toStrictEqual(error);
+  test('User is already member of channel', () => {
   expect(channelJoinV1(authUserId2.authUserId, channelId2.channelId)).toStrictEqual(error);    
 });
 
 test('Channel is private, and user isnt member nor owner', () => {
-    let authUserId3 = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
+    let authUserId3 = authRegisterV1('randommmm.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
     let channelId3 = channelsCreateV1(authUserId2.authUserId, 'COMP1542', false);
+    console.log("in the test file,authUserId3 is", authUserId3)
+    
     expect(channelJoinV1(authUserId3.authUserId, channelId3.channelId)).toStrictEqual(error);    
 });
 

@@ -8,6 +8,14 @@ function channelJoinV1(authUserId, channelId) {
     let channel_exists = false;
     let member_exists = false;
     let isGlobalOwner = data.users[authUserId].permission === 1;
+    console.log(isGlobalOwner)
+;
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
+    let exists = 0;
     
     //if channelId is invalid
     for (const channel of data.channels) {       
@@ -47,6 +55,11 @@ function channelJoinV1(authUserId, channelId) {
 function channelInviteV1(authUserId, channelId, uId) {
     
     let data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+
     let exist_channel = 0;
     let exist_user = 0;
     // To loop through all the existing channels 
@@ -121,6 +134,11 @@ function channelInviteV1(authUserId, channelId, uId) {
 function channelDetailsV1(authUserId, channelId) {
 
     const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
     let exists = 0;
     
     //if channelId is invalid

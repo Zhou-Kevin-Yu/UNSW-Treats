@@ -148,4 +148,10 @@ describe('Testing Handles', () => {
     const user = userProfileV1(authUserId, uId);
     expect(user.handleStr).toStrictEqual("benjaminedkernohando2")
   });
+  
 });
+
+// test('test correct storage of permissions field = 1', () => {
+//     const {authUserId} = authRegisterV1("ben.kerno@gmail.com", 'benisagod', "benjamandems", "kernohandems");
+
+//   }
