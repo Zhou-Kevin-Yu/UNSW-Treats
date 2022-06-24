@@ -17,14 +17,12 @@ function authLoginV1(email, password) {
  * registers a unique user into the system with a unique handle. The first
  * user in the system is granted as a global user with permission = 1. all
  * subsequent users are granted with permission = 2.
- * 
  *
  * @param {number} email - email address to be validated using validator
  * @param {number} password - password (valid if length >= 6)
  * @param {number} nameFirst  - first name
  * @param {number} nameLast  - second name
  * @return {authUserId: number} - object with key authUserId.
- * 
  * @returns { error : 'error' } - when email has already been registered
  *                              - when password < 6 in length
  *                              - when nameFirst or nameLast > 50 or < 1
@@ -78,6 +76,15 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     return { authUserId };
 }
 
+/**
+ * takes in first and last name and returns handleString
+ *
+ * @param {Object} data - datastore object containing all information about channels and users
+ * @param {string} nameFirst - first name
+ * @param {string} nameLast  - last name
+ * @return {string} - concatenated string to be handleStr
+ *
+ */ 
 function handleCreate(data, nameFirst, nameLast) {
     nameFirst = nameFirst.toLowerCase();
     nameLast = nameLast.toLowerCase();
