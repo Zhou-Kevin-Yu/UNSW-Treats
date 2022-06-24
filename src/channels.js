@@ -60,8 +60,13 @@ function channelsListallV1(authUserId) {
     return { channels: channels };
 }
 
-// Stub for a function 'channelsListV1' with arugment named 'authUserId'
-// returns a string with the name 'authUserId'
+/**
+ * Provide an array of all channels (and their associated details) that the authorised user is part of.
+ * 
+ * @param {number} authUserId userId of user calling the function
+ * @return {object} Object containing array of channels authUser is in, with key 'channels:'
+ * 
+*/
 function channelsListV1(authUserId) {
     const data = getData();
     if (!(authUserId in data.users)) {
