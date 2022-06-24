@@ -54,11 +54,18 @@ describe('channelJoinV1 success cases', () => {
     expect(channelJoinV1(ud1, ch1)).toStrictEqual({});
     const user1 = userProfileV1(ud1, ud1);
     const user2 = userProfileV1(ud2, ud2);
+    // console.log(channelDetailsV1(ud1, ch1));
+    // console.log(({
+    //   name: 'COMP1521',
+    //   isPublic: false,
+    //   ownerMembers: [user2],
+    //   allMembers: [user1, user2],
+    // }));
     expect(channelDetailsV1(ud1, ch1)).toStrictEqual({
       name: 'COMP1521',
       isPublic: false,
       ownerMembers: [user2],
-      allMembers: [user1, user2],
+      allMembers: [user2, user1],
     });
   });
 
