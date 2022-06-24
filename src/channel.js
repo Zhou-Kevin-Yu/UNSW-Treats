@@ -4,7 +4,12 @@ const error = { error: 'error' };
 
 function channelJoinV1(authUserId, channelId) {
 
-    const data = getData();   
+    const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
     let exists = 0;
     
     //if channelId is invalid
@@ -50,6 +55,11 @@ function channelJoinV1(authUserId, channelId) {
 function channelInviteV1(authUserId, channelId, uId) {
     
     let data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+
     let exist_channel = 0;
     let exist_user = 0;
     // To loop through all the existing channels 
@@ -124,6 +134,11 @@ function channelInviteV1(authUserId, channelId, uId) {
 function channelDetailsV1(authUserId, channelId) {
 
     const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
     let exists = 0;
     
     //if channelId is invalid
