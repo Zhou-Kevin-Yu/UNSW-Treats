@@ -3,19 +3,17 @@ import { getData, setData } from './dataStore.js'
 const error = { error: 'error' };
 
 function channelJoinV1(authUserId, channelId) {
-
+    
     const data = getData();   
-    let channel_exists = false;
-    let member_exists = false;
-    let isGlobalOwner = data.users[authUserId].permission === 1;
-    console.log(isGlobalOwner)
-;
     //if authUser is valid
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }   
     
-    let exists = 0;
+    let channel_exists = false;
+    let member_exists = false;
+    const perms = data.users[authUserId].permission;
+
     
     //if channelId is invalid
     for (const channel of data.channels) {       
@@ -33,8 +31,13 @@ function channelJoinV1(authUserId, channelId) {
     //if channel is private and user is not a member
     //Assumes that if user is owner, it is also a member
 
-    if (!data.channels[channelId].isPublic) {           
-        if (!member_exists && !isGlobalOwner) return error;
+    if(!(data.channels[channelId].isPublic)) {
+        for (const member of data.channels[channelId].allMembers) {
+            if (authUserId === member.uId) {
+                member_exists = true;
+            }
+        }
+        if (!member_exists && perms != 1) return error;
     }
 
     data.channels[channelId].allMembers.push( 
@@ -50,7 +53,7 @@ function channelJoinV1(authUserId, channelId) {
     return {};
 }
 
-// NEED DOCUMENTATION
+// NEED DOCUMENTATION 
 
 function channelInviteV1(authUserId, channelId, uId) {
     
@@ -164,14 +167,24 @@ function channelDetailsV1(authUserId, channelId) {
     return error;
 }
 
-//  NEED DOCUMENTATION
+/**
+ * Return up to 50 messages between index "start" and "start + 50"
+ * in a selected channel
+ * 
+ * @param {number} authUserId - authorised user that is a part of the selected channel
+ * @param {number} channelId - id for the selected channel
+ * @param {number} start  - index of where to start returing messages
+ * @returns {array of objects} messages - array of objects, where each object contains types { messageId, uId, message, timeSent }
+ * @returns {number} start 
+ * @returns {number} end - equal to the value of "start + 50" or "-1" if no more messages to load
+ */ 
+
 function channelMessagesV1(authUserId, channelId, start) {
     
     let data = getData();
     let exist_channel = 0;
     let exist_auth = 0;
-    let startCopy = start;
-    let endCopy = startCopy + 50;
+    let endCopy = start + 50;
     let msgArray = [];
 
     // To loop through all the existing channels 
@@ -186,10 +199,8 @@ function channelMessagesV1(authUserId, channelId, start) {
                 if (authUserId === member.uId) {
                     exist_auth = 1;
                     
-                    // Loop to push messages into msgArray
-                    for (let i = startCopy; i < endCopy; i++) {
-                        msgArray.push(channel.messages[i]);
-                    }
+                    // Push messages into msgArray
+                    msgArray = channel.messages.slice(start, endCopy);
 
                     // If function returns the last message in the channel
                     // The last message in channel messages got pushed into the last element of msgArray
@@ -218,14 +229,6 @@ function channelMessagesV1(authUserId, channelId, start) {
         return { error: 'error' };
     }
     
-    // If the start value is greater than 0 and equal to the total number of messages
-    // The first message in the array is at index 0
-    // If start is equal to 1 and total message is equal to 1, it should return an error
-    // Since the only message is at index 0
-    if (start > 0 && start === msgArray.length) {
-        return { error: 'error' };
-    }
-    
     // If the channel Id does not exist or is invalid
     if (exist_channel === 0) {
         return { error: 'error' };
@@ -238,7 +241,7 @@ function channelMessagesV1(authUserId, channelId, start) {
 
     return {
         messages: msgArray,
-        start: startCopy,
+        start: start,
         end: endCopy,
     };
 }
