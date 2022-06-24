@@ -5,7 +5,17 @@ function channelJoinV1(authUserId, channelId) {
     return 'authUserId' + 'channelId';
 }
 
-// NEED DOCUMENTATION
+/**
+ * Invites a user with ID uId to join a channel with ID channelId
+ * and they immediately join
+ * 
+ * @param {number} authUserId - authorised user that is a part of the selected channel and making the invite request
+ * @param {number} channelId - id for the selected channel
+ * @param {number} uId  - user to be invited
+ * @returns {object} {} - empty object
+ * @returns {object} {error: 'error'} - return error if channelId is invalid, uId is invalid, 
+ * uId refers to a user who is already a member of the channel, or channelId is valid and the authorised user is not a member of the channel
+ */ 
 
 function channelInviteV1(authUserId, channelId, uId) {
     
