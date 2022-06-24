@@ -77,7 +77,7 @@ describe ('Testing channel details', () => {
         name = 'ENGG9876';
         isPublic = false;
         const channelId = channelsCreateV1(authUserId, name, isPublic).channelId;
-        expect(channelDetailsV1(authUserId, 0)).toStrictEqual({
+        expect(channelDetailsV1(authUserId, channelId)).toStrictEqual({
             name:           'ENGG9876',
             isPublic:       false,
             ownerMembers:   [user],
