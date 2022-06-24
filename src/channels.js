@@ -2,24 +2,37 @@ import { getData, setData } from './dataStore'
 import { userProfileV1 }    from './users.js'
 
 
+/**Creates a new channel with the given name that is either a public or private channel. 
+*The user who created it automatically joins the channel.
+*@param {number} authUserId - ID of the user creating the channel
+*@param {string} name - name of the channel
+*@param {bool} isPublic - whether the channel is/isn't Public -  true for public
+*@return {object}An object containing the Id of the created channel and the key 'channelId'
+**/
 function channelsCreateV1(authUserId, name, isPublic) {
+    //Checking for a valid channel name
     if (name.length < 1 || name.length > 20) {
         return { error: 'error' };
     }
+    //Storing user object
     const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
 
+    //Checking for valid authUserId
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }
     const newChannel = {
-        channelId:      data.channels.length,    
+        /*ChannelIds are incremented starting from 0, therefore the channelId
+        will be set to the length of the array of channels*/
+        channelId:      data.channels.length,
         name:           name,
         isPublic:       isPublic,
         ownerMembers:   [authUser],
         allMembers:     [authUser],
         messages:       []
     };
+    //Add new channel to dataStore
     data.channels.push(newChannel);
     setData(data);
     return {channelId: newChannel.channelId };
