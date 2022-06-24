@@ -8,7 +8,7 @@ let authUserId, name, isPublic;
 
 beforeEach(() => {
     clearV1();
-    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
+    authUserId = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun').authUserId;
     name;
     isPublic = true;
 });
@@ -42,42 +42,43 @@ describe ('Testing return values', () => {
 
 
 describe ('Testing channel creation', () => {
-    const output = { channels: [
-        {
-            channelId:  0,
-            name:       '1531'
-        },
-    ] };
     test('testing channel in channelsListV1', () => {
-        const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
-        name = '1531';
+        const output = { channels: [
+            {
+                channelId:  0,
+                name:       'COMP1531'
+            },
+        ] };
+        // const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun'); //this doubles up authUserId because of the beforeEach();
+        name = 'COMP1531';
+        // console.log(authUserId);
         channelsCreateV1(authUserId, name, isPublic);
         expect(channelsListV1(authUserId)).toStrictEqual(output);
     });
 });
 
 describe ('Testing channel details', () => {
-    test('Public channel called "1531"', () => {
-        const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
+    test('Public channel called "COMP1531"', () => {
+        // const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
         const user = userProfileV1(authUserId, authUserId);
-        name = '1531';
+        name = 'COMP1531';
         isPublic = true;
-        channelsCreateV1(authUserId, name, isPublic);
-        expect(channelDetailsV1(authUserId, 0)).toStrictEqual({
-            name:           '1531',
+        const channelId = channelsCreateV1(authUserId, name, isPublic).channelId;
+        expect(channelDetailsV1(authUserId, channelId)).toStrictEqual({
+            name:           'COMP1531',
             isPublic:       true,
             ownerMembers:   [user],
             allMembers:     [user]
         });
     });
-    test('Private channel called "test channel"', () => {
-        const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun')
+    test('Private channel called "ENGG9876"', () => {
+        //const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun')
         const user = userProfileV1(authUserId, authUserId);
-        name = 'test channel';
+        name = 'ENGG9876';
         isPublic = false;
-        channelsCreateV1(authUserId, name, isPublic);
-        expect(channelDetailsV1(authUserId, 0)).toStrictEqual({
-            name:           'test channel',
+        const channelId = channelsCreateV1(authUserId, name, isPublic).channelId;
+        expect(channelDetailsV1(authUserId, channelId)).toStrictEqual({
+            name:           'ENGG9876',
             isPublic:       false,
             ownerMembers:   [user],
             allMembers:     [user]

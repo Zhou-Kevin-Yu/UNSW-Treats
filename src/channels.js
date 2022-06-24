@@ -2,6 +2,13 @@ import { getData, setData } from './dataStore'
 import { userProfileV1 }    from './users.js'
 
 
+/**Creates a new channel with the given name that is either a public or private channel. 
+*The user who created it automatically joins the channel.
+*@param {number} authUserId - ID of the user creating the channel
+*@param {string} name - name of the channel
+*@param {bool} isPublic - whether the channel is/isn't Public -  true for public
+*@return {object}An object containing the Id of the created channel and the key 'channelId'
+**/
 function channelsCreateV1(authUserId, name, isPublic) {
     //Checking for a valid channel name
     if (name.length < 1 || name.length > 20) {
@@ -10,7 +17,11 @@ function channelsCreateV1(authUserId, name, isPublic) {
     //Storing user object
     const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
-    //Creating channel
+
+    //Checking for valid authUserId
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const newChannel = {
         /*ChannelIds are incremented starting from 0, therefore the channelId
         will be set to the length of the array of channels*/
@@ -27,8 +38,27 @@ function channelsCreateV1(authUserId, name, isPublic) {
     return {channelId: newChannel.channelId };
 }
 
+/**
+ * given a valid authUserId, provides an array of all channels, including 
+ * private channels, (and their associated details).
+ * 
+ * @param {number} authUserId - email address to be validated using validator
+ * @return {authUserId: number} - object with key authUserId.
+ * @return {channels:                   
+ *              Array <{
+ *                  channelId: number,
+ *                  name: string,
+ *              }>
+ * }
+ * Returns an object with key 'channels' associated with an array of objects, 
+ * where each objects contains types { channelId, name }.
+ * 
+ */ 
 function channelsListallV1(authUserId) {
     let data = getData();
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const channels = [];
     for (const channel of data.channels) {
         const channelNew = { 
@@ -44,6 +74,9 @@ function channelsListallV1(authUserId) {
 // returns a string with the name 'authUserId'
 function channelsListV1(authUserId) {
     const data = getData();
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }
     const channelArr = [];
     for (const channel of data.channels) {
         for (const members of channel.allMembers) {
@@ -59,4 +92,5 @@ function channelsListV1(authUserId) {
     return { channels: channelArr };
 }
 
-export { channelsCreateV1, channelsListV1, channelsListallV1 };
+export { channelsCreateV1, channelsListallV1, channelsListV1 };
+
