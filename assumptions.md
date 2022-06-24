@@ -11,3 +11,9 @@ since the only message is at index 0.
 
 nameFirst and nameLast does not contain special characters and numbers
 
+channelsListV1:
+Both public channels and private channels are returned in the channels array
+
+that authRegisterV1 and authRegister return an object in the form {authUserId : 0}
+
+currently, the first user in the system is an owner user.

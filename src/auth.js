@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import isEmail from "validator/lib/isEmail"
+import isEmail from "validator/lib/isEmail";
 
 function authLoginV1(email, password) {
     let data = getData();
@@ -68,6 +68,14 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     const handle = handleCreate(data, nameFirst, nameLast);
     const authUserId = data.users.length;
 
+    //determine permission
+    let perm = 0;
+    if (data.users.length === 0) {
+        perm = 1
+    } else {
+        perm = 2;
+    }
+
     //create new object in users array and populate fields
     data.users[authUserId] = {
         uId: authUserId,
@@ -76,6 +84,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
         email: email,
         handleStr: handle,
         password: password,
+        permission: perm,
     }
     setData(data);
     return { authUserId };

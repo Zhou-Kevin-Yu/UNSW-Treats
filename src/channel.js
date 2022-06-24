@@ -1,15 +1,170 @@
-import { getData } from './dataStore.js'
+import { getData, setData } from './dataStore.js'
+
+const error = { error: 'error' };
 
 function channelJoinV1(authUserId, channelId) {
-    return 'authUserId' + 'channelId';
+    
+    const data = getData();   
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
+    let channel_exists = false;
+    let member_exists = false;
+    const perms = data.users[authUserId].permission;
+
+    
+    //if channelId is invalid
+    for (const channel of data.channels) {       
+        if (channel.channelId === channelId) {
+            channel_exists = true;
+        } 
+    }
+    if (!channel_exists) return error;
+    
+    //check if user is not already a member
+    for (const member of data.channels[channelId].allMembers) {
+       if (authUserId === member.uId) return error;      
+    }
+    
+    //if channel is private and user is not a member
+    //Assumes that if user is owner, it is also a member
+
+    if(!(data.channels[channelId].isPublic)) {
+        for (const member of data.channels[channelId].allMembers) {
+            if (authUserId === member.uId) {
+                member_exists = true;
+            }
+        }
+        if (!member_exists && perms != 1) return error;
+    }
+
+    data.channels[channelId].allMembers.push( 
+    {
+        uId:        data.users[authUserId].uId,
+        nameFirst:  data.users[authUserId].nameFirst,
+        nameLast:   data.users[authUserId].nameLast,
+        email:      data.users[authUserId].email,
+        handleStr:  data.users[authUserId].handleStr,
+    });
+
+    setData(data);
+    return {};
 }
 
+// NEED DOCUMENTATION 
+
 function channelInviteV1(authUserId, channelId, uId) {
-    return 'authUserId' + 'channelId' + 'uId';
+    
+    let data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+
+    let exist_channel = 0;
+    let exist_user = 0;
+    // To loop through all the existing channels 
+    for (let channel of data.channels) {
+        // If the channel Id exists
+        if (channelId === channel.channelId) {
+            // To loop through all the members in selected channel
+            for (let member of channel.allMembers) {
+                // If user is already a member of the channel before the invite is sent
+                if (uId === member.uId) {
+                    return { error: 'error' };
+                }
+            }
+        }
+    } 
+
+    // Declare as empty strings
+    let nameFirstCopy = '';
+    let nameLastCopy = '';
+    let emailCopy = '';
+    let handlestrCopy = '';
+
+    for (let user of data.users) {
+        // If the user Id exists
+        if (uId === user.uId) {
+            exist_user = 1;
+            nameFirstCopy = user.nameFirst;
+            nameLastCopy = user.nameLast;
+            emailCopy = user.email;
+            handlestrCopy = user.handleStr;
+        }
+    }
+    
+    // If the user Id does not exist or is invalid
+    if (exist_user === 0) {
+        return { error: 'error' };
+    }
+
+    // To loop through all the existing channels 
+    for (let channel of data.channels) {
+        // If the channel Id exists
+        if (channelId === channel.channelId) {
+            exist_channel = 1;
+            // To loop through all the members in selected channel
+            for (let member of channel.allMembers) {
+                // If the auth user is a member
+                if (authUserId === member.uId) {
+                    
+                    // Push object user into allMembers array
+                    channel.allMembers.push({
+                        uId: uId, 
+                        nameFirst: nameFirstCopy, 
+                        nameLast: nameLastCopy,
+                        email:  emailCopy,
+                        handleStr: handlestrCopy,
+                    });
+                    setData(data);
+                    return { };
+                }
+            }
+            // If the auth user is not a member of the channel
+            return { error: 'error' };
+        }
+    } 
+    
+    // If the channel Id does not exist or is invalid
+    if (exist_channel === 0) {
+        return { error: 'error' };
+    }
 }
 
 function channelDetailsV1(authUserId, channelId) {
-    return 'authUserId' + 'channelId';
+
+    const data = getData();
+    //if authUser is valid
+    if (!(authUserId in data.users)) {
+        return { error: 'error' };
+    }   
+    
+    let exists = 0;
+    
+    //if channelId is invalid
+    for (const channel of data.channels) {       
+        if (channel.channelId === channelId) {
+            exists = 1;
+        } 
+    }
+            
+    if (exists === 0) return error;
+    
+    for (const member of data.channels[channelId].allMembers) {
+       if (authUserId === member.uId) {
+            return { 
+                name:           data.channels[channelId].name,
+                isPublic:       data.channels[channelId].isPublic,
+                ownerMembers:   data.channels[channelId].ownerMembers,
+                allMembers:     data.channels[channelId].allMembers,
+            };
+       }
+    }
+
+    return error;
 }
 
 /**
@@ -90,6 +245,5 @@ function channelMessagesV1(authUserId, channelId, start) {
         end: endCopy,
     };
 }
-
-export { channelJoinV1, channelInviteV1, channelDetailsV1, channelMessagesV1};
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1};
 
