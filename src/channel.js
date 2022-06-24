@@ -3,19 +3,17 @@ import { getData, setData } from './dataStore.js'
 const error = { error: 'error' };
 
 function channelJoinV1(authUserId, channelId) {
-
+    
     const data = getData();   
-    let channel_exists = false;
-    let member_exists = false;
-    let isGlobalOwner = data.users[authUserId].permission === 1;
-    console.log(isGlobalOwner)
-;
     //if authUser is valid
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }   
     
-    let exists = 0;
+    let channel_exists = false;
+    let member_exists = false;
+    const perms = data.users[authUserId].permission;
+
     
     //if channelId is invalid
     for (const channel of data.channels) {       
@@ -33,8 +31,13 @@ function channelJoinV1(authUserId, channelId) {
     //if channel is private and user is not a member
     //Assumes that if user is owner, it is also a member
 
-    if (!data.channels[channelId].isPublic) {           
-        if (!member_exists && !isGlobalOwner) return error;
+    if(!(data.channels[channelId].isPublic)) {
+        for (const member of data.channels[channelId].allMembers) {
+            if (authUserId === member.uId) {
+                member_exists = true;
+            }
+        }
+        if (!member_exists && perms != 1) return error;
     }
 
     data.channels[channelId].allMembers.push( 
@@ -50,7 +53,7 @@ function channelJoinV1(authUserId, channelId) {
     return {};
 }
 
-// NEED DOCUMENTATION
+// NEED DOCUMENTATION 
 
 function channelInviteV1(authUserId, channelId, uId) {
     
