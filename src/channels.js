@@ -3,26 +3,30 @@ import { userProfileV1 }    from './users.js'
 
 
 function channelsCreateV1(authUserId, name, isPublic) {
+    //Checking for a valid channel name
     if (name.length < 1 || name.length > 20) {
         return { error: 'error' };
     }
+    //Storing user object
     const authUser = userProfileV1(authUserId, authUserId);
     const data = getData();
+    //Creating channel
     const newChannel = {
-        channelId:      data.channels.length,    
+        /*ChannelIds are incremented starting from 0, therefore the channelId
+        will be set to the length of the array of channels*/
+        channelId:      data.channels.length,
         name:           name,
         isPublic:       isPublic,
         ownerMembers:   [authUser],
         allMembers:     [authUser],
         messages:       []
     };
+    //Add new channel to dataStore
     data.channels.push(newChannel);
     setData(data);
     return {channelId: newChannel.channelId };
 }
 
-//stub for a function 'channelsListallV1' with arguments named 'authUserId'
-//returns a string with the name "authUserId"
 function channelsListallV1(authUserId) {
     let data = getData();
     const channels = [];
