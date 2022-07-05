@@ -1,5 +1,6 @@
-import { getData, setData } from './dataStore.js'
-import { userProfileV1 }    from './users.js'
+import { getData, setData }     from './dataStore'
+import { User, userProfileV1 }  from './users'
+import { Message }              from './channel'
 
 
 /**Creates a new channel with the given name that is either a public or private channel. 
@@ -9,20 +10,30 @@ import { userProfileV1 }    from './users.js'
 *@param {bool} isPublic - whether the channel is/isn't Public -  true for public
 *@return {object}An object containing the Id of the created channel and the key 'channelId'
 **/
-function channelsCreateV1(authUserId, name, isPublic) {
+
+export interface Channel {
+    channelId:      number,
+    name:           string,
+    isPublic:       boolean,
+    ownerMembers:   User[],
+    allMembers:     User[],
+    messages:       Message[]
+}
+
+function channelsCreateV1(authUserId: number, name: string, isPublic: boolean) {
     //Checking for a valid channel name
     if (name.length < 1 || name.length > 20) {
         return { error: 'error' };
     }
-    //Storing user object
-    const authUser = userProfileV1(authUserId, authUserId);
+    //checking for valid authUserId
     const data = getData();
-
-    //Checking for valid authUserId
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }
-    const newChannel = {
+    //Storing user object
+    const authUser = userProfileV1(authUserId, authUserId);
+
+    const newChannel: Channel = {
         /*ChannelIds are incremented starting from 0, therefore the channelId
         will be set to the length of the array of channels*/
         channelId:      data.channels.length,
@@ -35,7 +46,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     //Add new channel to dataStore
     data.channels.push(newChannel);
     setData(data);
-    return {channelId: newChannel.channelId };
+    return { channelId: newChannel.channelId };
 }
 
 /**
@@ -54,7 +65,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
  * where each objects contains types { channelId, name }.
  * 
  */ 
-function channelsListallV1(authUserId) {
+function channelsListallV1(authUserId: number) {
     let data = getData();
     if (!(authUserId in data.users)) {
         return { error: 'error' };
@@ -77,7 +88,7 @@ function channelsListallV1(authUserId) {
  * @return {object} Object containing array of channels authUser is in, with key 'channels:'
  * 
 */
-function channelsListV1(authUserId) {
+function channelsListV1(authUserId: number) {
     const data = getData();
     if (!(authUserId in data.users)) {
         return { error: 'error' };

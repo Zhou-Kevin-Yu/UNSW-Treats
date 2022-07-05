@@ -1,4 +1,5 @@
-import { getData, setData } from './dataStore.js';
+import { isNamedTupleMember } from 'typescript';
+import { getData, setData } from './dataStore';
 
 /**
  * 
@@ -16,8 +17,17 @@ import { getData, setData } from './dataStore.js';
  *          }} - user object of queired user
  */
 
+export interface User {
+  uId:          number,
+  email:        string,
+  nameFirst:    string,
+  nameLast:     string,
+  handleStr:    string,
+  password?:    string,
+  permission?:  number
+}
 
-function userProfileV1(authUserId, uId) {
+function userProfileV1(authUserId: number, uId: number) {
   let dataStore = getData();
 
   if (!(authUserId in dataStore.users && uId in dataStore.users)) {
@@ -25,14 +35,15 @@ function userProfileV1(authUserId, uId) {
   }
 
   const user = dataStore.users[uId];
-
-  return {
-    uId: user.uId,
-    email: user.email,
-    nameFirst: user.nameFirst, 
-    nameLast: user.nameLast,
-    handleStr: user.handleStr,
+  
+  const profile: User = {
+    uId:        user.uId,
+    email:      user.email,
+    nameFirst:  user.nameFirst,
+    nameLast:   user.nameLast,
+    handleStr:  user.handleStr
   }
+  return profile
 }
 
 export { userProfileV1 }

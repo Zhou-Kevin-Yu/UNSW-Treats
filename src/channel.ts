@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore.js'
+import { getData, setData } from './dataStore'
 
 const error = { error: 'error' };
 
@@ -15,7 +15,7 @@ const error = { error: 'error' };
                                   channelDetailsV1 but they are not a global owner
 */
 
-function channelJoinV1(authUserId, channelId) {
+function channelJoinV1(authUserId: number, channelId: number) {
     
     const data = getData();   
     //If authUser is valid
@@ -80,7 +80,7 @@ function channelJoinV1(authUserId, channelId) {
  * uId refers to a user who is already a member of the channel, or channelId is valid and the authorised user is not a member of the channel
  */ 
 
-function channelInviteV1(authUserId, channelId, uId) {
+function channelInviteV1(authUserId: number, channelId: number, uId: number) {
     
     let data = getData();
     //if authUser is valid
@@ -177,7 +177,7 @@ function channelInviteV1(authUserId, channelId, uId) {
                                 - when user is not a member of that channel
 */
 
-function channelDetailsV1(authUserId, channelId) {
+function channelDetailsV1(authUserId: number, channelId: number) {
 
     const data = getData();
     //If authUser is valid
@@ -225,7 +225,14 @@ function channelDetailsV1(authUserId, channelId) {
  * @returns {number} end - equal to the value of "start + 50" or "-1" if no more messages to load
  */ 
 
-function channelMessagesV1(authUserId, channelId, start) {
+export interface Message {
+    messageId:  number,
+    uId:        number,
+    message:    string,
+    timeSent:   string
+}
+
+function channelMessagesV1(authUserId: number, channelId: number, start: number) {
     
     let data = getData();
     let exist_channel = 0;

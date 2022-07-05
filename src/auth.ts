@@ -1,5 +1,5 @@
-import { getData, setData } from './dataStore.js';
-import isEmail from "validator/lib/isEmail.js";
+import { Data, getData, setData } from './dataStore';
+import isEmail from "validator/lib/isEmail";
 
 
 /**
@@ -12,7 +12,7 @@ import isEmail from "validator/lib/isEmail.js";
  * @returns { error : 'error' } - when email is not registered
  *                             - when password is incorrect
 */
-function authLoginV1(email, password) {
+function authLoginV1(email: string, password: string) {
     let data = getData();
     for (const user of data.users) {
         if (user.email === email && user.password === password) {
@@ -39,7 +39,7 @@ function authLoginV1(email, password) {
  *                              - when nameFirst or nameLast > 50 or < 1
  * 
  */ 
-function authRegisterV1(email, password, nameFirst, nameLast) {
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
     const data = getData();
     const errorReturn = { error: 'error' };
     if (!isEmail(email)) {
@@ -97,7 +97,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
  * @return {string} - concatenated string to be handleStr
  *
  */ 
-function handleCreate(data, nameFirst, nameLast) {
+function handleCreate(data: Data, nameFirst: string, nameLast: string) {
     nameFirst = nameFirst.toLowerCase();
     nameLast = nameLast.toLowerCase();
     nameFirst = nameFirst.replace(/[^a-z0-9]/gi,'');
