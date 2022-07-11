@@ -1,8 +1,8 @@
-import { channelsCreateV1, channelsListV1 } from './channels.js'
-import { clearV1 }                          from './other.js'
-import { authRegisterV1 }                   from './auth.js'
-import { channelDetailsV1 }                 from './channel.js'
-import { userProfileV1 }                    from './users.js'
+import { channelsCreateV1, channelsListV1 } from './channels'
+import { clearV1 }                          from './other'
+import { authRegisterV1 }                   from './auth'
+import { channelDetailsV1 }                 from './channel'
+import { userProfileV1 }                    from './users'
 
 let authUserId, name, isPublic;
 
@@ -29,14 +29,16 @@ describe ('Testing return values', () => {
     });
 
     //invalid name tests
-    const error = { error: 'error' };
+    // const error = { error: 'error' };
     test('invalid channel name with less than 1 character return value', () => {
         name = '';
-        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
+        // expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
+        expect(() => channelsCreateV1(authUserId, name, isPublic)).toThrow(Error);
     });
     test('invalid channel name with more than 20 chars return value', () => {
         name = '1234567891011121314151617181920';
-        expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
+        // expect(channelsCreateV1(authUserId, name, isPublic)).toStrictEqual(error);
+        expect(() => channelsCreateV1(authUserId, name, isPublic)).toThrow(Error);
     })
 });
 
@@ -60,7 +62,7 @@ describe ('Testing channel creation', () => {
 describe ('Testing channel details', () => {
     test('Public channel called "COMP1531"', () => {
         // const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun');
-        const user = userProfileV1(authUserId, authUserId);
+        const user = userProfileV1(authUserId, authUserId).user;
         name = 'COMP1531';
         isPublic = true;
         const channelId = channelsCreateV1(authUserId, name, isPublic).channelId;
@@ -73,7 +75,7 @@ describe ('Testing channel details', () => {
     });
     test('Private channel called "ENGG9876"', () => {
         //const {authUserId} = authRegisterV1('gary.sun@gmail.com', '1b2#XPS', 'Gary', 'Sun')
-        const user = userProfileV1(authUserId, authUserId);
+        const user = userProfileV1(authUserId, authUserId).user;
         name = 'ENGG9876';
         isPublic = false;
         const channelId = channelsCreateV1(authUserId, name, isPublic).channelId;

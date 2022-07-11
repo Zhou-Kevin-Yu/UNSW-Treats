@@ -1,7 +1,7 @@
-import { authRegisterV1 }                       from './auth.js';
-import { channelsCreateV1 }                     from './channels.js';
-import { channelMessagesV1}                     from './channel.js';
-import { clearV1 }                              from './other.js';
+import { authRegisterV1 }                       from './auth';
+import { channelsCreateV1 }                     from './channels';
+import { channelMessagesV1}                     from './channel';
+import { clearV1 }                              from './other';
 
 // If channelMessagesV1 was successful
 describe ('Testing successful channelMessagesV1', () => {    
@@ -31,8 +31,9 @@ describe ('Testing invalid channelId', () => {
     clearV1();
     test('Test undefined channelId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1234ABCDEF', 'Gary', 'Sun');
-        const input = channelMessagesV1(authUserId.authUserId, undefined, 0);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelMessagesV1(authUserId.authUserId, undefined, 0);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelMessagesV1(authUserId.authUserId, undefined, 0)).toThrow(Error);
     });
    
     clearV1();
@@ -41,8 +42,9 @@ describe ('Testing invalid channelId', () => {
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2511', true);
         checkChannelId.channelId = checkChannelId.channelId + 1;
         
-        const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0)).toThrow(Error);
     });
 
     clearV1();
@@ -51,8 +53,9 @@ describe ('Testing invalid channelId', () => {
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
         checkChannelId.channelId = checkChannelId.channelId - 4;
         
-        const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0)).toThrow(Error);
     });
 });
 
@@ -61,10 +64,11 @@ test('Test if start value is greater than total number of messages', () => {
     clearV1();
     const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1234ABCDEF', 'Gary', 'Sun');
     const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
-    const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 1000);
+    // const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 1000);
 
-    // Error as message array will be empty in Iteration 1
-    expect(input).toStrictEqual({error: 'error'})
+    // // Error as message array will be empty in Iteration 1
+    // expect(input).toStrictEqual({error: 'error'})
+    expect(() => channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 1000)).toThrow(Error);
 });
 
 // If the channelId is valid but authorised user is not a member
@@ -76,8 +80,9 @@ test('Test authId that is not a member of the channel', () => {
     // Create channel with userId therefore authuserId is not a part of the channel
     const checkChannelId = channelsCreateV1(userId.authUserId, 'COMP1521', true);
 
-    const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
-    expect(input).toStrictEqual({error: 'error'})
+    // const input = channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0);
+    // expect(input).toStrictEqual({error: 'error'})
+    expect(() => channelMessagesV1(authUserId.authUserId, checkChannelId.channelId, 0)).toThrow(Error);
 });
 
 test('test with an invalid AuthID', () => {
@@ -87,6 +92,7 @@ test('test with an invalid AuthID', () => {
     // Create channel with userId therefore authuserId is not a part of the channel
     const checkChannelId = channelsCreateV1(userId.authUserId, 'COMP1521', true);
 
-    const input = channelMessagesV1(authUserId, checkChannelId.channelId, 0);
-    expect(input).toStrictEqual({error: 'error'})
+    // const input = channelMessagesV1(authUserId, checkChannelId.channelId, 0);
+    // expect(input).toStrictEqual({error: 'error'})
+    expect(() => channelMessagesV1(authUserId, checkChannelId.channelId, 0)).toThrow(Error);
 });

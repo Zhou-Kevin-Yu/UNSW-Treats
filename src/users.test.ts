@@ -8,20 +8,23 @@ beforeEach(() => {
 
 describe('userProfileV1 - testing invalid operations', () => {
     test('Invalid authUserId and uId', () => {
-        const user = userProfileV1(1, 1);
-        expect(user).toStrictEqual({ error: 'error' });
+        // const user = userProfileV1(1, 1);
+        // expect(user).toStrictEqual({ error: 'error' });
+        expect(() => userProfileV1(1, 1)).toThrow(Error);
     });
 
     test('Invalid authUserId', () => {
-        const {uId} = authRegisterV1('gary.sun@student.unsw.edu.au', 'bird27', 'Gary', 'Sun');
-        const user = userProfileV1(null, uId);
-        expect(user).toStrictEqual({ error: 'error' });
+        const {authUserId} = authRegisterV1('gary.sun@student.unsw.edu.au', 'bird27', 'Gary', 'Sun');
+        // const user = userProfileV1(null, authUserId);
+        // expect(user).toStrictEqual({ error: 'error' });
+        expect(() => userProfileV1(null, authUserId)).toThrow(Error);
     });
 
     test('Invalid uId', () => {
         const {authUserId} = authRegisterV1('gary.sun@student.unsw.edu.au', 'bird27', 'Gary', 'Sun');
-        const user = userProfileV1(authUserId, null);
-        expect(user).toStrictEqual({ error: 'error' });
+        // const user = userProfileV1(authUserId, null);
+        // expect(user).toStrictEqual({ error: 'error' });
+        expect(() => userProfileV1(authUserId, null)).toThrow(Error);
     });
 });
 

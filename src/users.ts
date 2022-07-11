@@ -1,4 +1,4 @@
-import { isNamedTupleMember } from 'typescript';
+// import { isNamedTupleMember } from 'typescript';
 import { getData, setData } from './dataStore';
 
 /**
@@ -31,7 +31,8 @@ function userProfileV1(authUserId: number, uId: number) {
   let dataStore = getData();
 
   if (!(authUserId in dataStore.users && uId in dataStore.users)) {
-    return { error: 'error' };
+    // return { error: 'error' };
+    throw new Error('user does not exist');
   }
 
   const userData = dataStore.users[uId];

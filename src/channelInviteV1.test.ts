@@ -1,8 +1,8 @@
-import { authRegisterV1 }                       from './auth.js';
-import { channelsCreateV1 }                     from './channels.js';
-import { channelInviteV1 }                      from './channel.js';
-import { userProfileV1 }                        from './users.js';
-import { clearV1 }                              from './other.js';
+import { authRegisterV1 }                       from './auth';
+import { channelsCreateV1 }                     from './channels';
+import { channelInviteV1 }                      from './channel';
+// import { userProfileV1 }                        from './users.js';
+import { clearV1 }                              from './other';
 
 // Implement later
 // beforeEach(() => {
@@ -47,8 +47,10 @@ describe ('Testing invalid channelId', () => {
     test('Test undefined channelId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
-        const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelInviteV1(authUserId.authUserId, undefined, userId.authUserId)).toThrow(Error);
+
     });
    
     clearV1();
@@ -58,8 +60,9 @@ describe ('Testing invalid channelId', () => {
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
         checkChannelId.channelId = checkChannelId.channelId + 1;
         
-        const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId)).toThrow(Error);
     });
 
     clearV1();
@@ -69,8 +72,9 @@ describe ('Testing invalid channelId', () => {
         let checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP2521', true);
         checkChannelId.channelId = checkChannelId.channelId - 1;
         
-        const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
-        expect(input).toStrictEqual({error: 'error'})
+        // const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId)).toThrow(Error);
     });
 });
 
@@ -81,8 +85,9 @@ describe ('Testing invalid uId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
 
-        let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, undefined);
-        expect(input).toStrictEqual({error: 'error'})
+        // let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, undefined);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, undefined)).toThrow(Error);
     });
 
     clearV1();
@@ -90,8 +95,9 @@ describe ('Testing invalid uId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1511', true);
 
-        let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, null);
-        expect(input).toStrictEqual({error: 'error'})
+        // let input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, null);
+        // expect(input).toStrictEqual({error: 'error'})
+        expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, null)).toThrow(Error);
     });
 });
 
@@ -103,8 +109,9 @@ test('Test uId that is already in channel', () => {
     const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1521', true);
     
     // authUserId and userId is the same therefore user is already a member
-    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, authUserId.authUserId);
-    expect(input).toStrictEqual({error: 'error'})
+    // const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, authUserId.authUserId);
+    // expect(input).toStrictEqual({error: 'error'})
+    expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, authUserId.authUserId)).toThrow(Error);
 });
 
 // If the channelId is valid but authorised user is not a member
@@ -116,6 +123,7 @@ test('Test authId that is not a member of the channel', () => {
     // Create channel with userId therefore authuserId is not a part of the channel
     const checkChannelId = channelsCreateV1(userId.authUserId, 'COMP1521', true);
 
-    const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
-    expect(input).toStrictEqual({error: 'error'})
+    // const input = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
+    // expect(input).toStrictEqual({error: 'error'})
+    expect(() => channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId)).toThrow(Error);
 });

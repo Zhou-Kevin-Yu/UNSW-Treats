@@ -21,7 +21,8 @@ function authLoginV1(email: string, password: string) {
             };
         }
     }
-    return { error: 'error' };
+    // return { error: 'error' };
+    throw new Error('email or password is incorrect');
 }
 
 /**
@@ -43,21 +44,26 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     const data = getData();
     const errorReturn = { error: 'error' };
     if (!isEmail(email)) {
-        return errorReturn;
+        // return errorReturn;
+        throw new Error('email is not valid');
     }
     for (const user of data.users) {
         if (user.email === email) {
-            return errorReturn;
+            // return errorReturn;
+            throw new Error('email is already registered');
         }
     }
     if (password.length < 6) {
-        return errorReturn;
+        // return errorReturn;
+        throw new Error('password is too short');
     }
     if (nameFirst.length > 50 || nameFirst.length < 1) {
-        return errorReturn;
+        // return errorReturn;
+        throw new Error('nameFirst is too long or too short');
     }
     if (nameLast.length > 50 || nameLast.length < 1) {
-        return errorReturn;
+        // return errorReturn;
+        throw new Error('nameLast is too long or too short');
     }
     //all data should be valid at this point
 

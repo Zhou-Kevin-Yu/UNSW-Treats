@@ -23,15 +23,22 @@ export interface Channel {
 function channelsCreateV1(authUserId: number, name: string, isPublic: boolean) {
     //Checking for a valid channel name
     if (name.length < 1 || name.length > 20) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('name is not valid');
     }
     //checking for valid authUserId
     const data = getData();
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUserId not in data.users');
     }
-    //Storing user object
-    const authUser = userProfileV1(authUserId, authUserId);
+    // //Storing user object
+    const authUserr = userProfileV1(authUserId, authUserId).user;
+    // if (authUserr === { error: 'error' } ) { 
+    //     // return { error: 'error' }
+    //     throw new Error('authUserr not in data.users');
+    // };
+    const authUser = authUserr;
 
     const newChannel: Channel = {
         /*ChannelIds are incremented starting from 0, therefore the channelId
@@ -68,7 +75,8 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean) {
 function channelsListallV1(authUserId: number) {
     let data = getData();
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUserId not in data.users');
     }
     const channels = [];
     for (const channel of data.channels) {
@@ -91,7 +99,8 @@ function channelsListallV1(authUserId: number) {
 function channelsListV1(authUserId: number) {
     const data = getData();
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUserId not in data.users');
     }
     const channelArr = [];
     for (const channel of data.channels) {

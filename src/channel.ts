@@ -20,7 +20,8 @@ function channelJoinV1(authUserId: number, channelId: number) {
     const data = getData();   
     //If authUser is valid
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUser is not valid');
     }   
     
     let channel_exists = false;
@@ -35,11 +36,17 @@ function channelJoinV1(authUserId: number, channelId: number) {
             channel_exists = true;
         } 
     }
-    if (!channel_exists) return error;
+    if (!channel_exists) {
+        // return { error: 'error' };
+        throw new Error('channel is not valid');
+    };
     
     //check if user is already a member
     for (const member of data.channels[channelId].allMembers) {
-       if (authUserId === member.uId) return error;      
+       if (authUserId === member.uId) {
+            // return { error: 'error' };
+            throw new Error('user is already a member of the channel');
+       } 
     }
     
     //Check if channel is private and user is not a member
@@ -50,7 +57,10 @@ function channelJoinV1(authUserId: number, channelId: number) {
             }
         }
         //return error if they are not a member and not a global owner
-        if (!member_exists && perms != 1) return error;
+        if (!member_exists && perms != 1){
+            // return error;
+            throw new Error('user is not a member of the channel');
+        } 
     }
 
     //Add user to channel in allMembers array
@@ -85,7 +95,8 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
     let data = getData();
     //if authUser is valid
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUserId is not valid');
     }   
 
     let exist_channel = 0;
@@ -98,7 +109,8 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
             for (let member of channel.allMembers) {
                 // If user is already a member of the channel before the invite is sent
                 if (uId === member.uId) {
-                    return { error: 'error' };
+                    // return { error: 'error' };
+                    throw new Error('user is already a member of the channel');
                 }
             }
         }
@@ -123,7 +135,8 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
     
     // If the user Id does not exist or is invalid
     if (exist_user === 0) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('user is not valid');
     }
 
     // To loop through all the existing channels 
@@ -149,13 +162,15 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
                 }
             }
             // If the auth user is not a member of the channel
-            return { error: 'error' };
+            // return { error: 'error' };
+            throw new Error('auth user is not a member of the channel');
         }
     } 
     
     // If the channel Id does not exist or is invalid
     if (exist_channel === 0) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('if the channel is not valid');
     }
 }
 
@@ -182,7 +197,8 @@ function channelDetailsV1(authUserId: number, channelId: number) {
     const data = getData();
     //If authUser is valid
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('authUserId is not valid');
     }   
     
     let exists = 0;
@@ -194,7 +210,11 @@ function channelDetailsV1(authUserId: number, channelId: number) {
         } 
     }
             
-    if (exists === 0) return error;
+    if (exists === 0) {
+        // return error;
+        throw new Error('channelId is not valid');
+    }
+    
     
     
     for (const member of data.channels[channelId].allMembers) {
@@ -210,7 +230,8 @@ function channelDetailsV1(authUserId: number, channelId: number) {
     }
     
     //If user is not a member of the channel
-    return error;
+    // return error;
+    throw new Error('user is not a member of the channel');
 }
 
 /**
@@ -241,7 +262,8 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
     let msgArray = [];
 
     if (!(authUserId in data.users)) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('');
       }
 
     // To loop through all the existing channels 
@@ -283,17 +305,20 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
 
     // If the start value is greater than the total number of messages
     if (start > msgArray.length) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('');
     }
     
     // If the channel Id does not exist or is invalid
     if (exist_channel === 0) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('');
     }
 
     // If the auth user is not a member of the channel
     if (exist_auth === 0) {
-        return { error: 'error' };
+        // return { error: 'error' };
+        throw new Error('');
     }
 
     return {
