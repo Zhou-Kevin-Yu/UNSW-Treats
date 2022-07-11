@@ -34,16 +34,16 @@ function userProfileV1(authUserId: number, uId: number) {
     return { error: 'error' };
   }
 
-  const user = dataStore.users[uId];
+  const userData = dataStore.users[uId];
   
-  const profile: User = {
-    uId:        user.uId,
-    email:      user.email,
-    nameFirst:  user.nameFirst,
-    nameLast:   user.nameLast,
-    handleStr:  user.handleStr
+  const user: User = {
+    uId:        userData.uId,
+    email:      userData.email,
+    nameFirst:  userData.nameFirst,
+    nameLast:   userData.nameLast,
+    handleStr:  userData.handleStr
   }
-  return profile
+  return {user}
 }
 
 export { userProfileV1 }
