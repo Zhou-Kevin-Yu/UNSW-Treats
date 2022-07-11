@@ -31,7 +31,7 @@ describe('userProfileV1 - testing invalid operations', () => {
 describe('userProfileV1 - testing valid operations', () => {
     test('Valid authUserId and uId = authUserId', () => {
         const {authUserId} = authRegisterV1('gary.sun@student.unsw.edu.au', 'bird27', 'Gary', 'Sun');
-        expect(userProfileV1(authUserId, authUserId)).toStrictEqual({
+        expect(userProfileV1(authUserId, authUserId).user).toStrictEqual({
             uId: authUserId,
             email: 'gary.sun@student.unsw.edu.au',
             nameFirst: 'Gary',
@@ -43,7 +43,7 @@ describe('userProfileV1 - testing valid operations', () => {
     test('Valid authUserId and uId', () => {
         const {authUserId} = authRegisterV1('gary.sun@student.unsw.edu.au', 'bird27', 'Gary', 'Sun');
         const { 'authUserId': uId } = authRegisterV1('manav.pawar@student.unsw.edu.au', 'mjerry1', 'Manav', 'Pawar');
-        expect(userProfileV1(authUserId, uId)).toStrictEqual({
+        expect(userProfileV1(authUserId, uId).user).toStrictEqual({
             uId: uId,
             email: 'manav.pawar@student.unsw.edu.au',
             nameFirst: 'Manav',

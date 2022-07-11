@@ -15,12 +15,12 @@ describe('channelJoinV1 error cases', () => {
   test('channelId is invalid', () => {
     const {'authUserId': ud1} = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
     // expect(channelJoinV1(ud1, null)).toStrictEqual({error: 'error'});
-    expect(() => channelJoinV1(ud1, null)).toThrow('error');
+    expect(() => channelJoinV1(ud1, null)).toThrow(Error);
   });
 
   test('authUserId is invalid and so is channelId', () => {
     // expect(channelJoinV1(0, null)).toStrictEqual({error: 'error'});
-    expect(() => channelJoinV1(0, null)).toThrow('error');
+    expect(() => channelJoinV1(0, null)).toThrow(Error);
   });
 
   test('authUserId is invalid', () => {
@@ -28,15 +28,15 @@ describe('channelJoinV1 error cases', () => {
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', true);
     // expect(channelJoinV1(2, ch1)).toStrictEqual({error: 'error'});
     // expect(channelJoinV1(null, ch1)).toStrictEqual({error: 'error'});
-    expect(() => channelJoinV1(2, ch1)).toThrow('error');
-    expect(() => channelJoinV1(null, ch1)).toThrow('error');
+    expect(() => channelJoinV1(2, ch1)).toThrow(Error);
+    expect(() => channelJoinV1(null, ch1)).toThrow(Error);
   });
 
   test('authorised user is already a member of the channel', () => {
     const {'authUserId': ud1} = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', true);
     // expect (channelJoinV1(ud1, ch1)).toStrictEqual({error: 'error'});
-    expect(() => channelJoinV1(ud1, ch1)).toThrow('error');
+    expect(() => channelJoinV1(ud1, ch1)).toThrow(Error);
   });
 
   //if (channel.private && authUser not in channel && authuser not global ) {
@@ -47,7 +47,7 @@ describe('channelJoinV1 error cases', () => {
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', false);
     const {'authUserId': ud2} = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
     // expect(channelJoinV1(ud2, ch1)).toStrictEqual({error: 'error'});
-    expect(() => channelJoinV1(ud2, ch1)).toThrow('error');
+    expect(() => channelJoinV1(ud2, ch1)).toThrow(Error);
   });
 });
 describe('channelJoinV1 success cases', () => {

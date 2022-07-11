@@ -3,6 +3,10 @@ import { channelsCreateV1 }                     from './channels';
 import { channelMessagesV1}                     from './channel';
 import { clearV1 }                              from './other';
 
+beforeEach(() => {
+    clearV1();
+});
+
 // If channelMessagesV1 was successful
 describe ('Testing successful channelMessagesV1', () => {    
     clearV1();

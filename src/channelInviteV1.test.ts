@@ -5,10 +5,9 @@ import { channelInviteV1 }                      from './channel';
 import { clearV1 }                              from './other';
 
 // Implement later
-// beforeEach(() => {
-//     clearV1();
-//     authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
-// });
+beforeEach(() => {
+     clearV1();
+});
 
 // If channelInviteV1 was successful
 describe ('Testing successful channelInviteV1', () => {
@@ -46,9 +45,11 @@ describe ('Testing invalid channelId', () => {
     clearV1();
     test('Test undefined channelId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
+        console.log('before making the second account');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         // const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
         // expect(input).toStrictEqual({error: 'error'})
+        console.log('before testing chan invite');
         expect(() => channelInviteV1(authUserId.authUserId, undefined, userId.authUserId)).toThrow(Error);
 
     });
