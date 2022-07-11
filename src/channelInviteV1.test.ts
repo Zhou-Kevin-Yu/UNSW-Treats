@@ -20,7 +20,7 @@ describe ('Testing successful channelInviteV1', () => {
         // Create a valid channelId
         const checkChannelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
 
-        console.log("Channel ID IS", checkChannelId);
+        // console.log("Channel ID IS", checkChannelId);
 
         const validChannelId = channelInviteV1(authUserId.authUserId, checkChannelId.channelId, userId.authUserId);
         const empty = { };
@@ -45,11 +45,11 @@ describe ('Testing invalid channelId', () => {
     clearV1();
     test('Test undefined channelId', () => {
         const authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
-        console.log('before making the second account');
+        // console.log('before making the second account');
         const userId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamin", "kernohan");
         // const input = channelInviteV1(authUserId.authUserId, undefined, userId.authUserId);
         // expect(input).toStrictEqual({error: 'error'})
-        console.log('before testing chan invite');
+        // console.log('before testing chan invite');
         expect(() => channelInviteV1(authUserId.authUserId, undefined, userId.authUserId)).toThrow(Error);
 
     });
