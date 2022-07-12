@@ -1,28 +1,30 @@
 import { clearV1 } from './other';
 import { getData, setData } from './dataStore';
+import { Data } from './dataStore';
 
 test('Test successful user clear', () => {
   clearV1();
   const data = getData();
   data.users[0] = {
-            uId: 0,
-            nameFirst: "Gary",
-            nameLast: "Sun",
-            email: "gary.sun@student.unsw.edu.au",
-            handleStr: "Gazza",
-            password: "bird27",
-        };
-  const dataInit = data;
+    uId: 0,
+    nameFirst: 'Gary',
+    nameLast: 'Sun',
+    email: 'gary.sun@student.unsw.edu.au',
+    handleStr: 'Gazza',
+    password: 'bird27',
+    permission: 1,
+  };
+  // const dataInit = data;
   setData(data);
 
   // //test here to see if data is correctly set
   // const dataPull = getData();
-  // let dataTrue = 
+  // let dataTrue =
   // {users: {
   //   'test@dream.com': {
   //     userId: 1,
-  //     password: 'password', 
-  //     name: 'master tetik' 
+  //     password: 'password',
+  //     name: 'master tetik'
   //     }
   //   },
   // channels: {}
@@ -30,11 +32,11 @@ test('Test successful user clear', () => {
 
   // console.log(dataPull);
   // expect(dataPull).toStrictEqual(dataTrue);
-  
-  //test if clearV1 works
+
+  // test if clearV1 works
   clearV1();
   const dataNew = getData();
-  let dataTrue = { users: [], channels: [] };
+  const dataTrue: Data = { users: [], channels: [] };
   expect(dataNew).toStrictEqual(dataTrue);
 });
 
@@ -52,7 +54,7 @@ test('Test successful user clear', () => {
 
 //   // //test here to see if data is correctly set
 //   const dataPull = getData();
-//   let dataTrue = 
+//   let dataTrue =
 //   {channels: {
 //     'COMP1531': {
 //       channelId: 1,
@@ -62,17 +64,16 @@ test('Test successful user clear', () => {
 //     },
 //   users: {}
 //   }
-  
+
 //   console.log(dataPull);
 //   expect(dataPull).toStrictEqual(dataTrue);
-  
+
 //   //test if clearV1 works
 //   clearV1();
 //   const dataNew = getData();
 //   dataTrue = { users: {}, channels: {} }
 //   expect(dataNew).toStrictEqual(dataTrue);
 // });
-
 
 // test('Test invalid echo', () => {
 //   expect(echo({ echo: 'echo' })).toStrictEqual({ error: 'error' });
