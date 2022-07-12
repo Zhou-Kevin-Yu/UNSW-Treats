@@ -5,7 +5,8 @@
         "lint": "eslint src/**.ts",
         "lint-fix": "eslint --fix src/**.ts",
         "start": "ts-node src/server.ts",
-        "green-tick": "jest && tsc --noImplicitAny && eslint src/**.ts"
+        "green-tick": "jest && tsc --noImplicitAny && eslint src/**.ts",
+        "adv-green-tick": "tsc --noImplicitAny && eslint src/**.ts && SERVER_LOG=$(mktemp) && npm run start >& $SERVER_LOG & sleep 2 && npm run test src/**.ts && kill -SIGINT %1 && cat $SERVER_LOG"
     },
     "dependencies": {
         "express": "^4.18.0",
