@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { userdetailsv1 } from './dataStore'
+import { UserDetailsV1 } from './dataStore'
 
 /**
  * 
@@ -18,7 +18,7 @@ import { userdetailsv1 } from './dataStore'
  */
 
 
-function userProfileV1(authUserId: number, uId: number): userdetailsv1 {
+function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   let dataStore = getData();
 
   if (!(authUserId in dataStore.users && uId in dataStore.users)) {
