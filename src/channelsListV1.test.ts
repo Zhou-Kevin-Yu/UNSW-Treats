@@ -1,7 +1,7 @@
-import { channelsListV1, channelsCreateV1 } from './channels.js'
-import { channelInviteV1 }                  from './channel.js'     
-import { authRegisterV1 }                   from './auth.js'
-import { clearV1 }                          from './other.js'
+import { channelsListV1, channelsCreateV1 } from './channels'
+import { channelInviteV1 }                  from './channel'     
+import { authRegisterV1 }                   from './auth'
+import { clearV1 }                          from './other'
 
 
 

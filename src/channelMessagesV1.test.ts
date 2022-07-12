@@ -1,7 +1,7 @@
-import { authRegisterV1 }                       from './auth.js';
-import { channelsCreateV1 }                     from './channels.js';
-import { channelMessagesV1}                     from './channel.js';
-import { clearV1 }                              from './other.js';
+import { authRegisterV1 }                       from './auth';
+import { channelsCreateV1 }                     from './channels';
+import { channelMessagesV1}                     from './channel';
+import { clearV1 }                              from './other';
 
 // If channelMessagesV1 was successful
 describe ('Testing successful channelMessagesV1', () => {    

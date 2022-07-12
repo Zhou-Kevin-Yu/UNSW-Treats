@@ -1,8 +1,8 @@
-  import { clearV1 }                          from './other.js';
-  import { authRegisterV1 }                   from './auth.js';
-  import { channelJoinV1, channelDetailsV1 }                    from './channel.js';
-  import { userProfileV1 }                    from './users.js';
-  import { channelsCreateV1 }                 from './channels.js';
+  import { clearV1 }                          from './other';
+  import { authRegisterV1 }                   from './auth';
+  import { channelJoinV1, channelDetailsV1 }                    from './channel';
+  import { userProfileV1 }                    from './users';
+  import { channelsCreateV1 }                 from './channels';
 
    
 
@@ -14,18 +14,18 @@ beforeEach(() => {
 describe('channelJoinV1 error cases', () => {
   test('channelId is invalid', () => {
     const {'authUserId': ud1} = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
-    expect(channelJoinV1(ud1, 'COMP1521')).toStrictEqual({error: 'error'});
+    expect(channelJoinV1(ud1, null)).toStrictEqual({error: 'error'});
   });
 
   test('authUserId is invalid and so is channelId', () => {
-    expect(channelJoinV1('0', 'COMP1521')).toStrictEqual({error: 'error'});
+    expect(channelJoinV1(null, null)).toStrictEqual({error: 'error'});
   });
 
   test('authUserId is invalid', () => {
     const {'authUserId': ud1} = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', true);
-    expect(channelJoinV1('2', ch1)).toStrictEqual({error: 'error'});
-    expect(channelJoinV1('null', ch1)).toStrictEqual({error: 'error'});
+    expect(channelJoinV1(null, ch1)).toStrictEqual({error: 'error'});
+    expect(channelJoinV1(null, ch1)).toStrictEqual({error: 'error'});
   });
 
   test('authorised user is already a member of the channel', () => {
@@ -52,8 +52,8 @@ describe('channelJoinV1 success cases', () => {
     const {'authUserId': ud2} = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
     const {'channelId': ch1} = channelsCreateV1(ud2, 'COMP1521', false);
     expect(channelJoinV1(ud1, ch1)).toStrictEqual({});
-    const user1 = userProfileV1(ud1, ud1);
-    const user2 = userProfileV1(ud2, ud2);
+    const user1 = userProfileV1(ud1, ud1).user;
+    const user2 = userProfileV1(ud2, ud2).user;
     // console.log(channelDetailsV1(ud1, ch1));
     // console.log(({
     //   name: 'COMP1521',
@@ -74,8 +74,8 @@ describe('channelJoinV1 success cases', () => {
     const {'authUserId': ud2} = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', true);
     expect(channelJoinV1(ud2, ch1)).toStrictEqual({});
-    const user1 = userProfileV1(ud1, ud1);
-    const user2 = userProfileV1(ud2, ud2);
+    const user1 = userProfileV1(ud1, ud1).user;
+    const user2 = userProfileV1(ud2, ud2).user;
     expect(channelDetailsV1(ud1, ch1)).toStrictEqual({
       name: 'COMP1521',
       isPublic: true,
@@ -91,9 +91,9 @@ describe('channelJoinV1 success cases', () => {
     const {'channelId': ch1} = channelsCreateV1(ud1, 'COMP1521', true);
     expect(channelJoinV1(ud2, ch1)).toStrictEqual({});
     expect(channelJoinV1(ud3, ch1)).toStrictEqual({});
-    const user1 = userProfileV1(ud1, ud1);
-    const user2 = userProfileV1(ud2, ud2);
-    const user3 = userProfileV1(ud3, ud3);
+    const user1 = userProfileV1(ud1, ud1).user;
+    const user2 = userProfileV1(ud2, ud2).user;
+    const user3 = userProfileV1(ud3, ud3).user;
     expect(channelDetailsV1(ud1, ch1)).toStrictEqual({
       name: 'COMP1521',
       isPublic: true,
@@ -136,13 +136,11 @@ describe('Manav testing', () => {
 
 
   test("successful single user channel join", () => {
-    let authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
-    let channelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
+    let authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun').authUserId;
+    let channelId = channelsCreateV1(authUserId, 'COMP1531', true).channelId;
     let authUserId2 = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
     let channelId2 = channelsCreateV1(authUserId2.authUserId, 'COMP1542', false);
-    authUserId = authUserId.authUserId;
-    channelId = channelId.channelId;
-    const user = userProfileV1(authUserId, authUserId);
+    const user = userProfileV1(authUserId, authUserId).user;
 
     channelJoinV1(authUserId, channelId);
 
@@ -151,15 +149,12 @@ describe('Manav testing', () => {
   });
 
   test("successful double user channel join", () => {
-    let authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun');
-    let channelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
-    let authUserId2 = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
-    let channelId2 = channelsCreateV1(authUserId2.authUserId, 'COMP1542', false);
-    authUserId = authUserId.authUserId;
-    authUserId2 = authUserId2.authUserId;
-    channelId = channelId.channelId;
-    const user1 = userProfileV1(authUserId, authUserId);
-    const user2 = userProfileV1(authUserId2, authUserId2);
+    let authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '1b52#X', 'Gary', 'Sun').authUserId;
+    let channelId = channelsCreateV1(authUserId, 'COMP1531', true).channelId;
+    let authUserId2 = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name').authUserId;
+    let channelId2 = channelsCreateV1(authUserId2, 'COMP1542', false);
+    const user1 = userProfileV1(authUserId, authUserId).user;
+    const user2 = userProfileV1(authUserId2, authUserId2).user;
 
     channelJoinV1(authUserId, channelId);
     channelJoinV1(authUserId2, channelId);
@@ -183,7 +178,7 @@ test('ChannelId does not refer to a valid channel', () => {
   let channelId = channelsCreateV1(authUserId.authUserId, 'COMP1531', true);
   let authUserId2 = authRegisterV1('random.name@student.unsw.edu.au', '1b2893#X', 'random', 'name');
   let channelId2 = channelsCreateV1(authUserId2.authUserId, 'COMP1542', false);
-  expect(channelJoinV1(authUserId.authUserId, 'CCMP1564')).toStrictEqual(error); 
+  expect(channelJoinV1(authUserId.authUserId, null)).toStrictEqual(error); 
 });
 
   

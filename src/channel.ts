@@ -37,13 +37,13 @@ function channelJoinV1(authUserId: number, channelId: number): ChannelJoinV1 {
         } 
     }
     if (!channel_exists){
-        { error: 'error' }
+        return { error: 'error' }
     }
     
     //check if user is already a member
     for (const member of data.channels[channelId].allMembers) {
        if (authUserId === member.uId){
-        { error: 'error' };
+        return { error: 'error' };
        }   
     }
     
@@ -56,7 +56,7 @@ function channelJoinV1(authUserId: number, channelId: number): ChannelJoinV1 {
         }
         //return error if they are not a member and not a global owner
         if (!member_exists && perms != 1) {
-            { error: 'error' }
+            return { error: 'error' }
         }
     }
 

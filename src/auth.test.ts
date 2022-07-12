@@ -84,7 +84,7 @@ describe('Testing registration', () => {
   test('test correct creation', () => {
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "waterbotle", "franklin").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamin", "kernohan").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     const userCorrect = {
       uId: 1,
       email: 'ben.kerno1@gmail.com',
@@ -100,21 +100,21 @@ describe('Testing Handles', () => {
   test('basic handle test', () => {
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "waterbotle", "franklin").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamin", "kernohan").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benjaminkernohan")
   });
 
   test('Double handle test', () => {
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "ben", "kerno").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "ben", "kerno").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benkerno0")
   });
 
   test('Long string', () => {
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "b", "k").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamined", "kernohandomsy").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benjaminedkernohando")
   });
 
@@ -122,14 +122,14 @@ describe('Testing Handles', () => {
     authRegisterV1("ben.kerno2@gmail.com", "dogIsCute", "ben", "kerno").authUserId;
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "ben", "kerno").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "ben", "kerno").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benkerno1")
   });
 
   test('> 20 length double handle', () => {
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamined", "kernohandomsy").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamined", "kernohandomep").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benjaminedkernohando0")
   });
 
@@ -137,7 +137,7 @@ describe('Testing Handles', () => {
     authRegisterV1("ben.kerno0@gmail.com", "dogIsCute", "benjamined", "kernohandomeert").authUserId;
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamined", "kernohandomsy").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamined", "kernohandomep").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benjaminedkernohando1")
   });
   test('> 20 length quad handle', () => {
@@ -145,13 +145,8 @@ describe('Testing Handles', () => {
     authRegisterV1("ben.kerno0@gmail.com", "dogIsCute", "benjamined", "kernohandomeert").authUserId;
     const authUserId = authRegisterV1("ben.kerno@gmail.com", "dogIsCute", "benjamined", "kernohandomsy").authUserId;
     const uId = authRegisterV1("ben.kerno1@gmail.com", "dogIsCute", "benjamined", "kernohandomep").authUserId;
-    const user = userProfileV1(authUserId, uId);
+    const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual("benjaminedkernohando2")
   });
   
 });
-
-// test('test correct storage of permissions field = 1', () => {
-//     const {authUserId} = authRegisterV1("ben.kerno@gmail.com", 'benisagod', "benjamandems", "kernohandems");
-
-//   }

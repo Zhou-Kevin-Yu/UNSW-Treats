@@ -1,14 +1,12 @@
-import { authRegisterV1 }                       from './auth.js';
-import { channelsCreateV1 }                     from './channels.js';
-import { channelInviteV1 }                      from './channel.js';
-import { userProfileV1 }                        from './users.js';
-import { clearV1 }                              from './other.js';
+import { authRegisterV1 }                       from './auth';
+import { channelsCreateV1 }                     from './channels';
+import { channelInviteV1 }                      from './channel';
+// import { userProfileV1 }                        from './users';
+import { clearV1 }                              from './other';
 
-// Implement later
-// beforeEach(() => {
-//     clearV1();
-//     authUserId = authRegisterV1('gary.sun@student.unsw.edu.au', '12345ASDFGG', 'Gary', 'Sun');
-// });
+beforeEach(() => {
+    clearV1();
+});
 
 // If channelInviteV1 was successful
 describe ('Testing successful channelInviteV1', () => {
