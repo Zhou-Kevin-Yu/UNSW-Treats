@@ -1,5 +1,6 @@
 import { clearV1 } from './other';
 import { getData, setData } from './dataStore';
+import { Data } from './dataStore';
 
 test('Test successful user clear', () => {
   clearV1();
@@ -11,6 +12,7 @@ test('Test successful user clear', () => {
             email: "gary.sun@student.unsw.edu.au",
             handleStr: "Gazza",
             password: "bird27",
+            permission: 1,
         };
   const dataInit = data;
   setData(data);
@@ -34,7 +36,7 @@ test('Test successful user clear', () => {
   //test if clearV1 works
   clearV1();
   const dataNew = getData();
-  let dataTrue = { users: [], channels: [] };
+  let dataTrue: Data = { users: [], channels: [] };
   expect(dataNew).toStrictEqual(dataTrue);
 });
 

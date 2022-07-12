@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore'
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1} from './dataStore';
+import { MessagesObj } from './dataStore';
 
 const error = { error: 'error' };
 
@@ -240,7 +241,7 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
     let exist_channel = 0;
     let exist_auth = 0;
     let endCopy = start + 50;
-    let msgArray = [];
+    let msgArray: MessagesObj[] = [];
 
     if (!(authUserId in data.users)) {
         return { error: 'error' };

@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore'
 import { userProfileV1 }    from './users'
 import { ChannelsCreateV1, ChannelsListAllV1, ChannelsListV1 } from './dataStore'
+import { MessagesObj } from './dataStore';
 
 
 /**Creates a new channel with the given name that is either a public or private channel. 
@@ -23,6 +24,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     if (!(authUserId in data.users)) {
         return { error: 'error' };
     }
+    let msgArray: MessagesObj[] = [];
     const newChannel = {
         /*ChannelIds are incremented starting from 0, therefore the channelId
         will be set to the length of the array of channels*/
@@ -31,7 +33,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
         isPublic:       isPublic,
         ownerMembers:   [authUser],
         allMembers:     [authUser],
-        messages:       []
+        messages:  msgArray, 
     };
     //Add new channel to dataStore
     data.channels.push(newChannel);

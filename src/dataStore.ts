@@ -1,8 +1,48 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {
+let data: Data = {
   users : [],
   channels : [],
 };
+
+export interface Data {
+  users: UserObj[];
+  channels: ChannelObj[];
+}
+
+interface UserObj {
+  uId: number;
+  nameFirst: string;
+  nameLast: string;
+  email: string;
+  handleStr: string;
+  password: string;
+  permission: number;
+}
+
+
+interface ChannelObj {
+  channelId: number;
+  name: string;
+  isPublic: boolean;
+  ownerMembers: {
+    uId: number;
+    email: string;
+    nameFirst: string;
+    nameLast: string;
+    handleStr: string;
+  } []
+  allMembers: { 
+    uId: number;
+    email: string;
+    nameFirst: string;
+    nameLast: string;
+    handleStr: string;
+  } []
+  messages: MessagesObj[];
+}
+
+
+
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
@@ -26,7 +66,7 @@ function getData() {
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-function setData(newData) {
+function setData(newData : Data) {
   data = newData;
 }
 
