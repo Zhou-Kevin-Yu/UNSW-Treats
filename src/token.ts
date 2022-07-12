@@ -1,3 +1,11 @@
+/**
+ *
+ * @param {number} token - token to be converted to authUserId
+ * @param {boolean} tokenValid - whether token is valid or not
+ * @returns {number} - authUserId when token is valid and can be converted to authUserId
+ * @returns {null} - when token is invalid and can't be converted to authUserId
+ */
+
 function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   if (!tokenValid) {
     return null;
