@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import isEmail from 'validator/lib/isEmail';
 import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
+import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 
 /**
  * Given a registered user's email and password,
@@ -8,7 +9,7 @@ import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
  *
  * @param {string} email - email address to login with
  * @param {string} password - password to login with
- * @return {authUserId: number} - object with key authUserId of the valid user
+ * @return { token: number, authUserId: number} - object with key authUserId of the valid user and token
  * @returns { error : 'error' } - when email is not registered
  *                             - when password is incorrect
 */
@@ -16,9 +17,10 @@ function authLoginV1(email: string, password: string): AuthLoginV1 {
   const data = getData();
   for (const user of data.users) {
     if (user.email === email && user.password === password) {
-      return {
-        authUserId: user.uId,
-      };
+      const token = generateToken(user.uId);
+      user.tokens.push(token);
+      setData(data);
+      return { token: token, authUserId: user.uId };
     }
   }
   return { error: 'error' };
@@ -33,7 +35,7 @@ function authLoginV1(email: string, password: string): AuthLoginV1 {
  * @param {number} password - password (valid if length >= 6)
  * @param {number} nameFirst  - first name
  * @param {number} nameLast  - second name
- * @return {authUserId: number} - object with key authUserId.
+ * @return {token: number, authUserId: number} - object with key authUserId of the valid user and token
  * @returns { error : 'error' } - when email has already been registered
  *                              - when password < 6 in length
  *                              - when nameFirst or nameLast > 50 or < 1
@@ -72,6 +74,8 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     perm = 2;
   }
 
+  // create token
+
   // create new object in users array and populate fields
   data.users[authUserId] = {
     uId: authUserId,
@@ -81,9 +85,12 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     handleStr: handle,
     password: password,
     permission: perm,
+    tokens: []
   };
+  const token = generateToken(authUserId);
+  data.users[authUserId].tokens.push(token);
   setData(data);
-  return { authUserId };
+  return { token, authUserId };
 }
 
 /**
@@ -126,4 +133,14 @@ function handleCreate(nameFirst: string, nameLast: string): string {
   return handle;
 }
 
-export { authLoginV1, authRegisterV1 };
+function authLogoutV1 (token: string) {
+  if (isTokenValid(token)) {
+    const data = getData();
+    const authUserId = tokenToAuthUserId(token, true);
+    const userTokens = data.users[authUserId].tokens;
+    data.users[authUserId].tokens = userTokens.filter(t => t !== token);
+    setData(data);
+  }
+}
+
+export { authLoginV1, authRegisterV1, authLogoutV1 };
