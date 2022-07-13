@@ -1,5 +1,6 @@
 import request from 'sync-request';
 import config from './config.json';
+import { User } from './dataStore'
 
 import os from 'os';
 import { register } from 'ts-node';
@@ -14,7 +15,7 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
-function authRegisterServerSide(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterSS(email: string, password: string, nameFirst: string, nameLast: string) {
   const res = request(
     'POST',
           `${url}:${port}/auth/register/v2`,
@@ -30,7 +31,7 @@ function authRegisterServerSide(email: string, password: string, nameFirst: stri
   return JSON.parse(res.body as string);
 }
 
-function dmCreateServerSide(token: string, uIds: number[]) {
+function dmCreateSS(token: string, uIds: number[]) {
   const res = request(
     'POST',
     `${url}:${port}/dm/create/v1`,
@@ -38,6 +39,19 @@ function dmCreateServerSide(token: string, uIds: number[]) {
       json: {
         token,
         uIds,
+      }
+    }
+  );
+  return JSON.parse(res.body as string);
+}
+
+function dmListSS(token: string) {
+  const res = request(
+    'GET',
+    `${url}:${port}/dm/list/v1`,
+    {
+      qs: {
+        token,
       }
     }
   );
@@ -351,7 +365,7 @@ describe('HTTP tests for dm/list', () => {
 describe('HTTP tests for dm/remove/v1', () => {
   describe('Testing Error Cases for dm/remove/v1', () => {
     test('dmId not valid', () => {
-      const { token } = authRegisterServerSide('bk@gmail.com', 'validPass23', 'b', 'k');
+      const token= authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
           token: token,
@@ -362,11 +376,11 @@ describe('HTTP tests for dm/remove/v1', () => {
     });
 
     test('authUser isnt original creator', () => {
-      const token1 = authRegisterServerSide('bk@gmail.com', 'validPass23', 'b', 'k').token;
-      const obj2 = authRegisterServerSide('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const token2 = obj2.token;
       const uId2 = obj2.authUserId;
-      const dmIdValid = dmCreateServerSide(token1, [uId2]);
+      const dmIdValid = dmCreateSS(token1, [uId2]);
       expect(dmIdValid).toBe(0); // first dm created
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
@@ -378,10 +392,10 @@ describe('HTTP tests for dm/remove/v1', () => {
     });
 
     test('authUser not in DM', () => {
-      const token1 = authRegisterServerSide('bk@gmail.com', 'validPass23', 'b', 'k').token;
-      const obj2 = authRegisterServerSide('bsk@gmail.com', 'validPass23', 'b', 'k');
-      const obj3 = authRegisterServerSide('bdk@gmail.com', 'validPass23', 'b', 'k');
-      const dmIdValid = dmCreateServerSide(token1, [obj2.uId]);
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
       expect(dmIdValid).toBe(0); // first dm created
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
@@ -395,9 +409,9 @@ describe('HTTP tests for dm/remove/v1', () => {
 
   describe('Testing Success Cases of dm/remove/v1', () => {
     test('Testing remove', () => {
-      const token1 = authRegisterServerSide('bk@gmail.com', 'validPass23', 'b', 'k').token;
-      const obj2 = authRegisterServerSide('bsk@gmail.com', 'validPass23', 'e', 't');
-      const dmIdValid = dmCreateServerSide(token1, [obj2.uId]);
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
       //test dm has been created
       const res4 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
@@ -426,6 +440,58 @@ describe('HTTP tests for dm/remove/v1', () => {
   });
 });
 
+describe('HTTP tests for dm/details/v1', () => {
+  describe('Testing Error Cases for dm/details/v1', () => {
+    test('dmId not Valid', () => {
+      const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      let res = request('GET', `${url}:${port}/dm/details/v1`, {
+        qs: {
+          token: token,
+          dmId: 0, // no Dm has been created so any number here should fail
+        }
+      });
+      res = JSON.parse(res.body as string);
+      expect(res).toBe({ error: 'error' });
+    });
+
+    test('authUser not a member of DM', () => {
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
+      expect(dmIdValid).toBe(0); // first dm created
+      let res = request('GET', `${url}:${port}/dm/details/v1`, {
+        qs: {
+          token: obj3.token, // user 3 not in dm
+          dmId: dmIdValid,
+        }
+      });
+      res = JSON.parse(res.body as string);
+      expect(res).toBe({ error: 'error' });
+    });
+  });
+  
+  describe('Testing Success Cases of dm/details/v1', () => {
+    test('Testing', () => {
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'm', 'p');
+      const dmIdValid = dmCreateSS(token1, [obj2.uId, obj3.uId]);
+      //get details
+      let res = request('GET', `${url}:${port}/dm/details/v1`, {
+        qs: {
+          token: token1,
+          dmId: dmIdValid,
+        }
+      });
+      const resObj = JSON.parse(res.body as string);
+      expect(resObj.name).toBe('bk, et, mp');
+      //expect(typeof(resObj.members)).to(User[])
+      //TODO add functinoality with userProfile
+      
+    });
+  });
+});
 /*
 test('Testing', () => {
 
