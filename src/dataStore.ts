@@ -86,6 +86,7 @@ interface UserObj {
   handleStr: string;
   password: string;
   permission: number;
+  // tokens: string[];
 }
 
 interface ChannelObj {

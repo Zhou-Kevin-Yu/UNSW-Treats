@@ -31,4 +31,8 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   return authUserId;
 }
 
-export { tokenToAuthUserId };
+function generateToken(authUserId: number): string {
+  return 'NULL';
+}
+
+export { tokenToAuthUserId, generateToken };
