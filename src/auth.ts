@@ -1,7 +1,7 @@
 import { getData, setData } from './dataStore';
 import isEmail from 'validator/lib/isEmail';
 import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
-import { generateToken } from './token';
+import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 
 /**
  * Given a registered user's email and password,
@@ -133,4 +133,14 @@ function handleCreate(nameFirst: string, nameLast: string): string {
   return handle;
 }
 
-export { authLoginV1, authRegisterV1 };
+function authLogoutV1 (token: string) {
+  if (isTokenValid(token)) {
+    const data = getData();
+    const authUserId = tokenToAuthUserId(token, true);
+    const userTokens = data.users[authUserId].tokens;
+    data.users[authUserId].tokens = userTokens.filter(t => t !== token);
+    setData(data);
+  }
+}
+
+export { authLoginV1, authRegisterV1, authLogoutV1 };

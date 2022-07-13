@@ -1,7 +1,7 @@
-import { authLoginV1, authRegisterV1 } from './auth';
+import { authLoginV1, authLogoutV1, authRegisterV1 } from './auth';
 import { clearV1 } from './other';
 import { userProfileV1 } from './users';
-import { tokenToAuthUserId } from './token';
+import { tokenToAuthUserId, isTokenValid } from './token';
 
 beforeEach(() => {
   clearV1();
@@ -163,5 +163,14 @@ describe('Testing valid creation of Token', () => {
     const logged = authLoginV1('ben.kerno4@gmail.com', 'dogIsCute');
     expect(authed.authUserId).toBe(logged.authUserId);
     expect(logged.authUserId).toBe(tokenToAuthUserId(logged.token, true));
+  });
+});
+
+describe('testing loggout', () => {
+  test('testing logout - basic', () => {
+    const authed = authRegisterV1('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
+    const token = authed.token;
+    authLogoutV1(token);
+    expect(isTokenValid(token)).toBe(false);
   });
 });
