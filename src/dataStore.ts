@@ -80,8 +80,32 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
+//DM interfaces
 export interface DmCreateV1 {
   dmId?: number;
+  error?: 'error';
+}
+
+export interface DmListV1 {
+  dmId?: Dm[];
+}
+
+export interface DmRemoveV1 {
+  error?: 'error';
+}
+
+export interface DmDetailsV1 {
+  name?: string;
+  members?: User[];
+  error?: 'error';
+}
+
+export interface DmLeaveV1 {
+  dmId?: number;
+  error?: 'error';
+}
+
+interface Dm {
   error?: 'error';
 }
 

@@ -62,8 +62,8 @@ app.get('/dm/list/v1', (req: Request, res: Response) => {
 });
 
 app.delete('dm/remove/v1', (req: Request, res: Response) => {
-  const { token } = req.body;
-  res.json(dmRemoveV1(token));
+  const { token, dmId } = req.body;
+  res.json(dmRemoveV1(token, dmId));
 });
 
 app.get('dm/details/v1', (req: Request, res: Response) => {
