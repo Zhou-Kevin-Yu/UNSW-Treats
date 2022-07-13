@@ -3,8 +3,6 @@ import config from './config.json';
 import os from 'os';
 import { UserDetailsV1 } from './dataStore';
 
-import { tokenToAuthUserId, isTokenValid } from './token';
-
 const OK = 200;
 const port = config.port;
 let url = config.url;
