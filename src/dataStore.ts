@@ -105,6 +105,13 @@ export interface DmLeaveV1 {
   error?: 'error';
 }
 
+export interface DmMessagesV1 {
+  messages?: MessagesObj[];
+  start?: number;
+  end?: number;
+  error?: 'error';
+}
+
 interface Dm {
   error?: 'error';
 }

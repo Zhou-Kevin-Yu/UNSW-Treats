@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { DmCreateV1, DmListV1, DmRemoveV1, DmDetailsV1, DmLeaveV1 } from './dataStore';
+import { DmCreateV1, DmListV1, DmRemoveV1, DmDetailsV1, DmLeaveV1, DmMessagesV1} from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 
 export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
@@ -19,5 +19,9 @@ export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
 }
 
 export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
+    return {}
+}
+
+export function dmMessagesV1(token: string, dmId: number, start: number): DmMessagesV1 {
     return {}
 }
