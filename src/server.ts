@@ -49,6 +49,27 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
+// All user routes
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+
+  res.json({ error: 'error' });
+});
+
+app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
+
+  res.json({ error: 'error' });
+});
+
+app.put('user/profile/setemail/v1', (req: Request, res: Response) => {
+
+  res.json({ error: 'error' });
+});
+
+app.put('user/profile/sethandle/v1', (req: Request, res: Response) => {
+  
+  res.json({ error: 'error' });
+});
+
 // start server
 app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
