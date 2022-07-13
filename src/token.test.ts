@@ -19,7 +19,7 @@ describe('tests basic string converstion and stripping', () => {
 describe('tests token generation', () => {
   test('basic token generation test', () => {
     const token = generateToken(1);
-    expect(typeof token).toBe('String');
+    expect(typeof token).toBe('string');
     const tokenSplit = token.split('.');
     expect(tokenSplit.length).toBe(2);
     expect(tokenSplit[0]).toBe(String(1));

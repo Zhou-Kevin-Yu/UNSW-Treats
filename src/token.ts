@@ -32,7 +32,9 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
 }
 
 function generateToken(authUserId: number): string {
-  return 'NULL';
+  const token = authUserId + Math.random();
+  const strToken = token.toString();
+  return strToken
 }
 
 export { tokenToAuthUserId, generateToken };
