@@ -1,11 +1,10 @@
 import request from 'sync-request';
 import config from './config.json';
-import { User } from './dataStore'
 
 import os from 'os';
-import { register } from 'ts-node';
+// import { register } from 'ts-node';
 
-const OK = 200;
+// const OK = 200;
 const port = config.port;
 let url = config.url;
 
@@ -110,7 +109,7 @@ describe('HTTP tests for dm/create', () => {
         }
       });
       const res2Obj = JSON.parse(res2.body as string);
-      const uId2 = res1Obj.authUserId;
+      const uId2 = res2Obj.authUserId;
 
       // create request that should return an error
       const res = request('POST', `${url}:${port}/dm/create/v1`, {
@@ -210,7 +209,6 @@ describe('HTTP tests for dm/create', () => {
       });
       const res1Obj = JSON.parse(res1.body as string);
       const token1 = res1Obj.token;
-      const uId1 = res1Obj.authUserId;
       // create second user
       const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
         json: {
@@ -231,7 +229,7 @@ describe('HTTP tests for dm/create', () => {
           nameLast: 'kernohan'
         }
       });
-      const res3Obj = JSON.parse(res2.body as string);
+      const res3Obj = JSON.parse(res3.body as string);
       const uId3 = res3Obj.authUserId;
 
       // create request that should be successful
@@ -283,7 +281,7 @@ describe('HTTP tests for dm/list', () => {
         }
       });
       const returnObj = JSON.parse(res3.body as string);
-      const dmID1 = returnObj.dmId; // first dm should have the dmId: 0;
+      const dmId1 = returnObj.dmId; // first dm should have the dmId: 0;
 
       const res4 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
@@ -291,7 +289,7 @@ describe('HTTP tests for dm/list', () => {
         }
       });
       const res4Obj = JSON.parse(res4.body as string);
-      expect(res4Obj.dms).toStrictEqual([{ dmId: 0, name: 'bk, et' }]);
+      expect(res4Obj.dms).toStrictEqual([{ dmId: dmId1, name: 'bk, et' }]);
     });
 
     test('multiple dm list', () => {
@@ -305,7 +303,6 @@ describe('HTTP tests for dm/list', () => {
         }
       });
       const res1Obj = JSON.parse(res1.body as string);
-      const uId1 = res1Obj.authUserId;
       const token1 = res1Obj.token;
       // create a second valid register request and get token
       const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
@@ -329,8 +326,8 @@ describe('HTTP tests for dm/list', () => {
           nameLast: 'p'
         }
       });
-      const res3Obj = JSON.parse(res2.body as string);
-      const uId3 = res1Obj.authUserId;
+      const res3Obj = JSON.parse(res3.body as string);
+      const uId3 = res3Obj.authUserId;
 
       // create request that should be successful
       let res4 = request('POST', `${url}:${port}/dm/create/v1`, {
@@ -349,15 +346,15 @@ describe('HTTP tests for dm/list', () => {
         }
       });
       returnObj = JSON.parse(res4.body as string);
-      const dmID2 = returnObj.dmId; // second dm should have the dmId: 2;
+      const dmID2 = returnObj.dmId; // second dm should have the dmId: 1;
 
       const res5 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
           token: token2,
         }
       });
-      const res4Obj = JSON.parse(res2.body as string);
-      expect(res4Obj.dms).toStrictEqual([{ dmId: 0, name: 'bk, et, mp' }, { dmId: 1, name: 'mp, et' }]);
+      const res5Obj = JSON.parse(res5.body as string);
+      expect(res5Obj.dms).toStrictEqual([{ dmId: dmID1, name: 'bk, et, mp' }, { dmId: dmID2, name: 'mp, et' }]);
     });
   });
 });
@@ -365,7 +362,7 @@ describe('HTTP tests for dm/list', () => {
 describe('HTTP tests for dm/remove/v1', () => {
   describe('Testing Error Cases for dm/remove/v1', () => {
     test('dmId not valid', () => {
-      const token= authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
           token: token,
@@ -395,7 +392,7 @@ describe('HTTP tests for dm/remove/v1', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
       const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
-      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
       expect(dmIdValid).toBe(0); // first dm created
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
@@ -411,8 +408,8 @@ describe('HTTP tests for dm/remove/v1', () => {
     test('Testing remove', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
-      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
-      //test dm has been created
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
+      // test dm has been created
       const res4 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
           token: token1,
@@ -421,7 +418,7 @@ describe('HTTP tests for dm/remove/v1', () => {
       const res4Obj = JSON.parse(res4.body as string);
       expect(res4Obj.dms).toStrictEqual([{ dmId: dmIdValid, name: 'bk, et' }]);
 
-      //delete channel 
+      // delete channel
       request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
           token: token1,
@@ -458,7 +455,7 @@ describe('HTTP tests for dm/details/v1', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
       const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
-      const dmIdValid = dmCreateSS(token1, [obj2.uId]);
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
       expect(dmIdValid).toBe(0); // first dm created
       let res = request('GET', `${url}:${port}/dm/details/v1`, {
         qs: {
@@ -470,15 +467,15 @@ describe('HTTP tests for dm/details/v1', () => {
       expect(res).toBe({ error: 'error' });
     });
   });
-  
+
   describe('Testing Success Cases of dm/details/v1', () => {
     test('Testing', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
       const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'm', 'p');
-      const dmIdValid = dmCreateSS(token1, [obj2.uId, obj3.uId]);
-      //get details
-      let res = request('GET', `${url}:${port}/dm/details/v1`, {
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId, obj3.authUserId]);
+      // get details
+      const res = request('GET', `${url}:${port}/dm/details/v1`, {
         qs: {
           token: token1,
           dmId: dmIdValid,
@@ -486,9 +483,71 @@ describe('HTTP tests for dm/details/v1', () => {
       });
       const resObj = JSON.parse(res.body as string);
       expect(resObj.name).toBe('bk, et, mp');
-      //expect(typeof(resObj.members)).to(User[])
-      //TODO add functinoality with userProfile
-      
+      // expect(typeof(resObj.members)).to(User[])
+      // TODO add functinoality with userProfile
+    });
+  });
+});
+
+describe('HTTP tests for dm/leave/v1', () => {
+  describe('Testing Error Cases for dm/leave/v1', () => {
+    test('dmID not valid', () => {
+      const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      let res = request('POST', `${url}:${port}/dm/leave/v1`, {
+        json: {
+          token: token,
+          dmId: 0, // no Dm has been created so any number here should fail
+        }
+      });
+      res = JSON.parse(res.body as string);
+      expect(res).toBe({ error: 'error' });
+    });
+    test('authUser not a member', () => {
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
+      expect(dmIdValid).toBe(0); // first dm created
+      let res = request('POST', `${url}:${port}/dm/leave/v1`, {
+        json: {
+          token: obj3.token, // user 3 not in dm
+          dmId: dmIdValid,
+        }
+      });
+      res = JSON.parse(res.body as string);
+      expect(res).toBe({ error: 'error' });
+    });
+  });
+  describe('Testing Success Cases of dm/leave/v1', () => {
+    // TODO test assumption
+    test('member leave', () => {
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'm', 'p');
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId, obj3.authUserId]); // user 0 creates
+      request('POST', `${url}:${port}/dm/leave/v1`, {
+        json: {
+          token: obj3.token, // user 3 wants to leave
+          dmId: dmIdValid,
+        }
+      });
+      const res = dmListSS(token1);
+      expect(res.dms).toStrictEqual([{ dmId: dmIdValid, name: 'bk, et' }]);
+    });
+
+    test('creator leave', () => {
+      const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+      const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'm', 'p');
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId, obj3.authUserId]); // user 0 creates
+      request('POST', `${url}:${port}/dm/leave/v1`, {
+        json: {
+          token: token1, // user 1 wants to leave
+          dmId: dmIdValid,
+        }
+      });
+      const res = dmListSS(obj2.token);
+      expect(res.dms).toStrictEqual([{ dmId: dmIdValid, name: 'et, mp' }]);
     });
   });
 });
