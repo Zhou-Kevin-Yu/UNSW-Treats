@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 
-describe('Invalid inputs', () => {
+describe('Invalid inputs for channelsCreateV2', () => {
     test('test invalid name (less than 1 chacaracter)', () => {
 
       let token = authRegisterV2(gary.sun@gmail.com, password, gary, sun).token
@@ -38,7 +38,7 @@ describe('Invalid inputs', () => {
   });
   
 
-  describe('Valid inputs', () => {
+  describe('Valid inputs for channelsCreateV2', () => {
 
     test('everything valid', () => {
 
@@ -55,6 +55,33 @@ describe('Invalid inputs', () => {
         expect(cID.channelId).toBe(0);
         expect(cID1.channelId).toBe(1);
         
+      });
+
+  });
+
+  describe('Invalid inputs for channelsListV2', () => {
+    test('test invalid name (less than 1 chacaracter)', () => {
+
+      let token = authRegisterV2(gary.sun@gmail.com, password, gary, sun).token
+      let name = '';
+      let isPublic = true;
+      expect(channelCreateV2(token, name, isPublic)).toBe(errorOutput);
+    });
+
+    test('test invalid name (more than 20 chacaracters)', () => {
+
+        let token = authRegisterV2(gary.sun@gmail.com, password, gary, sun).token
+        let name = 'COMP1241241232141242142141233243121fesadad';
+        let isPublic = true;
+        expect(channelCreateV2(token, name, isPublic)).toBe(errorOutput);
+      });
+
+      test('test token (token doesnt exist)', () => {
+
+        let token = '-42354213basfhidwied';
+        let name = 'COMP1531';
+        let isPublic = true;
+        expect(channelCreateV2(token, name, isPublic)).toBe(errorOutput);
       });
 
   });
