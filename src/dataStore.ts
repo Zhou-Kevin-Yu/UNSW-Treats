@@ -87,12 +87,12 @@ export interface DmCreateV1 {
 }
 
 export interface DmListV1 {
-  dmId?: Dm[];
+  dms?: Dm[];
 }
 
-export interface DmRemoveV1 {
-  error?: 'error';
-}
+// export interface DmRemoveV1 {
+//   error?: 'error';
+// }
 
 export interface DmDetailsV1 {
   name?: string;
@@ -111,11 +111,18 @@ export interface DmMessagesV1 {
   error?: 'error';
 }
 
-interface Dm {
+export interface Dm {
   dmId: number;
   name: string;
 }
 
+export interface DmObj {
+  dmId: number;
+  creator: number;
+  members: number[];
+  name: string;
+  messages: MessagesObj[];
+}
 interface UserObj {
   uId: number;
   nameFirst: string;
@@ -136,13 +143,6 @@ interface ChannelObj {
   messages: MessagesObj[];
 }
 
-interface DmObj {
-  dmId: number;
-  creator: number;
-  members: number[];
-  name: string;
-  messages: MessagesObj[];
-}
 
 interface SystemInfo {
   messageTotal: number;

@@ -252,38 +252,15 @@ describe('HTTP tests for dm/list', () => {
   describe('Testing Success Cases of dm/list', () => {
     test('one dm list', () => {
       // create first user that creates the DM
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
-        json: {
-          email: 'benkerno@gmail.com',
-          password: 'validPass23',
-          nameFirst: 'b',
-          nameLast: 'k'
-        }
-      });
-      const res1Obj = JSON.parse(res1.body as string);
-      const token1 = res1Obj.token;
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const token1 = reg1.token;
       // create a second valid register request
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
-        json: {
-          email: 'benkerno1@gmail.com',
-          password: 'validPass23',
-          nameFirst: 'e',
-          nameLast: 't'
-        }
-      });
-      const res2Obj = JSON.parse(res2.body as string);
-      const uId2 = res2Obj.authUserId;
-
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'e', 't');
+      const uId2 = reg2.authUserId;
       // create request that should be successful
-      const res3 = request('POST', `${url}:${port}/dm/create/v1`, {
-        json: {
-          token: token1,
-          uIds: [uId2],
-        }
-      });
-      const returnObj = JSON.parse(res3.body as string);
-      const dmId1 = returnObj.dmId; // first dm should have the dmId: 0;
-
+      const dm1 = dmCreateSS(token1, [uId2]);
+      const dmId1 = dm1.dmId; // first dm should have the dmId: 0;
+      expect(dmId1).toBe(0);
       const res4 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
           token: token1,
@@ -295,59 +272,23 @@ describe('HTTP tests for dm/list', () => {
 
     test('multiple dm list', () => {
       // create first user that creates the DM
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
-        json: {
-          email: 'benkerno@gmail.com',
-          password: 'validPass23',
-          nameFirst: 'b',
-          nameLast: 'k'
-        }
-      });
-      const res1Obj = JSON.parse(res1.body as string);
-      const token1 = res1Obj.token;
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k')
+      const token1 = reg1.token;
       // create a second valid register request and get token
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
-        json: {
-          email: 'benkerno1@gmail.com',
-          password: 'validPass23',
-          nameFirst: 'e',
-          nameLast: 't'
-        }
-      });
-      const res2Obj = JSON.parse(res2.body as string);
-      const uId2 = res2Obj.authUserId;
-      const token2 = res2Obj.token;
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'e', 't');
+      const uId2 = reg2.authUserId;
+      const token2 = reg2.token;
 
       // create a third user
-      const res3 = request('POST', `${url}:${port}/auth/register/v2`, {
-        json: {
-          email: 'benkerno2@gmail.com',
-          password: 'validPass23',
-          nameFirst: 'm',
-          nameLast: 'p'
-        }
-      });
-      const res3Obj = JSON.parse(res3.body as string);
-      const uId3 = res3Obj.authUserId;
+      const reg3 = authRegisterSS('bsk@gmail.com', 'validPass23', 'm', 'p');
+      const uId3 = reg3.authUserId;
 
       // create request that should be successful
-      let res4 = request('POST', `${url}:${port}/dm/create/v1`, {
-        json: {
-          token: token1,
-          uIds: [uId2, uId3],
-        }
-      });
-      let returnObj = JSON.parse(res4.body as string);
-      const dmID1 = returnObj.dmId; // first dm should have the dmId: 0;
+      const dm1 = dmCreateSS(token1, [uId2, uId3]);
+      const dmID1 = dm1.dmId; // first dm should have the dmId: 0;
 
-      res4 = request('POST', `${url}:${port}/dm/create/v1`, {
-        json: {
-          token: token2,
-          uIds: [uId3],
-        }
-      });
-      returnObj = JSON.parse(res4.body as string);
-      const dmID2 = returnObj.dmId; // second dm should have the dmId: 1;
+      const dm2 = dmCreateSS(token2, [uId3]);
+      const dmID2 = dm2.dmId; // second dm should have the dmId: 1;
 
       const res5 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
@@ -355,7 +296,7 @@ describe('HTTP tests for dm/list', () => {
         }
       });
       const res5Obj = JSON.parse(res5.body as string);
-      expect(res5Obj.dms).toStrictEqual([{ dmId: dmID1, name: 'bk, et, mp' }, { dmId: dmID2, name: 'mp, et' }]);
+      expect(res5Obj.dms).toStrictEqual([{ dmId: dmID1, name: 'bk, et, mp' }, { dmId: dmID2, name: 'et, mp' }]);
     });
   });
 });
@@ -364,13 +305,15 @@ describe('HTTP tests for dm/remove/v1', () => {
   describe('Testing Error Cases for dm/remove/v1', () => {
     test('dmId not valid', () => {
       const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      console.log("===========",token);
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
           token: token,
           dmId: 0, // no Dm has been created so any number here should fail
         }
       });
-      expect(res).toStrictEqual({ error: 'error' });
+      const resObj = JSON.parse(res.body as string);
+      expect(resObj).toStrictEqual({ error: 'error' });
     });
 
     test('authUser isnt original creator', () => {
@@ -378,7 +321,7 @@ describe('HTTP tests for dm/remove/v1', () => {
       const obj2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const token2 = obj2.token;
       const uId2 = obj2.authUserId;
-      const dmIdValid = dmCreateSS(token1, [uId2]);
+      const dmIdValid = dmCreateSS(token1, [uId2]).dmId;
       expect(dmIdValid).toBe(0); // first dm created
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
@@ -386,14 +329,15 @@ describe('HTTP tests for dm/remove/v1', () => {
           dmId: dmIdValid,
         }
       });
-      expect(res).toStrictEqual({ error: 'error' });
+      const resObj = JSON.parse(res.body as string);
+      expect(resObj).toStrictEqual({ error: 'error' });
     });
 
     test('authUser not in DM', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'b', 'k');
       const obj3 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
-      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]).dmId;
       expect(dmIdValid).toBe(0); // first dm created
       const res = request('DELETE', `${url}:${port}/dm/remove/v1`, {
         qs: {
@@ -401,7 +345,8 @@ describe('HTTP tests for dm/remove/v1', () => {
           dmId: dmIdValid,
         }
       });
-      expect(res).toStrictEqual({ error: 'error' });
+      const resObj = JSON.parse(res.body as string);
+      expect(resObj).toStrictEqual({ error: 'error' });
     });
   });
 
@@ -409,7 +354,7 @@ describe('HTTP tests for dm/remove/v1', () => {
     test('Testing remove', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
-      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]);
+      const dmIdValid = dmCreateSS(token1, [obj2.authUserId]).dmId;
       // test dm has been created
       const res4 = request('GET', `${url}:${port}/dm/list/v1`, {
         qs: {
@@ -432,12 +377,13 @@ describe('HTTP tests for dm/remove/v1', () => {
           token: token1,
         }
       });
+      console.log(res5);
       const res5Obj = JSON.parse(res5.body as string);
       expect(res5Obj.dms).toStrictEqual([]);
     });
   });
 });
-
+/*
 describe('HTTP tests for dm/details/v1', () => {
   describe('Testing Error Cases for dm/details/v1', () => {
     test('dmId not Valid', () => {

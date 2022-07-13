@@ -1,6 +1,7 @@
 import { sortAndDeduplicateDiagnostics } from 'typescript';
 import { getData, setData } from './dataStore';
-import { DmCreateV1, DmListV1, DmRemoveV1, DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
+import { DmCreateV1, DmListV1, /*DmRemoveV1,*/ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
+import { Dm, DmObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
 import { userProfileV1 } from './users'; //TODO update this with userProfileV2
@@ -28,11 +29,9 @@ function generateDmName(uIds: number[]) {
   const len = handleArrs.length;
   let dmName = "";
   for (let i = 0; i < len; i++) {
-    dmName = dmName + handleArrs[i]
-    if (i !== len) {
-      dmName = dmName + ', ';
-    }
+    dmName = dmName + handleArrs[i] + ', '
   }
+  dmName = dmName.substring(0, dmName.length - 2);
   return dmName;
 }
 
@@ -48,7 +47,6 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   if (new Set(uIds).size !== uIds.length) {
     return { error: 'error' };
   }
-  
   //strip token and check if authUserId in uIds
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   const dmNum = data.dms.length;
@@ -57,7 +55,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   }
   uIds.push(authUserId);
   const dmName = generateDmName(uIds);
-  const dmNew = {
+  const dmNew: DmObj = {
     dmId: dmNum,
     creator: authUserId,
     members: uIds,
@@ -70,11 +68,37 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
 }
 
 export function dmListV1(token: string): DmListV1 {
-  return {};
+  let data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const userDms: Dm[]  = [];
+  for (const dm of data.dms) {
+    if (dm !== undefined && dm.members.includes(authUserId)) {
+      const tempDm: Dm  = {
+        dmId: dm.dmId,
+        name: dm.name,
+      };
+      userDms.push(tempDm);
+    }
+  }
+  return { dms : userDms };
 }
 
-export function dmRemoveV1(token: string, dmId: number): DmRemoveV1 {
-  return {};
+export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1*/ {
+  let data = getData();
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+      return { error: 'error' };
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (data.dms[dmId].creator !== authUserId) {
+    return { error: 'error' };
+  }
+  /* no situation where the creator is not a member (see assumptions)
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    return { error: 'error' };
+  }
+  */
+  delete data.dms[dmId];
+  setData(data);
 }
 
 export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
