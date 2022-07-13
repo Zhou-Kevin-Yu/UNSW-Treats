@@ -317,3 +317,260 @@ describe ('HTTP tests for message/send', () => {
     expect(data).toStrictEqual(errorReturn);
   });
 });
+
+describe ('HTTP tests for message/edit', () => {
+  // If messageEditV1 is successful
+  describe('Testing successful messageEditV1', () => {
+    test('Test valid edit of message', () => {
+      // Create a token from authRegisterV2
+      let res = request(
+        'POST',
+        SERVER_URL + '/auth/register/v2',
+        {
+          json: {
+            email: 'kevinyu@email.com',
+            password: 'KevinsPassword0',
+            nameFirst: 'Kevin',
+            nameLast: 'Yu',
+          }
+        }
+      );
+      const registerObj = JSON.parse(res.getBody() as string);
+      const token = registerObj.token;
+      // Create a channel Id from channelsCreateV2
+      res = request(
+        'POST',
+        SERVER_URL + '/channels/create/v2',
+        {
+          json: {
+            token: token,
+            name: 'COMP1531',
+            isPublic: true,
+          }
+        }
+      );
+      const channelObj = JSON.parse(res.getBody() as string);
+      const channelId = channelObj.channelId;
+      // Create a messageId from messageSendV1
+      res = request(
+        'POST',
+        SERVER_URL + '/message/send/v1',
+        {
+          json: {
+            token: token,
+            channelId: channelId,
+            message: 'hello world',
+          }
+        }
+      );
+      const data = JSON.parse(res.getBody() as string);
+      expect(res.statusCode).toBe(OK);
+      // Expect to return messageId
+      expect(data).toStrictEqual({ messageId: expect.any(Number) });
+    });
+
+    // Add more success tests later
+  });
+
+  // If the channelId does not refer to a valid channel
+  describe('Testing invalid channelId', () => {
+    test('Test undefined channelId', () => {
+      // Create a token from authRegisterV2
+      let res = request(
+        'POST',
+        SERVER_URL + '/auth/register/v2',
+        {
+          json: {
+            email: 'bob@email.com',
+            password: 'BobsPassword',
+            nameFirst: 'Bob',
+            nameLast: 'Smith',
+          }
+        }
+      );
+      const registerObj = JSON.parse(res.getBody() as string);
+      const token = registerObj.token;
+      // Create a messageId from messageSendV1
+      res = request(
+        'POST',
+        SERVER_URL + '/message/send/v1',
+        {
+          json: {
+            token: token,
+            channelId: undefined,
+            message: 'My name is Manav',
+          }
+        }
+      );
+      const data = JSON.parse(res.getBody() as string);
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(data).toStrictEqual(errorReturn);
+    });
+
+    test('Test null channelId', () => {
+      // Create a token from authRegisterV2
+      let res = request(
+        'POST',
+        SERVER_URL + '/auth/register/v2',
+        {
+          json: {
+            email: 'gary.sun@student.unsw.edu.au',
+            password: '1b2#$X',
+            nameFirst: 'Gary',
+            nameLast: 'Sun',
+          }
+        }
+      );
+      const registerObj = JSON.parse(res.getBody() as string);
+      const token = registerObj.token;
+      // Create a messageId from messageSendV1
+      res = request(
+        'POST',
+        SERVER_URL + '/message/send/v1',
+        {
+          json: {
+            token: token,
+            channelId: null,
+            message: 'I am Etkin',
+          }
+        }
+      );
+      const data = JSON.parse(res.getBody() as string);
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(data).toStrictEqual(errorReturn);
+    });
+
+    // Add more invalid channelId error cases later
+  });
+
+  // If the length of message is over 1000 characters
+  test('Test if length of message is more than 1000 characters', () => {
+    // Create a token from authRegisterV2
+    const res1 = request(
+      'POST',
+        SERVER_URL + '/auth/register/v2',
+        {
+          json: {
+            email: 'student.stu@student.unsw.edu.au',
+            password: 'password',
+            nameFirst: 'Stud',
+            nameLast: 'Studen',
+          }
+        }
+    );
+    const registerObj = JSON.parse(res1.getBody() as string);
+    const token = registerObj.token;
+    // Create a channel Id from channelsCreateV2
+    const res2 = request(
+      'POST',
+      SERVER_URL + '/channels/create/v2',
+      {
+        json: {
+          token: token,
+          name: 'ECON2206',
+          isPublic: true,
+        }
+      }
+    );
+    const channelObj = JSON.parse(res2.getBody() as string);
+    const channelId = channelObj.channelId;
+    // Create a messageId from messageSendV1
+    const res3 = request(
+      'POST',
+      SERVER_URL + '/message/send/v1',
+      {
+        json: {
+          token: token,
+          channelId: channelId,
+          message: 'hello world',
+        }
+      }
+    );
+    const messageObj = JSON.parse(res3.getBody() as string);
+    const messageId = messageObj.messageId;
+    
+    // Return error in messageEditV1
+    const res = request(
+      'POST',
+      SERVER_URL + '/message/edit/v1',
+      {
+        json: {
+          token: token,
+          messageId: messageId,
+          message: aboveMaxLengthMessage,
+        }
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(OK);
+    // Expect to return error
+    expect(data).toStrictEqual(errorReturn);
+  });
+
+  // If the channelId is valid but authorised user is not a member
+  test('Test authId that is not a member of the channel', () => {
+    // Create a token (authorised user) from authRegisterV2
+    const res1 = request(
+      'POST',
+      SERVER_URL + '/auth/register/v2',
+      {
+        json: {
+          email: 'sen.smith@outlook.com',
+          password: 'peanutButter',
+          nameFirst: 'ben',
+          nameLast: 'smith',
+        }
+      }
+    );
+    const register1Obj = JSON.parse(res1.getBody() as string);
+    const authToken = register1Obj.token;
+    // Create a token (member user) from authRegisterV2
+    const res2 = request(
+      'POST',
+      SERVER_URL + '/auth/register/v2',
+      {
+        json: {
+          email: 'user@gmail.com',
+          password: 'pw',
+          nameFirst: 'Calvin',
+          nameLast: 'Xu',
+        }
+      }
+    );
+    const register2Obj = JSON.parse(res2.getBody() as string);
+    const userToken = register2Obj.token;
+    // Create a channel Id from channelsCreateV2 but uses the token from the member user
+    // Therefore the authorised user is not a member of the channel
+    const channelRes = request(
+      'POST',
+      SERVER_URL + '/channels/create/v2',
+      {
+        json: {
+          token: userToken,
+          name: 'COMP2521',
+          isPublic: true,
+        }
+      }
+    );
+    const channelObj = JSON.parse(channelRes.getBody() as string);
+    const channelId = channelObj.channelId;
+    // Create a messageId from messageSendV1
+    const res = request(
+      'POST',
+      SERVER_URL + '/message/send/v1',
+      {
+        json: {
+          token: authToken,
+          channelId: channelId,
+          message: 'I study COMP1531',
+        }
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(OK);
+    // Expect to return error
+    expect(data).toStrictEqual(errorReturn);
+  });
+});
