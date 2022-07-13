@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import isEmail from 'validator/lib/isEmail';
 import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
+import { generateToken } from './token';
 
 /**
  * Given a registered user's email and password,
@@ -16,9 +17,10 @@ function authLoginV1(email: string, password: string): AuthLoginV1 {
   const data = getData();
   for (const user of data.users) {
     if (user.email === email && user.password === password) {
-      return {
-        authUserId: user.uId,
-      };
+      const token = generateToken(user.uId);
+      user.tokens.push(token);
+      setData(data);
+      return { token: token, authUserId: user.uId };
     }
   }
   return { error: 'error' };
@@ -72,6 +74,8 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     perm = 2;
   }
 
+  // create token
+
   // create new object in users array and populate fields
   data.users[authUserId] = {
     uId: authUserId,
@@ -81,9 +85,12 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     handleStr: handle,
     password: password,
     permission: perm,
+    tokens: []
   };
+  const token = generateToken(authUserId);
+  data.users[authUserId].tokens.push(token);
   setData(data);
-  return { authUserId };
+  return { token, authUserId };
 }
 
 /**

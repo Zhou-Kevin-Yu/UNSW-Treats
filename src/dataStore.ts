@@ -19,11 +19,13 @@ export interface UserDetailsV1 {
 }
 
 export interface AuthLoginV1 {
+  token?: string;
   authUserId?: number;
   error?: 'error';
 }
 
 export interface AuthRegisterV1 {
+  token?: string;
   authUserId?: number;
   error?: 'error';
 }
@@ -86,7 +88,7 @@ interface UserObj {
   handleStr: string;
   password: string;
   permission: number;
-  // tokens: string[];
+  tokens: string[];
 }
 
 interface ChannelObj {

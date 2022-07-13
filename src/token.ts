@@ -1,3 +1,5 @@
+import { getData } from './dataStore';
+
 /**
  *
  * @param {number} token - token to be converted to authUserId
@@ -32,9 +34,17 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
 }
 
 function generateToken(authUserId: number): string {
-  const token = authUserId + Math.random();
-  const strToken = token.toString();
-  return strToken
+  const data = getData();
+  const usertokens = data.users[authUserId].tokens;
+
+  let token = authUserId + Math.random();
+  let strToken = token.toString();
+  while (usertokens.includes(strToken)) {
+    token = authUserId + Math.random();
+    strToken = token.toString();
+  }
+
+  return strToken;
 }
 
 export { tokenToAuthUserId, generateToken };

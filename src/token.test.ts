@@ -1,4 +1,5 @@
 import { tokenToAuthUserId, generateToken } from './token';
+import { authRegisterV1 } from './auth';
 
 describe('tests basic string converstion and stripping', () => {
   test('test invalidToken', () => {
@@ -18,11 +19,13 @@ describe('tests basic string converstion and stripping', () => {
 
 describe('tests token generation', () => {
   test('basic token generation test', () => {
-    const token = generateToken(1);
+    authRegisterV1('test@gmail.com', 'password', 'first', 'last');
+    authRegisterV1('test1@gmail.com', 'passwordd', 'ffirst', 'llast');
+    const token = generateToken(0);
     expect(typeof token).toBe('string');
     const tokenSplit = token.split('.');
     expect(tokenSplit.length).toBe(2);
-    expect(tokenSplit[0]).toBe(String(1));
+    expect(tokenSplit[0]).toBe(String(0));
     const tokenTwo = generateToken(1);
     expect(tokenTwo).not.toBe(token);
   });
