@@ -49,6 +49,34 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
+// All dm requests
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const { token, uIds } = req.body;
+  res.json(dmCreateV1(token, uIds));
+});
+
+app.get('/dm/list/v1', (req: Request, res: Response) => {
+  const { token } = req.body;
+  res.json(dmListV1(token));
+});
+
+app.delete('dm/remove/v1', (req: Request, res: Response) => {
+  const { token } = req.body;
+  res.json(dmRemoveV1(token));
+});
+
+app.get('dm/details/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmDetailsV1(token, dmId));
+});
+
+app.post('dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmLeaveV1(token, dmId));
+});
+//TODO add dm/messages/v1
+
+
 // start server
 app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
