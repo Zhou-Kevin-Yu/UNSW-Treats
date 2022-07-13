@@ -6,8 +6,8 @@
         "lint-fix": "eslint --fix src/**.ts",
         "start": "ts-node src/server.ts",
         "green-tick": "jest && tsc --noImplicitAny && eslint src/**.ts",
-        "adv-green-tick": "npm install && tsc --noImplicitAny && eslint --fix src/**.ts && npm start & sleep 10 && npm run test && killall node",
-        "new-green-tick": "SERVER_LOG=$(mktemp) && npm run start >& $SERVER_LOG & sleep 2 && npm run test && killall -u $USER node"
+        "OLD-green-tick": "npm install && tsc --noImplicitAny && eslint --fix src/**.ts && npm start & sleep 10 && npm run test && killall node",
+        "full-green-tick": "npm install && tsc --noImplicitAny && eslint --fix src/**.ts && SERVER_LOG=$(mktemp) && npm run start >& $SERVER_LOG & sleep 10 && npm run test && killall -u $USER node && cat $SERVER_LOG"
     },
     "dependencies": {
         "cors": "^2.8.5",
