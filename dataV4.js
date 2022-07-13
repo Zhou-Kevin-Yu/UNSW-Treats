@@ -88,7 +88,7 @@ const data = {
         }
     ],
     systemInfo: {
-        messagesTotal: 4,
+        messageTotal: 4,
     }
 };
 
