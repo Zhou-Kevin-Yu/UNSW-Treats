@@ -1,6 +1,7 @@
 import { authLoginV1, authRegisterV1 } from './auth';
 import { clearV1 } from './other';
 import { userProfileV1 } from './users';
+import { tokenToAuthUserId } from './token';
 
 beforeEach(() => {
   clearV1();
@@ -147,5 +148,20 @@ describe('Testing Handles', () => {
     const uId = authRegisterV1('ben.kerno1@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomep').authUserId;
     const user = userProfileV1(authUserId, uId).user;
     expect(user.handleStr).toStrictEqual('benjaminedkernohando2');
+  });
+});
+
+describe('Testing valid creation of Token', () => {
+  test('testing creation of token at registration', () => {
+    const authed = authRegisterV1('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
+    const authUserId = authed.authUserId;
+    const token = authed.token;
+    expect(authUserId).toBe(tokenToAuthUserId(token, true));
+  });
+  test('testing creation of token at login', () => {
+    const authed = authRegisterV1('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
+    const logged = authLoginV1('ben.kerno4@gmail.com', 'dogIsCute');
+    expect(authed.authUserId).toBe(logged.authUserId);
+    expect(logged.authUserId).toBe(tokenToAuthUserId(logged.token, true));
   });
 });
