@@ -14,6 +14,36 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
+function authRegisterServerSide(email: string, password: string, nameFirst: string, nameLast: string) {
+  const res = request(
+    'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email,
+              password,
+              nameFirst,
+              nameLast,
+            }
+          }
+  );
+  return JSON.parse(res.body as string);
+}
+
+function dmCreateServerSide(token: string, uIds: number[]) {
+  const res = request(
+    'POST',
+    `${url}:${port}/dm/create/v1`,
+    {
+      json: {
+        token,
+        uIds,
+      }
+    }
+  );
+  return JSON.parse(res.body as string);
+}
+
 beforeEach(() => {
   request('DELETE',`${url}:${port}/clear/v1`);
 });
@@ -326,6 +356,61 @@ describe('HTTP tests for dm/list', () => {
     });
   });
 });
+
+describe('HTTP tests for dm/remove/v1', () => {
+  describe('Testing Error Cases for dm/remove/v1', () => {
+    test('dmId not valid', () => {
+      const {token: token} = authRegisterServerSide("bk@gmail.com", "validPass23", "b", 'k');
+      const res = request('DELETE',`${url}:${port}/dm/remove/v1`, {
+        qs: {
+          token: token,
+          dmId: 0, //no Dm has been created so any number here should fail
+        }
+      });
+      expect(res).toBe({error: 'error'})
+    });   
+
+
+    test('authUser isnt original creator', () => {
+      const token1 = authRegisterServerSide("bk@gmail.com", "validPass23", "b", 'k').token;
+      const obj2 = authRegisterServerSide("bdk@gmail.com", "validPass23", "b", 'k');
+      const token2 = obj2.token;
+      const uId2 = obj2.authUserId;
+      const dmIdValid = dmCreateServerSide(token1, [uId2])
+      expect(dmIdValid).toBe(0); //first dm created
+      const res = request('DELETE',`${url}:${port}/dm/remove/v1`, {
+        qs: {
+          token: token2,
+          dmId: dmIdValid,
+        }
+      });
+      expect(res).toBe({error: 'error'})
+    });   
+
+
+    test('authUser not in DM', () => {
+      const token1 = authRegisterServerSide("bk@gmail.com", "validPass23", "b", 'k').token;
+      const obj2 = authRegisterServerSide("bsk@gmail.com", "validPass23", "b", 'k');
+      const obj3 = authRegisterServerSide("bdk@gmail.com", "validPass23", "b", 'k');
+      const dmIdValid = dmCreateServerSide(token1, [obj2.uId])
+      expect(dmIdValid).toBe(0); //first dm created
+      const res = request('DELETE',`${url}:${port}/dm/remove/v1`, {
+        qs: {
+          token: obj3.token, //user 3 not in dm
+          dmId: dmIdValid,
+        }
+      });
+      expect(res).toBe({error: 'error'})
+    });   
+  });
+  
+  describe('Testing Success Cases of dm/remove/v1', () => {
+    test('Testing', () => {
+
+    });
+  });
+});
+
 
 /*
 test('Testing', () => {
