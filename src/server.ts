@@ -75,8 +75,7 @@ app.post('dm/leave/v1', (req: Request, res: Response) => {
   const { token, dmId } = req.body;
   res.json(dmLeaveV1(token, dmId));
 });
-//TODO add dm/messages/v1
-
+// TODO add dm/messages/v1
 
 // start server
 app.listen(PORT, HOST, () => {

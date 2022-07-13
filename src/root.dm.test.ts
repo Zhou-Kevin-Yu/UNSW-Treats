@@ -63,6 +63,7 @@ beforeEach(() => {
 
 console.log(url);
 describe('HTTP tests for dm/create', () => {
+  //TODO test creating a dm with a userId one higher than max uId (edge case)
   describe('Testing Error Cases for dm/create', () => {
     test('Invalid uId', () => {
       let res = request('POST', `${url}:${port}/auth/register/v2`, {
@@ -83,7 +84,7 @@ describe('HTTP tests for dm/create', () => {
         }
       });
       const returnObj = JSON.parse(res.body as string);
-      expect(returnObj).toBe({ error: 'error' });
+      expect(returnObj).toStrictEqual({ error: 'error' });
     });
 
     test('duplicate uIds invalid uId', () => {
@@ -119,7 +120,7 @@ describe('HTTP tests for dm/create', () => {
         }
       });
       const returnObj = JSON.parse(res.body as string);
-      expect(returnObj).toBe({ error: 'error' });
+      expect(returnObj).toStrictEqual({ error: 'error' });
     });
 
     test('Creator is also in the uId Array', () => {
@@ -156,7 +157,7 @@ describe('HTTP tests for dm/create', () => {
         }
       });
       const returnObj = JSON.parse(res.body as string);
-      expect(returnObj).toBe({ error: 'error' });
+      expect(returnObj).toStrictEqual({ error: 'error' });
     });
   });
 
@@ -369,7 +370,7 @@ describe('HTTP tests for dm/remove/v1', () => {
           dmId: 0, // no Dm has been created so any number here should fail
         }
       });
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
 
     test('authUser isnt original creator', () => {
@@ -385,7 +386,7 @@ describe('HTTP tests for dm/remove/v1', () => {
           dmId: dmIdValid,
         }
       });
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
 
     test('authUser not in DM', () => {
@@ -400,7 +401,7 @@ describe('HTTP tests for dm/remove/v1', () => {
           dmId: dmIdValid,
         }
       });
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
   });
 
@@ -448,7 +449,7 @@ describe('HTTP tests for dm/details/v1', () => {
         }
       });
       res = JSON.parse(res.body as string);
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
 
     test('authUser not a member of DM', () => {
@@ -464,7 +465,7 @@ describe('HTTP tests for dm/details/v1', () => {
         }
       });
       res = JSON.parse(res.body as string);
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
   });
 
@@ -482,7 +483,7 @@ describe('HTTP tests for dm/details/v1', () => {
         }
       });
       const resObj = JSON.parse(res.body as string);
-      expect(resObj.name).toBe('bk, et, mp');
+      expect(resObj.name).toStrictEqual('bk, et, mp');
       // expect(typeof(resObj.members)).to(User[])
       // TODO add functinoality with userProfile
     });
@@ -500,7 +501,7 @@ describe('HTTP tests for dm/leave/v1', () => {
         }
       });
       res = JSON.parse(res.body as string);
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
     test('authUser not a member', () => {
       const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
@@ -515,7 +516,7 @@ describe('HTTP tests for dm/leave/v1', () => {
         }
       });
       res = JSON.parse(res.body as string);
-      expect(res).toBe({ error: 'error' });
+      expect(res).toStrictEqual({ error: 'error' });
     });
   });
   describe('Testing Success Cases of dm/leave/v1', () => {
