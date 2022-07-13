@@ -21,6 +21,7 @@ beforeEach(() => {
 console.log(url);
 describe('HTTP tests for dm/create', () => {
   describe('Testing Error Cases', () => {
+
     test('Invalid uId', () => {
       let res = request('POST',`${url}:${port}/auth/register/v2`, {
         json: {
@@ -122,7 +123,7 @@ describe('HTTP tests for dm/create', () => {
 
   describe('Testing Success Cases', () => {
 
-    test('creation of one dm', () => {
+    test('creation of one dm with one other user', () => {
       //create a valid register request
       let res1 = request('POST',`${url}:${port}/auth/register/v2`, {
         json: {
@@ -155,10 +156,61 @@ describe('HTTP tests for dm/create', () => {
           uIds: [uId2], //uId2 is duplicated twice
         }
       });
-    const returnObj = JSON.parse(res.body as string);
-    expect(returnObj.dmId).toBe(0); //think this has to stay at 0?;
+      const returnObj = JSON.parse(res.body as string);
+      expect(returnObj.dmId).toBe(0); //first dm should have the dmId: 0;
     });
+
+
+    test('creation of one dm', () => {
+      //create first user that creates the DM
+      let res1 = request('POST',`${url}:${port}/auth/register/v2`, {
+          json: {
+            email: "benkerno@gmail.com",
+            password: "validPass23",
+            nameFirst: "ben",
+            nameLast: "kernohan"
+          }
+      });
+      let res1Obj = JSON.parse(res1.body as string);
+      let token1 = res1Obj.token;
+      let uId1 = res1Obj.authUserId;
+      //create second user
+      let res2 = request('POST',`${url}:${port}/auth/register/v2`, {
+        json: {
+          email: "benkerno1@gmail.com",
+          password: "validPass23",
+          nameFirst: "ben",
+          nameLast: "kernohan"
+        }
+      });
+      let res2Obj = JSON.parse(res2.body as string);
+      let uId2 = res1Obj.authUserId;
+      //create third user
+      let res3 = request('POST',`${url}:${port}/auth/register/v2`, {
+        json: {
+          email: "benkerno2@gmail.com",
+          password: "validPass23",
+          nameFirst: "ben",
+          nameLast: "kernohan"
+        }
+      });
+      let res3Obj = JSON.parse(res2.body as string);
+      let uId3 = res1Obj.authUserId;
+
+      //create request that should be successful
+      let res = request('POST',`${url}:${port}/dm/create/v1`, {
+        json: {
+          token: token1,
+          uIds: [uId2, uId3],
+        }
+      });
+      const returnObj = JSON.parse(res.body as string);
+      expect(returnObj.dmId).toBe(0); //first dm should have the dmId: 0;
+    });
+
+    //TODO write expects to check the successful creation of handles once dm/details/v1 is implemented
   });
+
 
     /*
     test('Test successful echo', () => {
