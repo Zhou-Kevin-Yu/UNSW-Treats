@@ -133,7 +133,14 @@ function handleCreate(nameFirst: string, nameLast: string): string {
   return handle;
 }
 
-function authLogoutV1 (token: string) {
+/**
+ * Given a active token, invalidates the token to log the user out
+ *
+ * @param {string} token - token to be invalidated
+ * @return {} - no return value
+ *
+*/
+function authLogoutV1 (token: string): void {
   if (isTokenValid(token)) {
     const data = getData();
     const authUserId = tokenToAuthUserId(token, true);

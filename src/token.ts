@@ -7,7 +7,6 @@ import { getData } from './dataStore';
  * @returns {number} - authUserId when token is valid and can be converted to authUserId
  * @returns {null} - when token is invalid and can't be converted to authUserId
  */
-
 function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   if (!tokenValid) {
     return null;
@@ -33,6 +32,11 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   return authUserId;
 }
 
+/**
+ * @param {number} authUserId - authUserId to be converted to token
+ * @returns {string} - token when authUserId is valid and can be converted to token
+ * @returns {null} - when authUserId is invalid and can't be converted to token
+*/
 function generateToken(authUserId: number): string {
   const data = getData();
   const usertokens = data.users[authUserId].tokens;
@@ -47,6 +51,11 @@ function generateToken(authUserId: number): string {
   return strToken;
 }
 
+/**
+ *
+ * @param {token} - token to be checked
+ * @returns {boolean} - whether token is valid or not
+ */
 function isTokenValid(token: string): boolean {
   const data = getData();
   const tryAuthUserId = tokenToAuthUserId(token, true);
