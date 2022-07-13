@@ -9,7 +9,7 @@ import { generateToken } from './token';
  *
  * @param {string} email - email address to login with
  * @param {string} password - password to login with
- * @return {authUserId: number} - object with key authUserId of the valid user
+ * @return { token: number, authUserId: number} - object with key authUserId of the valid user and token
  * @returns { error : 'error' } - when email is not registered
  *                             - when password is incorrect
 */
@@ -35,7 +35,7 @@ function authLoginV1(email: string, password: string): AuthLoginV1 {
  * @param {number} password - password (valid if length >= 6)
  * @param {number} nameFirst  - first name
  * @param {number} nameLast  - second name
- * @return {authUserId: number} - object with key authUserId.
+ * @return {token: number, authUserId: number} - object with key authUserId of the valid user and token
  * @returns { error : 'error' } - when email has already been registered
  *                              - when password < 6 in length
  *                              - when nameFirst or nameLast > 50 or < 1

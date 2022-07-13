@@ -47,4 +47,21 @@ function generateToken(authUserId: number): string {
   return strToken;
 }
 
-export { tokenToAuthUserId, generateToken };
+function isTokenValid(token: string): boolean {
+  const data = getData();
+  const tryAuthUserId = tokenToAuthUserId(token, true);
+  if (tryAuthUserId === null) {
+    return false;
+  } else if (tryAuthUserId < 0 || tryAuthUserId >= data.users.length) {
+    return false;
+  }
+
+  const usertokens = data.users[tryAuthUserId].tokens;
+  if (usertokens.includes(token)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export { tokenToAuthUserId, generateToken, isTokenValid };

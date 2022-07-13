@@ -1,5 +1,10 @@
-import { tokenToAuthUserId, generateToken } from './token';
+import { tokenToAuthUserId, generateToken, isTokenValid } from './token';
 import { authRegisterV1 } from './auth';
+import { clearV1 } from './other';
+
+beforeEach(() => {
+  clearV1();
+});
 
 describe('tests basic string converstion and stripping', () => {
   test('test invalidToken', () => {
@@ -19,7 +24,7 @@ describe('tests basic string converstion and stripping', () => {
 
 describe('tests token generation', () => {
   test('basic token generation test', () => {
-    authRegisterV1('test@gmail.com', 'password', 'first', 'last');
+    authRegisterV1('test@gmail.com', 'password', 'firsdfsdfsdfst', 'lastsdfsadfs');
     authRegisterV1('test1@gmail.com', 'passwordd', 'ffirst', 'llast');
     const token = generateToken(0);
     expect(typeof token).toBe('string');
@@ -28,5 +33,18 @@ describe('tests token generation', () => {
     expect(tokenSplit[0]).toBe(String(0));
     const tokenTwo = generateToken(1);
     expect(tokenTwo).not.toBe(token);
+  });
+});
+
+describe('test token validation', () => {
+  test('basic token validation test', () => {
+    const authed = authRegisterV1('test@gmail.com', 'passasdfsadfsdword', 'fisdfasdfrst', 'lasasdfsdft');
+    const token = authed.token;
+    let fakeToken = (0 + Math.random()).toString();
+    while (fakeToken === token) {
+      fakeToken = (0 + Math.random()).toString();
+    }
+    expect(isTokenValid(token)).toBe(true);
+    expect(isTokenValid(fakeToken)).toBe(false);
   });
 });
