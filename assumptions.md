@@ -19,3 +19,6 @@ General Assumptions:
 *ITERATION 2 ASSUMPTIONS*
 dm/create/v1:
 - should throw an error if the user creating the dm is also in the uId array
+
+dm/leave/v1
+- when creator leave the dm, another person is promoted. This is decided by the order of which the creator made the dm.
