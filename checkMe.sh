@@ -9,6 +9,7 @@ then
   echo "TSC Passed!"
 else
   echo "TSC FAILED"
+  exit 1
 fi
 
 
@@ -19,6 +20,7 @@ then
   echo "Linter passed!"
 else
   echo "Linter Failed"
+  exit 1
 fi
 
 
@@ -26,7 +28,20 @@ SERVER_LOG=$(mktemp)
 npm start &> $SERVER_LOG & pid=$!
 sleep 10
 ps -o pid | egrep -q "^\s*${pid}$" || (cat $SERVER_LOG && exit 1)
-npm test || (cat $SERVER_LOG && exit 1)
+npm test
+
+if [ $? -eq 0 ]
+then
+  echo "JEST Passed!"
+else
+  echo "Jest Failed"
+  sleep 1
+  kill -SIGINT %1
+  cat $SERVER_LOG
+  echo "Jest Failed :("
+  exit 1
+fi
+
 sleep 1
 kill -SIGINT %1
 cat $SERVER_LOG
