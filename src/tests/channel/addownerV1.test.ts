@@ -9,8 +9,27 @@ const OK = 200;
 
 describe('Testing basic functionality', () => {
     test('Adding 1 owner', () => {
-        const KevinIdToken = authRegisterV2('kevinyu@email.com', 'KevinsPassword0', 'Kevin', 'Yu');
-        const BobIdToken = authRegisterV2('bob@email.com', 'BobsPassword', 'Bob', 'Smith');
+        let res = request ('POST', SERVER_URL + '/src/auth/register/v2',
+        {
+            json: {
+                email: 'kevinyu@email.com',
+                password: 'KevinsPassword0',
+                nameFirst: 'Kevin',
+                nameLast: 'Yu'
+            }
+        });
+        const kevin = JSON.parse(res.getBody() as string);
+        res = request ('POST', SERVER_URL + '/src/auth/register/v2',
+        {
+            json: {
+                email: 'bob@email.com',
+                password: 'BobsPassword',
+                nameFirst: 'Bob',
+                nameLast: 'Smith'
+            }
+        });
+        const bob = JSON.parse(res.getBody() as string);
+        
         const kevin = userProfileV2(KevinIdToken.token, KevinIdToken.uId);
         const bob = userProfileV2(KevinIdToken.token, BobIdToken.uId);
         const {channelId} = channelsCreateV2(KevinIdToken.token, 'name', true);
