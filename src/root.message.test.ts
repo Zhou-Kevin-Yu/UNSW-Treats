@@ -742,8 +742,8 @@ describe ('HTTP tests for message/edit', () => {
         `${url}:${port}/message/send/v1`,
         {
           json: {
-            token: token,
-            channelId: channelId,
+            token: secondToken,
+            channelId: firstChannelId,
             message: 'hello world',
           }
         }
@@ -879,6 +879,485 @@ describe ('HTTP tests for message/edit', () => {
     //   // For DMs, only the DM creator has owner permissions (not even global owners) 
     //   // second user creates DM so is owner
     //   // but this is the same as Test if message in DM was not sent by the authorised user making the request
+    // });
+  });
+});
+
+// HTTP testing for message/remove/v1
+// DELETE so is qs 
+describe ('HTTP tests for message/remove', () => {
+
+  // If messageRemoveV1 is successful
+  describe('Testing successful messageRemoveV1', () => {
+    test('Test valid edit of message in channel', () => {
+      // Create a token from authRegisterV2
+      const res1 = request(
+        'POST',
+        `${url}:${port}/auth/register/v2`,
+        {
+          json: {
+            email: 'kevinyu@email.com',
+            password: 'KevinsPassword0',
+            nameFirst: 'Kevin',
+            nameLast: 'Yu',
+          }
+        }
+      );
+      const registerObj = JSON.parse(res1.getBody() as string);
+      const token = registerObj.token;
+      // Create a channel Id from channelsCreateV2
+      const res2 = request(
+        'POST',
+        `${url}:${port}/channels/create/v2`,
+        {
+          json: {
+            token: token,
+            name: 'COMP1531',
+            isPublic: true,
+          }
+        }
+      );
+      const channelObj = JSON.parse(res2.getBody() as string);
+      const channelId = channelObj.channelId;
+
+      // Create a messageId from messageSendV1
+      const res3 = request(
+        'POST',
+        `${url}:${port}/message/send/v1`,
+        {
+          json: {
+            token: token,
+            channelId: channelId,
+            message: 'I love COMP1531',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res3.getBody() as string);
+      const messageId = message1Obj.messageId;
+      
+      // The user removes message 
+      const res4 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: token,
+            messageId: messageId,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(res4).toStrictEqual({ });
+    });
+
+    test('Test valid edit of message in DM', () => {
+      // Create a token from authRegisterV2
+      const res1 = request(
+        'POST',
+        `${url}:${port}/auth/register/v2`,
+        {
+          json: {
+            email: 'kevinyu@email.com',
+            password: 'KevinsPassword0',
+            nameFirst: 'Kevin',
+            nameLast: 'Yu',
+          }
+        }
+      );
+      const registerObj = JSON.parse(res1.getBody() as string);
+      const token = registerObj.token;
+      
+      /// Create another token (second user) from authRegisterV2 
+      const res2 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'user@gmail.com',
+              password: 'pw',
+              nameFirst: 'Calvin',
+              nameLast: 'Xu',
+            }
+          }
+      );
+      const register2Obj = JSON.parse(res2.getBody() as string);
+      const secondToken = register2Obj.token;    
+
+      // The first user creates a dm Id from dmCreateV1 and is directed to second user 
+      const res3 = request(
+        'POST',
+        `${url}:${port}/dm/create/v1`,
+        {
+          json: {
+            token: firstToken,
+            uIds: secondToken,
+          }
+        }
+      );
+      const dmObj = JSON.parse(res3.getBody() as string);
+      const dmId = dmObj.dmId;
+      
+      // The first user sends a message to the DM
+      const res4 = request(
+        'POST',
+        `${url}:${port}/message/senddm/v1`,
+        {
+          json: {
+            token: firstToken,
+            dmId: dmId,
+            message: 'WOW',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res4.getBody() as string);
+      const messageId = message1Obj.messageId;
+        
+      // The first user removes message in DM
+      const res6 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: firstToken,
+            messageId: messageId,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(res6).toStrictEqual({ });
+    });
+    // Add more success tests later
+  });
+
+  // If messageRemoveV1 return an error
+  describe ('Testing error cases for message/remove', () => {
+    // If messageId does not refer to a valid message within a channel
+    // That the authorised user has joined 
+    test('Test if messageId is invalid within a channel that the auth user is in', () => {
+      // Create a token from authRegisterV2
+      const res1 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'sen.smith@outlook.com',
+              password: 'peanutButter',
+              nameFirst: 'ben',
+              nameLast: 'smith',
+            }
+          }
+      );
+      const register1Obj = JSON.parse(res1.getBody() as string);
+      const firstToken = registerObj1.token;
+      
+      // The user creates a channel Id from channelsCreateV2
+      const res2 = request(
+        'POST',
+        `${url}:${port}/channels/create/v2`,
+        {
+          json: {
+            token: firstToken,
+            name: 'MATH1231',
+            isPublic: true,
+          }
+        }
+      );
+      const channel1Obj = JSON.parse(res2.getBody() as string);
+      const firstChannelId = channel1Obj.channelId;
+
+      // The user creates a messageId from messageSendV1
+      const res4 = request(
+        'POST',
+        `${url}:${port}/message/send/v1`,
+        {
+          json: {
+            token: firstToken,
+            channelId: firstChannelId,
+            message: 'My name is Alex',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res4.getBody() as string);
+      const messageId = message1Obj.messageId;
+        
+      // The user tries to edit an invalid message
+      const res6 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: firstToken,
+            messageId: messageId - 1000,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(res6).toStrictEqual(errorReturn);
+    });
+
+    // If messageId does not refer to a valid message within DM
+    // That the authorised user has joined 
+    test('Test if messageId is invalid within DM that the auth user is in', () => {
+      // Create a token (first user) from authRegisterV2
+      const res1 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'sen.smith@outlook.com',
+              password: 'peanutButter',
+              nameFirst: 'ben',
+              nameLast: 'smith',
+            }
+          }
+      );
+      const register1Obj = JSON.parse(res1.getBody() as string);
+      const firstToken = registerObj1.token;
+      
+      // Create another token (second user) from authRegisterV2 
+      const res2 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'user@gmail.com',
+              password: 'pw',
+              nameFirst: 'Calvin',
+              nameLast: 'Xu',
+            }
+          }
+      );
+      const register2Obj = JSON.parse(res2.getBody() as string);
+      const secondToken = register2Obj.token;    
+
+      // The first user creates a dm Id from dmCreateV1 and is directed to second user 
+      const res3 = request(
+        'POST',
+        `${url}:${port}/dm/create/v1`,
+        {
+          json: {
+            token: firstToken,
+            uIds: secondToken,
+          }
+        }
+      );
+      const dmObj = JSON.parse(res3.getBody() as string);
+      const dmId = dmObj.dmId;
+      
+      // The first user sends a message to the DM
+      const res4 = request(
+        'POST',
+        `${url}:${port}/message/senddm/v1`,
+        {
+          json: {
+            token: firstToken,
+            dmId: dmId,
+            message: 'I like playing games',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res4.getBody() as string);
+      const messageId = message1Obj.messageId;
+        
+      // The first user tries to edit an invalid message in DM
+      const res6 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: firstToken,
+            messageId: messageId - 1000,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(res6).toStrictEqual(errorReturn);
+    });
+
+    // If the message in channel was not sent by the authorised user making the request
+    test('Test if message in channel was not sent by the authorised user making the request', () => {
+      // Create a token from authRegisterV2
+      const res1 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'sen.smith@outlook.com',
+              password: 'peanutButter',
+              nameFirst: 'ben',
+              nameLast: 'smith',
+            }
+          }
+      );
+      const register1Obj = JSON.parse(res1.getBody() as string);
+      const firstToken = registerObj1.token;
+      
+      // Create another token from authRegisterV2
+      const res2 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'user@gmail.com',
+              password: 'pw',
+              nameFirst: 'Calvin',
+              nameLast: 'Xu',
+            }
+          }
+      );
+      const register2Obj = JSON.parse(res2.getBody() as string);
+      const secondToken = register2Obj.token;
+      
+      // The second user creates a channel Id from channelsCreateV2
+      const res3 = request(
+        'POST',
+        `${url}:${port}/channels/create/v2`,
+        {
+          json: {
+            token: secondToken,
+            name: 'ECON2101',
+            isPublic: true,
+          }
+        }
+      );
+      const channel1Obj = JSON.parse(res3.getBody() as string);
+      const firstChannelId = channel1Obj.channelId;
+
+      // The second user creates a messageId from messageSendV1
+      const res4 = request(
+        'PUT',
+        `${url}:${port}/message/send/v1`,
+        {
+          json: {
+            token: secondToken,
+            channelId: firstChannelId,
+            message: 'hello world',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res4.getBody() as string);
+      const messageId = message1Obj.messageId;
+
+      // The first user creates a channel Id from channelsCreateV2 OR SHOULD I DO CHANNEL JOIN
+      const res5 = request(
+        'POST',
+        `${url}:${port}/channels/create/v2`,
+        {
+          json: {
+            token: firstToken,
+            name: 'ECON1101',
+            isPublic: true,
+          }
+        }
+      );
+      const channel2Obj = JSON.parse(res5.getBody() as string);
+      const secondChannelId = channel2Obj.channelId;
+
+      // First user did not send message and can't remove it
+      const res6 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: firstToken,
+            messageId: messageId,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(res6).toStrictEqual(errorReturn);
+    });
+
+    // If the message in DM was not sent by the authorised user making the request
+    test('Test if message in DM was not sent by the authorised user making the request', () => {
+      // Create a token (first user) from authRegisterV2
+      const res1 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'sen.smith@outlook.com',
+              password: 'peanutButter',
+              nameFirst: 'ben',
+              nameLast: 'smith',
+            }
+          }
+      );
+      const register1Obj = JSON.parse(res1.getBody() as string);
+      const firstToken = registerObj1.token;
+      
+      // Create another token (second user) from authRegisterV2
+      const res2 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'user@gmail.com',
+              password: 'pw',
+              nameFirst: 'Calvin',
+              nameLast: 'Xu',
+            }
+          }
+      );
+      const register2Obj = JSON.parse(res2.getBody() as string);
+      const secondToken = register2Obj.token;
+      
+      // The second user creates DM and directs it to the first user 
+      const res3 = request(
+        'POST',
+        `${url}:${port}/dm/create/v1`,
+        {
+          json: {
+            token: secondToken,
+            uIds: firstToken,
+          }
+        }
+      );
+      const dmObj = JSON.parse(res3.getBody() as string);
+      const dmId = dmObj.dmId;
+      
+      // The second user sends a message to the DM
+      const res4 = request(
+        'POST',
+        `${url}:${port}/message/senddm/v1`,
+        {
+          json: {
+            token: secondToken,
+            dmId: dmId,
+            message: 'HEY',
+          }
+        }
+      );
+      const message1Obj = JSON.parse(res4.getBody() as string);
+      const messageId = message1Obj.messageId;
+        
+      // 
+      const res6 = request(
+        'DELETE',
+        `${url}:${port}/message/remove/v1`,
+        {
+          qs: {
+            token: firstToken,
+            messageId: messageId,
+          }
+        }
+      );
+      expect(res.statusCode).toBe(OK);
+      // Expect to return error
+      expect(res6).toStrictEqual(errorReturn);
+    });
+
+    // // If the authorised user does not have owner permissions in the channel
+    // test ('', () => {
+    // });
+
+    // // If the authorised user does not have owner permissions in the DM
+    // test ('', () => {
     // });
   });
 });
