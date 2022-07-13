@@ -8,8 +8,8 @@ beforeEach(() => {
 });
 
 test('Test successful authLoginV1', () => {
-  const registeredId = authRegisterV1('test@gmail.com', 'password', 'first', 'last');
-  const loggedId = authLoginV1('test@gmail.com', 'password');
+  const registeredId = authRegisterV1('test@gmail.com', 'password', 'first', 'last').authUserId;
+  const loggedId = authLoginV1('test@gmail.com', 'password').authUserId;
   expect(loggedId).toStrictEqual(registeredId);
 });
 
