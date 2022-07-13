@@ -36,12 +36,17 @@ describe('HTTP tests for dm/create', () => {
       res = request('POST',`${url}:${port}/dm/create/v1`, {
         json: {
           token: token,
-          uIds: [1], //this is an invalid uId
+          uIds: [1], //invalid uId
         }
       });
+      const returnObj = JSON.parse(res.body as string);
+      expect(returnObj).toBe({error: 'error'})
     });
+
+
     test('duplicate uIds invalid uId', () => {
-      request('POST',`${url}:${port}/auth/register/v2`, {
+      //create a valid register request
+      let res1 = request('POST',`${url}:${port}/auth/register/v2`, {
         json: {
           email: "benkerno@gmail.com",
           password: "validPass23",
@@ -49,7 +54,34 @@ describe('HTTP tests for dm/create', () => {
           nameLast: "kernohan"
         }
       });
+      let res1Obj = JSON.parse(res1.body as string);
+      let token1 = res1Obj.token;
+      let uId1 = res1Obj.authUserId;
+
+      //create a second valid register request
+      let res2 = request('POST',`${url}:${port}/auth/register/v2`, {
+        json: {
+          email: "benkerno1@gmail.com",
+          password: "validPass23",
+          nameFirst: "ben",
+          nameLast: "kernohan"
+        }
+      });
+      let res2Obj = JSON.parse(res2.body as string);
+      let uId2 = res1Obj.authUserId;
+
+      //create request that should return an error
+      let res = request('POST',`${url}:${port}/dm/create/v1`, {
+        json: {
+          token: token1,
+          uIds: [uId2, uId2], //uId2 is duplicated twice
+        }
+      });
+    const returnObj = JSON.parse(res.body as string);
+    expect(returnObj).toBe({error: 'error'})
     });
+
+    
     test('Test successful echo', () => {
       const res = request(
         'POST',
@@ -64,7 +96,7 @@ describe('HTTP tests for dm/create', () => {
       const bodyObj = JSON.parse(res.body as string);
       expect(res.statusCode).toBe(OK);
       expect(bodyObj).toEqual('Hello');
-      });
+    });
       
   });
 });
