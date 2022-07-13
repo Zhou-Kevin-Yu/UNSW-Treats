@@ -78,6 +78,11 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
+export interface DmCreateV1 {
+  dmId?: number;
+  error?: 'error';
+}
+
 interface UserObj {
   uId: number;
   nameFirst: string;
@@ -92,32 +97,38 @@ interface ChannelObj {
   channelId: number;
   name: string;
   isPublic: boolean;
-  ownerMembers: {
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  } []
-  allMembers: {
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  } []
+  ownerMembers: User[]
+  allMembers: User[]
   messages: MessagesObj[];
+}
+
+interface DmObj {
+  dmId: number;
+  creator: User;
+  members: User[];
+  name: string;
+  messages: MessagesObj[];
+}
+
+interface SystemInfo {
+  messageTotal: number;
 }
 
 export interface Data {
   users: UserObj[];
   channels: ChannelObj[];
+  dms: DmObj[];
+  systemInfo: SystemInfo;
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
 let data: Data = {
   users: [],
   channels: [],
+  dms: [],
+  systemInfo: {
+    messageTotal: 0,
+  }
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
