@@ -85,6 +85,7 @@ export function dmListV1(token: string): DmListV1 {
 
 export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1*/ {
   let data = getData();
+  //check if dmId is valid
   if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
       return { error: 'error' };
   }
@@ -102,11 +103,55 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1*/ {
 }
 
 export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
-  return {};
+  let data = getData();
+  //check if dmId is valid
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+    return { error: 'error' };
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  //check if authUser is a member of the channel
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    return { error: 'error' };
+  }
+  const dmUsers = [];
+  for (const member of data.dms[dmId].members) {
+    const userCurr = userProfileV1(authUserId, member) //TODO update with V2 function
+    dmUsers.push(userCurr);
+  }
+  //console.log(dmUsers); //temporary testing of functionality
+  return { 
+    name: data.dms[dmId].name,
+    members: dmUsers,
+  }
 }
 
 export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
-  return {};
+  let data = getData();
+  //check if dmId is valid
+  //console.log("before", data.dms); //temporary testing
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+    return { error: 'error' };
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  //check if authUser is a member of the channel
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    return { error: 'error' };
+  }
+  //splice out member from array
+  const index = data.dms[dmId].members.indexOf(authUserId, 0);
+  if (index > -1) {
+    data.dms[dmId].members.splice(index, 1);
+  }
+  //if leaver is creator
+  if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length > 1) { //TODO figure out what happens when there is one member
+    data.dms[dmId].creator = data.dms[dmId].members[0]; //set first added member as creator
+  } 
+  //if current creator is trying to leave and no one else is left, then delete DM
+  else if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length <= 1) {
+    dmRemoveV1(token, dmId);
+  }
+  //console.log("after", data.dms); //temporary testing
+
 }
 
 export function dmMessagesV1(token: string, dmId: number, start: number): DmMessagesV1 {
