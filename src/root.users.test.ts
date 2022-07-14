@@ -39,7 +39,7 @@ describe('HTTP tests for users/all/v1', () => {
         }
       });
       const resObj = JSON.parse(res.body as string);
-      expect(resObj.name).toStrictEqual({ error: 'error' });
+      expect(resObj).toStrictEqual({ error: 'error' });
     });
   });
   describe('Testing Success Cases of users/all/v1', () => {
