@@ -37,12 +37,6 @@ app.get('/echo', (req, res, next) => {
 // for logging errors
 app.use(morgan('dev'));
 
-// All channels requests
-app.post('/channels/create/v2', (req: Request, res: Response) => {
-  const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV1(token, name, isPublic));
-});
-
 // All auth requests
 app.post('/auth/login/v2', (req: Request, res: Response) => {
   const { email, password } = req.body;
