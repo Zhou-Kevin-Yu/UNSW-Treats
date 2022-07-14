@@ -1,7 +1,7 @@
 // import { sortAndDeduplicateDiagnostics } from 'typescript';
 import { getData, setData } from './dataStore';
 import { DmCreateV1, DmListV1, /* DmRemoveV1, */ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
-import { Dm, DmObj } from './dataStore';
+import { Dm, DmObj, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
 import { userProfileV1 } from './users'; // TODO update this with userProfileV2
@@ -125,9 +125,9 @@ export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
   if (!(data.dms[dmId].members.includes(authUserId))) {
     return { error: 'error' };
   }
-  const dmUsers = [];
+  const dmUsers : User[] = [];
   for (const member of data.dms[dmId].members) {
-    const userCurr = userProfileV1(authUserId, member); // TODO update with V2 function
+    const userCurr : User = userProfileV1(authUserId, member).user; // TODO update with V2 function
     dmUsers.push(userCurr);
   }
   // console.log(dmUsers); //temporary testing of functionality
@@ -160,9 +160,8 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   // if leaver is creator
   if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length > 1) { // TODO figure out what happens when there is one member
     data.dms[dmId].creator = data.dms[dmId].members[0]; // set first added member as creator
-  }
+  } else if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length <= 1) {
   // if current creator is trying to leave and no one else is left, then delete DM
-  else if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length <= 1) {
     dmRemoveV1(token, dmId);
   }
   // console.log("after", data.dms); //temporary testing
