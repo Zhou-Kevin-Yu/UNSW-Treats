@@ -6,8 +6,7 @@ import cors from 'cors';
 
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
-import { messageSendV1, messageSendDmV1, messageEditV1} from './message';
-// import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
 import { clearV1 } from './other';
 
 // Set up web app, use JSON
@@ -97,12 +96,12 @@ app.put('/message/edit/v1', (req: Request, res: Response) => {
   res.json(messageEditV1(token, messageId, message));
 });
 
-// app.delete('/message/remove/v1', (req: Request, res: Response) => {
-//   const token = req.query.token as string;
-//   const messageId = req.query.messageId as string;
-//   const newMessageId = parseInt(messageId);
-//   res.json(messageRemoveV1(token, newMessageId));
-// });
+app.delete('/message/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const messageId = req.query.messageId as string;
+  const newMessageId = parseInt(messageId);
+  res.json(messageRemoveV1(token, newMessageId));
+});
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
   const { token, dmId, message } = req.body;
