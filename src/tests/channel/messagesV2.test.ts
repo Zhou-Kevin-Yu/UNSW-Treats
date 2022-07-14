@@ -1,7 +1,4 @@
-import { channelDetailsV2 } from '../../channel/details/v2'
-import { channelsCreateV2 } from '../../channels/create/v2'
-import { authRegisterV2 }   from '../../auth/register/v2'
-import { messageSendV1 }    from '../../message/send/v1';
+import { url, port } from '../../config.json'
 
 const request = require('sync-request');
 
@@ -9,22 +6,56 @@ const OK = 200;
 
 describe('Testing basic functionality', () => {
     test('single message in channel', () => {
-        const KevinIdToken = authRegisterV2('kevinyu@email.com', 'KevinsPassword0', 'Kevin', 'Yu');
-        const {channelId} = channelsCreateV2(KevinIdToken.token, 'name', true);
-        const {messageId.timeSent} = messageSendV1(KevinIdToken.token, channelId, 'Hello World!');
-        const res = request('GET','127.0.0.1:2000/src/channel/messages/v2.ts', {
+        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        {
+            json: {
+                email: 'kevinyu@email.com',
+                password: 'KevinsPassword0',
+                nameFirst: 'Kevin',
+                nameLast: 'Yu'
+            }
+        });
+        const kevin = JSON.parse(res.getBody() as string);
+        res = request('POST', `${url}:${port}/src/channels/create/v2`,
+        {
+            json: {
+                token: kevin.token,
+                name: 'name',
+                isPublic: true
+            }
+        });
+        const {cId} = res.getBody();
+        res = request('POST', `${url}:${port}/src/message/send/v1`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: cId,
+                message: 'Hello World'
+            }
+        });
+        const {messageId} = JSON.parse(res.getBody() as string);
+        res = request('GET',`${url}:${port}/src/channel/messages/v2.ts`,
+        {
             qs: {
-                token: KevinIdToken.token,
-                channelId: channelId,
+                token: kevin.token,
+                channelId: cId,
                 start: 0
             }
         });
         expect(res.statusCode).toBe(OK);
-        expect(channelDetailsV2(BobIdToken.token, channelId).messages).toStrictEqual({
+        res = request('GET', `${url}:${port}/src/chanel/details/v2`,
+        {
+            qs: {
+                token: kevin.token,
+                channelId: cId
+            }
+        });
+        
+        expect(res.getBody().messages).toStrictEqual({
             messages:   [
                 {
                     messageId:  messageId,
-                    uId:        KevinIdToken.uId,
+                    uId:        kevin.uId,
                     message:    'Hello World!',
                     timeSent:   messageId.timeSent
                 }
