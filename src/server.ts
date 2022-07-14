@@ -140,7 +140,7 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-// All users requests 
+// All users requests
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
