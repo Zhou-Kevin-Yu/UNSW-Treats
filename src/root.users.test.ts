@@ -28,15 +28,15 @@ function authRegisterSS(email: string, password: string, nameFirst: string, name
           }
   );
   return JSON.parse(res.body as string);
-}*/
+}
+  */
 test('Test successful echo', () => {
   const res = request(
-    'POST',
-          `${url}:${port}/dm/create/v1`,
+    'GET',
+          `${url}:${port}/echo`,
           {
-            json: {
-              token: '0',
-              uIds: [1, 1, 2]
+            qs: {
+              echo: 'Hello',
             }
           }
   );
@@ -44,4 +44,3 @@ test('Test successful echo', () => {
   expect(res.statusCode).toBe(OK);
   expect(bodyObj).toEqual('Hello');
 });
-
