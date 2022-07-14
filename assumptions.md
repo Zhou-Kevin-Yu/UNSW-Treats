@@ -15,3 +15,10 @@ General Assumptions:
 - Parameteres aren't passed in as a single object containing keys and values, instead they are just those values
 - all functions shouldn't expect a valid authUserId
 - Return types are an object, with specified keys and values
+
+*ITERATION 2 ASSUMPTIONS*
+dm/create/v1:
+- should throw an error if the user creating the dm is also in the uId array
+
+dm/leave/v1
+- when creator leave the dm, another person is promoted. This is decided by the order of which the creator made the dm.

@@ -37,7 +37,7 @@ test('Test successful user clear', () => {
   // test if clearV1 works
   clearV1();
   const dataNew = getData();
-  const dataTrue: Data = { users: [], channels: [] };
+  const dataTrue: Data = { users: [], channels: [], dms: [], systemInfo: { messageTotal: 0 } };
   expect(dataNew).toStrictEqual(dataTrue);
 });
 
