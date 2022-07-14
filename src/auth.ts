@@ -140,7 +140,7 @@ function handleCreate(nameFirst: string, nameLast: string): string {
  * @return {} - no return value
  *
 */
-function authLogoutV1 (token: string): void {
+function authLogoutV1 (token: string): { error?: 'error' } {
   if (isTokenValid(token)) {
     const data = getData();
     const authUserId = tokenToAuthUserId(token, true);
@@ -148,6 +148,7 @@ function authLogoutV1 (token: string): void {
     data.users[authUserId].tokens = userTokens.filter(t => t !== token);
     setData(data);
   }
+  return {};
 }
 
 export { authLoginV1, authRegisterV1, authLogoutV1 };
