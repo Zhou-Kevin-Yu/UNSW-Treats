@@ -10,6 +10,8 @@ import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { json } from 'stream/consumers';
 
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+
 // Set up web app, use JSON
 const app = express();
 app.use(express.json());
@@ -52,6 +54,28 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
+// All user routes
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const u = req.query.uId as string;
+  const uId = parseInt(u);
+  res.json(userProfileV2(token, uId));
+});
+
+app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
+  const { token, nameFirst, nameLast } = req.body;
+  res.json(userProfileSetnameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetemailV1(token, email));
+});
+
+app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+  const { token, handle } = req.body;
+  res.json(userProfileSethandleV1(token, handle));
+});
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
