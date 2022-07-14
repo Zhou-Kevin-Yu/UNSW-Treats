@@ -28,7 +28,8 @@ beforeEach(() => {
 
 describe('HTTP tests channelsCreateV2', () => {
 
-    test('error output', () => {
+    
+    test('error output - invalid token to create channel', () => {
 
         const res = req ('POST', `${url}:${port}/channels/create/V2`, {
             json: {
@@ -38,6 +39,59 @@ describe('HTTP tests channelsCreateV2', () => {
             }
         }
     )
+    const channel = JSON.parse(res.body as string);
+    expect(res.statusCode).toBe(200);
+    expect(channel).toBe({errorOutput});
+
+    });
+
+    test('Testing invalid name inputs - less than 1 character', () => {
+
+        let res = request('POST', `${url}:${port}/auth/register/v2`, {
+            json: {
+              email: 'gary.sun@gmail.com',
+              password:  'password',
+              nameFirst: 'gary',
+              nameLast: 'sun'
+            }
+        });
+
+        const authId = JSON.parse(res.body as string);
+
+        const res = req ('POST', `${url}:${port}/channels/create/V2`, {
+            json: {
+                token: authId.token,
+                name: '',
+                isPublic: true
+            }
+        }
+    )
+    const channel = JSON.parse(res.body as string);
+    expect(res.statusCode).toBe(200);
+    expect(channel).toBe({errorOutput});
+
+    });
+
+    test('Testing invalid name inputs - more than 20 characters', () => {
+
+        let res = request('POST', `${url}:${port}/auth/register/v2`, {
+            json: {
+              email: 'gary.sun@gmail.com',
+              password:  'password',
+              nameFirst: 'gary',
+              nameLast: 'sun'
+            }
+        });
+
+        const authId = JSON.parse(res.body as string);
+
+        const res = req ('POST', `${url}:${port}/channels/create/V2`, {
+            json: {
+                token: authId.token,
+                name: 'asdfghjkasdfghjkasdfghjkasdfghjksdfghj',
+                isPublic: true
+            }
+        });
     const channel = JSON.parse(res.body as string);
     expect(res.statusCode).toBe(200);
     expect(channel).toBe({errorOutput});
@@ -84,12 +138,73 @@ describe('HTTP tests channelsCreateV2', () => {
 
     });
        
+    test('Testing private channels', () => {
+
+        let res = request('POST', `${url}:${port}/auth/register/v2`, {
+            json: {
+              email: 'gary.sun@gmail.com',
+              password:  'password',
+              nameFirst: 'gary',
+              nameLast: 'sun'
+            }
+        });
+
+        const authId = JSON.parse(res.body as string);
+
+        const res = req ('POST', `${url}:${port}/channels/create/V2`, {
+            json: {
+                token: authId.token,
+                name: 'COMP5642',
+                isPublic: false
+            }
+        });
+    const channel = JSON.parse(res.body as string);
+
+    const res = req ('POST', `${url}:${port}/channels/create/V2`, {
+        json: {
+            token: authId.token,
+            name: 'MATH1081',
+            isPublic: true
+        }
+    });
+    const channel_2 = JSON.parse(res.body as string);
+    expect(res.statusCode).toBe(200);
+    expect(channel.channelId).toBe(0);
+    expect(channel_2.channelId).toBe(1);
+
+    });
 
 });
 
 describe('HTTP tests channels/listV2', () => {
 
     //No error output can be tested
+
+    test('No error output - checking if there are no channels', () => {
+        let res = request('POST', `${url}:${port}/auth/register/v2`, {
+            json: {
+              email: 'gary.sun@gmail.com',
+              password:  'password',
+              nameFirst: 'gary',
+              nameLast: 'sun'
+            }
+        });
+
+        const authId = JSON.parse(res.body as string);
+
+        const res = req ('GET',`${url}:${port}/channels/listV2`, {
+            qs: {
+                token: authId.token,
+            }
+        });
+
+        expect(res.statusCode).toBe(200);
+        res = JSON.parse(res.body as string);
+
+        expect(res.bodyObj).toStrictEqual({channels : []});
+
+    });
+
     test('No error output - checking if it will only return channel user has joined', () => {
         let res = request('POST', `${url}:${port}/auth/register/v2`, {
             json: {
@@ -298,4 +413,4 @@ app.get('channels/listall/V2', (req, res) = > {
     const token = req.query;
     const authId = tokenToAuthUserId(token).authUserId;
     res.json(channelsListAllV1(authId));
-});
+});*/
