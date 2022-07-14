@@ -52,6 +52,7 @@ function messageSendV1 (token: string, channelId: number, message: string) {
           };
           channel.messages.push(newChannelMessage);
           setData(data);
+          return { messageId: messageIdCopy };
         }
       }
     }
@@ -67,7 +68,7 @@ function messageSendV1 (token: string, channelId: number, message: string) {
     return error;
   }
 
-  return messageIdCopy;
+  // return { messageId: messageIdCopy };
 }
 
 /**
@@ -402,7 +403,7 @@ function messageSendDmV1 (token: string, dmId: number, message: string) {
     return error;
   }
 
-  return messageIdCopy;
+  return { messageId: messageIdCopy };
 }
 
 export { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 };
