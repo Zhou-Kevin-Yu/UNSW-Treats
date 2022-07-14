@@ -1453,7 +1453,7 @@ describe('HTTP tests for message/senddm', () => {
       // Expect to return messageId
       // expect(data).toStrictEqual({ messageId: expect.any(Number) });
       // expect(data).toStrictEqual(expect.any(Number));
-      expect(data).toStrictEqual(0);
+      expect(data).toStrictEqual(0); // first message should have the messageId : 0;
     });
 
     // Add more success tests later
