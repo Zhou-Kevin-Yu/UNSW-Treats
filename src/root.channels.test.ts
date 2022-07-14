@@ -1,4 +1,4 @@
-
+/*
 import { clearV1 } from "./other";
 import { authRegisterV2 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from "./channels";
