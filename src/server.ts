@@ -7,6 +7,7 @@ import cors from 'cors';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { clearV1 } from './other';
+import { json } from 'stream/consumers';
 
 // Set up web app, use JSON
 const app = express();
