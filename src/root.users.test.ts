@@ -13,7 +13,7 @@ console.log(os.platform());
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
-/*
+
 function authRegisterSS(email: string, password: string, nameFirst: string, nameLast: string) {
   const res = request(
     'POST',
@@ -29,7 +29,43 @@ function authRegisterSS(email: string, password: string, nameFirst: string, name
   );
   return JSON.parse(res.body as string);
 }
-  */
+
+beforeEach(() => {
+  request('DELETE', `${url}:${port}/clear/v1`);
+});
+
+describe('HTTP tests for users/all/v1', () => {
+  describe('Testing Error Cases for users/all/v1', () => {
+    test('invalid token', () => {
+      const res = request('GET', `${url}:${port}/users/all/v1`, {
+        qs: {
+          token: 'fake token',
+        }
+      });
+      const resObj = JSON.parse(res.body as string);
+      expect(resObj).toStrictEqual({ error: 'error' });
+    });
+  });
+  describe('Testing Success Cases of users/all/v1', () => {
+    test('one user user list', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const res = request('GET', `${url}:${port}/users/all/v1`, {
+        qs: {
+          token: reg1.token,
+        }
+      });
+      const resObj = JSON.parse(res.body as string);
+      const user = request('GET', `${url}:${port}/user/profile/v2`, {
+        qs: {
+          token: reg1.token,
+          uId: reg1.token,
+        }
+      });
+      const userObj = JSON.parse(user.body as string).user;
+      expect(resObj.users[0]).toStrictEqual(userObj);
+    });
+  });
+});
 test('Test successful echo', () => {
   const res = request(
     'GET',
