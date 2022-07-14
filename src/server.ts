@@ -4,12 +4,15 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 
+import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
-
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+
+const errorOutput = { error: 'error' };
 
 // Set up web app, use JSON
 const app = express();
@@ -48,6 +51,32 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
   const { token } = req.body;
   res.json(authLogoutV1(token));
 });
+
+/// /////////////////////////////////////////////////////////channels functions
+app.post('/channels/create/v2', (req: Request, res: Response) => {
+  const { token, name, isPublic } = req.body;
+  if (!isTokenValid(token)) return errorOutput;
+  const authId = tokenToAuthUserId(token, true);
+  res.json(channelsCreateV1(authId, name, isPublic));
+});
+
+app.get('/channels/list/v2', (req: Request, res: Response) => {
+  const { token } = req.query;
+  const tokenParse = token.toString();
+  if (!isTokenValid(tokenParse)) return errorOutput;
+  const authId = tokenToAuthUserId(tokenParse, true);
+  res.json(channelsListV1(authId));
+});
+
+app.get('/channels/listall/v2', (req: Request, res: Response) => {
+  const { token } = req.query;
+  const tokenParse = token.toString();
+  if (!isTokenValid(tokenParse)) return errorOutput;
+  const authId = tokenToAuthUserId(tokenParse, true);
+  res.json(channelsListallV1(authId));
+});
+
+/// /////////////////////////////////////////////////////////
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());

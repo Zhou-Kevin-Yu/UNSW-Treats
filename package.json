@@ -4,7 +4,7 @@
         "tsc": "tsc --noImplicitAny",
         "lint": "eslint src/**.ts",
         "lint-fix": "eslint --fix src/**.ts",
-         "start": "nodemon src/server.ts",
+        "start": "nodemon src/server.ts",
         "green-tick": "jest && tsc --noImplicitAny && eslint src/**.ts",
         "adv-green-tick": "npm install && tsc --noImplicitAny && eslint --fix src/**.ts && npm start & sleep 10 && npm run test && killall node"
     },
