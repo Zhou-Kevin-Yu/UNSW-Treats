@@ -1,17 +1,8 @@
-import { getData, setData } from './dataStore.js';
+import { getData, setData } from './dataStore';
+import { tokenToAuthUserId, isTokenValid } from './token';
 import { MessagesObj } from './dataStore';
 
 const error = { error: 'error' };
-
-// Note: Each message should have its own unique ID,
-// i.e. no messages should share an ID with another message, even if that other message is in a different channel.
-
-// For all routes which take token as a parameter, an { error: 'error' } object should be returned when the token passed in is invalid.
-
-// eg. authLogin
-// app.post ('/auth/login/v2', (req, res, next) => {
-
-// });
 
 /**
  *
@@ -21,44 +12,59 @@ const error = { error: 'error' };
  * @returns
  */
 function messageSendV1 (token: string, channelId: number, message: string) { // : MessageSendV1
-  // // error
-  // // if token invalid pass error
-  // // so figure out where token is stored and do the same thing below
-  // let exist_channel = 0;
-  // const data = getData();
-  // //If channelId is invalid
-  // for (const channel of data.channels) {
-  //     if (channel.channelId === channelId) {
-  //         exist_channel = 1;
-  //     }
-  // }
 
-  // // If the channel Id does not exist or is invalid
-  // if (exist_channel === 0) {
-  //     throw new Error('if the channel is not valid');
-  // }
+  const data = getData();
+  let existChannel = 0;
+  let existAuth = 0;
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return error;
+  }
 
-  // // length of message is less than 1 or over 1000 characters
-  // // use string.length < 1 or > 1000 then return error;
+  // If length of message is less than 1 or over 1000 characters
+  if (message.length < 1 || message.length > 1000) {
+    return error;
+  }
 
-  // // channelId is valid and the authorised user is not a member of the channel
-  // // If the auth user is not a member of the channel
-  // if (exist_auth === 0) {
-  //     // return { error: 'error' };
-  //     throw new Error('auth user is not a member of the channel');
-  // }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
 
-  // // implementation down below
-  // // the logic is to loop through the channels
-  // // make sure channelId exists
-  // // loop through all members in selected channel
-  // // if auth user is a member
-  // // push the message into messages array which is in channels array
-  // // channel.messages
-  // // then use some library to generate a messageId
+  // To loop through all the existing channels
+  for (const channel of data.channels) {
+    // If the channel Id exists
+    if (channelId === channel.channelId) {
+      existChannel = 1;
+      // To loop through all the members in selected channel
+      for (const member of channel.allMembers) {
+        // If the auth user is a member
+        if (authUserId === member.uId) {
+          existAuth = 1;
 
-  return token + channelId + message;
-  // return messageId which is an integer
+          let messageIdCopy = data.systemInfo.messageTotal;
+          data.systemInfo.messageTotal++;
+          const newChannelMessage: MessagesObj = {
+            messageId: messageIdCopy,
+            uId: authUserId,
+            message: message,
+            timeSent: 0,
+          };
+          channel.messages.push(newChannelMessage);
+          setData(data);
+        }
+      }
+    }
+  }
+
+  // If the channel Id does not exist or is invalid
+  if (existChannel === 0) {
+    return error;
+  }
+
+  // If channelId is valid and the authorised user is not a member of the channel
+  if (existAuth === 0) {
+    return error;
+  }
+
+  return messageIdCopy;
 }
 
 /**
@@ -69,11 +75,21 @@ function messageSendV1 (token: string, channelId: number, message: string) { // 
  * @returns
  */
 function messageEditV1 (token: string, messageId: number, message: string) {
-  // error
-  // if token invalid pass error
-  // so figure out where token is stored and do the same thing below
-  // error length of message is over 1000 characters
-  // string length
+  
+  const data = getData();
+  // let existChannel = 0;
+  // let existAuth = 0;
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return error;
+  }
+
+  // If length of message is over 1000 characters
+  if (message.length > 1000) {
+    return error;
+  }
+
+
   // messageId does not refer to a valid message within a channel/DM that the authorised user has joined
   // loop through channel.messages
   // if messageId does not equal anything then is error
