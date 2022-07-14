@@ -1,10 +1,10 @@
-import { getData, UserAllV1, User } from './dataStore'
+import { getData, UserAllV1, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { userProfileV1 } from './user'
+import { userProfileV1 } from './user';
 
 function usersAllV1(token: string): UserAllV1 {
-  let data = getData();
-  //get token and return error if invalid
+  const data = getData();
+  // get token and return error if invalid
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   if (!isTokenValid(token)) {
     return { error: 'error' };

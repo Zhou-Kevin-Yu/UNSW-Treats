@@ -29,13 +29,13 @@ function authRegisterSS(email: string, password: string, nameFirst: string, name
   );
   return JSON.parse(res.body as string);
 }
-  
+
 describe('HTTP tests for users/all/v1', () => {
   describe('Testing Error Cases for users/all/v1', () => {
     test('invalid token', () => {
       const res = request('GET', `${url}:${port}/users/all/v1`, {
         qs: {
-          token: "fake token",
+          token: 'fake token',
         }
       });
       const resObj = JSON.parse(res.body as string);
@@ -44,7 +44,7 @@ describe('HTTP tests for users/all/v1', () => {
   });
   describe('Testing Success Cases of users/all/v1', () => {
     test('one user user list', () => {
-      const reg1 = authRegisterSS("bk@gmail.com", "validPass98", "b", "k");
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
       const res = request('GET', `${url}:${port}/users/all/v1`, {
         qs: {
           token: reg1.token,
@@ -52,7 +52,7 @@ describe('HTTP tests for users/all/v1', () => {
       });
     });
   });
-}); 
+});
 test('Test successful echo', () => {
   const res = request(
     'GET',
