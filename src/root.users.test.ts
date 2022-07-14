@@ -50,6 +50,15 @@ describe('HTTP tests for users/all/v1', () => {
           token: reg1.token,
         }
       });
+      const resObj = JSON.parse(res.body as string);
+      const user = request('GET', `${url}:${port}/user/profile/v2`, {
+        qs: {
+          token: reg1.token,
+          uId: reg1.token,
+        }
+      });
+      const userObj = JSON.parse(user.body as string).user;
+      expect(resObj.users[0]).toStrictEqual(userObj);
     });
   });
 });

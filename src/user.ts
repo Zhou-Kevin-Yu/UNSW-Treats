@@ -38,7 +38,6 @@ function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   return { user };
 }
 
-
 function userProfileV2(token: string, uId: number): UserDetailsV1 {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   if (authUserId === null) {
