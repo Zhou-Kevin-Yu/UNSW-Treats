@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { channelsCreateV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
 import { clearV1 } from './other';
@@ -30,6 +31,12 @@ app.get('/echo', (req, res, next) => {
 
 // for logging errors
 app.use(morgan('dev'));
+
+// All channels requests
+app.post('/channels/create/v2', (req: Request, res: Response) => {
+  const { token, name, isPublic } = req.body;
+  res.json(channelsCreateV1(token, name, isPublic));
+});
 
 // All auth requests
 app.post('/auth/login/v2', (req: Request, res: Response) => {
