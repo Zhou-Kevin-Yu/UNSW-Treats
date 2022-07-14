@@ -63,8 +63,8 @@ const data = {
     dms: [
         {
             dmId: 0,
-            creator: {Ben},
-            members: [{Ben}, {Etkin}, {Manav}],
+            creator: 2,
+            members: [0, 1, 2],
             name: "etkintetik, benkernohan, manavpawar",
             messages : [                        //but they were too much to put in :)
                 {
