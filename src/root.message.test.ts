@@ -75,6 +75,7 @@ describe('HTTP tests for message/send', () => {
       expect(res.statusCode).toBe(OK);
       // Expect to return messageId
       expect(data).toStrictEqual({ messageId: expect.any(Number) });
+      expect(data.messageId).toBe(0); // first message should have the messageId : 0;
     });
 
     // Add more success tests later
@@ -689,6 +690,7 @@ describe('HTTP tests for message/edit', () => {
     // If the message in channel was not sent by the authorised user making the request
     test('Test if message in channel was not sent by the authorised user making the request', () => {
       // Create a token from authRegisterV2
+      // First user to sign up is an owner in Treats
       const res1 = request(
         'POST',
           `${url}:${port}/auth/register/v2`,
@@ -703,7 +705,7 @@ describe('HTTP tests for message/edit', () => {
       );
       const register1Obj = JSON.parse(res1.getBody() as string);
       const firstToken = register1Obj.token;
-
+      // const firstUser = [register1Obj.authUserId];
       // Create another token from authRegisterV2
       const res2 = request(
         'POST',
@@ -719,6 +721,23 @@ describe('HTTP tests for message/edit', () => {
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
       const secondToken = register2Obj.token;
+
+      // Create third user from authRegisterV2
+      const res5 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'wow@outlook.com',
+              password: 'abcdefghi',
+              nameFirst: 'Alvin',
+              nameLast: 'Chipmunk',
+            }
+          }
+      );
+      const register3Obj = JSON.parse(res5.getBody() as string);
+      const thirdToken = register3Obj.token;
+      // const thirdUser = [register3Obj.authUserId];
 
       // The second user creates a channel Id from channelsCreateV2
       const res3 = request(
@@ -750,20 +769,6 @@ describe('HTTP tests for message/edit', () => {
       const message1Obj = JSON.parse(res4.getBody() as string);
       const messageId = message1Obj.messageId;
 
-      // The first user creates a channel Id from channelsCreateV2
-      // const res5 = request(
-      //   'POST',
-      //   `${url}:${port}/channels/create/v2`,
-      //   {
-      //     json: {
-      //       token: firstToken,
-      //       name: 'ECON1101',
-      //       isPublic: true,
-      //     }
-      //   }
-      // );
-      // const channel2Obj = JSON.parse(res5.getBody() as string);
-      // const secondChannelId = channel2Obj.channelId;
       // The first user joins channel created by second user
       request(
         'POST',
@@ -775,16 +780,53 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      // const channel2Obj = JSON.parse(res5.getBody() as string);
-      // const secondChannelId = channel2Obj.channelId;
 
-      // First user tries to edit a valid message but they did not send that message
+      // The third user joins channel created by second user
+      request(
+        'POST',
+        `${url}:${port}/channels/join/v2`,
+        {
+          json: {
+            token: thirdToken,
+            channelId: firstChannelId,
+          }
+        }
+      );
+
+      // // The first user joins channel created by second user
+      // request(
+      //   'POST',
+      //   `${url}:${port}/channels/invite/v2`,
+      //   {
+      //     json: {
+      //       token: secondToken,
+      //       channelId: firstChannelId,
+      //       uId: thirdUser,
+      //     }
+      //   }
+      // );
+
+      // // The third user joins channel created by second user
+      // request(
+      //   'POST',
+      //   `${url}:${port}/channels/invite/v2`,
+      //   {
+      //     json: {
+      //       token: secondToken,
+      //       channelId: firstChannelId,
+      //       uId: firstUser,
+      //     }
+      //   }
+      // );
+
+      // Third user tries to edit a valid message but they did not send that message
+      // First user is Treats owner so use third user here
       const res6 = request(
         'PUT',
         `${url}:${port}/message/edit/v1`,
         {
           json: {
-            token: firstToken,
+            token: thirdToken,
             messageId: messageId,
             message: 'Hello, the world is round',
           }
@@ -1451,9 +1493,9 @@ describe('HTTP tests for message/senddm', () => {
       const data = JSON.parse(res3.getBody() as string);
       expect(res3.statusCode).toBe(OK);
       // Expect to return messageId
-      // expect(data).toStrictEqual({ messageId: expect.any(Number) });
+      expect(data).toStrictEqual({ messageId: expect.any(Number) });
       // expect(data).toStrictEqual(expect.any(Number));
-      expect(data).toStrictEqual(0); // first message should have the messageId : 0;
+      expect(data.messageId).toBe(0); // first message should have the messageId : 0;
     });
 
     // Add more success tests later
