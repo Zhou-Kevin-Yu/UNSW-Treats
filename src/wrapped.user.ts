@@ -27,7 +27,7 @@ function userProfileV2ServerSide(token: string, uId: number): UserDetailsV1 {
 function userSetnameV1ServerSide(token: string, nameFirst: string, nameLast: string) : { error?: 'error' } {
     const res = request(
         'PUT',
-        `${url}:${port}/user/setname/v1`,
+        `${url}:${port}/user/profile/setname/v1`,
         {
             json: {
                 token,
@@ -42,7 +42,7 @@ function userSetnameV1ServerSide(token: string, nameFirst: string, nameLast: str
 function userSetemailV1ServerSide(token: string, email: string) : { error?: 'error' } {
     const res = request(
         'PUT',
-        `${url}:${port}/user/setemail/v1`,
+        `${url}:${port}/user/profile/setemail/v1`,
         {
             json: {
                 token,
@@ -56,7 +56,7 @@ function userSetemailV1ServerSide(token: string, email: string) : { error?: 'err
 function userSethandleV1ServerSide(token: string, handle: string) : { error?: 'error' } {
     const res = request(
         'PUT',
-        `${url}:${port}/user/sethandle/v1`,
+        `${url}:${port}/user/profile/sethandle/v1`,
         {
             json: {
                 token,
