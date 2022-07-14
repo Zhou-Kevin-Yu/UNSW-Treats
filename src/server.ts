@@ -84,6 +84,30 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
 });
 // TODO add dm/messages/v1
 
+// All message requests
+// app.post('/message/send/v1', (req: Request, res: Response) => {
+//   const { token, channelId, message } = req.body;
+//   res.json(messageSendV1(token, channelId, message));
+// });
+
+// app.put('/message/edit/v1', (req: Request, res: Response) => {
+//   const { token, messageId, message } = req.body;
+//   res.json(messageEditV1(token, messageId, message));
+//   // or is it res.send(messageEditV1(token, messageId, message));
+// });
+
+// app.delete('/message/remove/v1', (req: Request, res: Response) => {
+//   const token = req.query.token as string;
+//   const messageId = req.query.messageId as string;
+//   const newMessageId = parseInt(messageId);
+//   res.json(messageRemoveV1(token, newMessageId));
+// });
+
+// app.post('/message/senddm/v1', (req: Request, res: Response) => {
+//   const { token, dmId, message } = req.body;
+//   res.json(messageSendV1(token, dmId, message));
+// });
+
 // start server
 app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
