@@ -181,11 +181,7 @@ function getData() {
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-<<<<<<< HEAD
-function setData(newData: Data) {
-=======
 function setData(newData : Data) {
->>>>>>> 8b2a010672dcf972fa68fca5ac86c1e1e307d865
   data = newData;
 }
 

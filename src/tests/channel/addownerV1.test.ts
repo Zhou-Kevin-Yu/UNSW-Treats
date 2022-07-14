@@ -1,8 +1,11 @@
 import { url, port }      from '../../config.json'
+import { clearV1 } from '../../other';
 
 const request = require('sync-request');
 
 const OK = 200;
+
+beforeEach (() => clearV1());
 
 describe('Testing basic functionality', () => {
     test('Adding 1 owner', () => {

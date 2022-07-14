@@ -2,10 +2,13 @@ import { channelDetailsV2 } from '../../channel/details/v2'
 import { channelsCreateV2 } from '../../channels/create/v2'
 import { userProfileV2 }    from '../../user/profile/v2'
 import { authRegisterV2 }   from '../../auth/register/v2'
+import { clearV1 } from '../../other';
 
 const request = require('sync-request');
 
 const OK = 200;
+
+beforeEach (() => clearV1());
 
 describe('Testing basic functionality', () => {
     test('Detailing one channel', () => {
