@@ -8,13 +8,7 @@ export interface User {
 }
 
 export interface UserDetailsV1 {
-  user?:{
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  }
+  user?: User;
   error?: 'error';
 }
 
@@ -80,6 +74,50 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
+// DM interfaces
+export interface Dm {
+  dmId: number;
+  name: string;
+}
+
+export interface DmCreateV1 {
+  dmId?: number;
+  error?: 'error';
+}
+
+export interface DmListV1 {
+  dms?: Dm[];
+  error?: 'error';
+}
+
+// export interface DmRemoveV1 {
+//   error?: 'error';
+// }
+
+export interface DmDetailsV1 {
+  name?: string;
+  members?: User[];
+  error?: 'error';
+}
+
+export interface DmLeaveV1 {
+  error?: 'error';
+}
+
+export interface DmMessagesV1 {
+  messages?: MessagesObj[];
+  start?: number;
+  end?: number;
+  error?: 'error';
+}
+
+export interface DmObj {
+  dmId: number;
+  creator: number;
+  members: number[];
+  name: string;
+  messages: MessagesObj[];
+}
 interface UserObj {
   uId: number;
   nameFirst: string;
@@ -95,32 +133,30 @@ interface ChannelObj {
   channelId: number;
   name: string;
   isPublic: boolean;
-  ownerMembers: {
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  } []
-  allMembers: {
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  } []
+  ownerMembers: User[]
+  allMembers: User[]
   messages: MessagesObj[];
+}
+
+interface SystemInfo {
+  messageTotal: number;
 }
 
 export interface Data {
   users: UserObj[];
   channels: ChannelObj[];
+  dms: DmObj[];
+  systemInfo: SystemInfo;
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
 let data: Data = {
   users: [],
   channels: [],
+  dms: [],
+  systemInfo: {
+    messageTotal: 0,
+  }
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
