@@ -278,7 +278,7 @@ describe('HTTP tests for message/send', () => {
         {
           json: {
             email: 'user@gmail.com',
-            password: 'pw',
+            password: 'abcdefg',
             nameFirst: 'Calvin',
             nameLast: 'Xu',
           }
@@ -413,14 +413,14 @@ describe('HTTP tests for message/edit', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
-      const secondToken = register2Obj.token;
+      const secondUser = [register2Obj.authUserId];
 
       // The first user creates a dm Id from dmCreateV1 and is directed to second user
       const res3 = request(
@@ -429,7 +429,7 @@ describe('HTTP tests for message/edit', () => {
         {
           json: {
             token: firstToken,
-            uIds: secondToken,
+            uIds: secondUser,
           }
         }
       );
@@ -630,14 +630,14 @@ describe('HTTP tests for message/edit', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
-      const secondToken = register2Obj.token;
+      const secondUser = [register2Obj.authUserId];
 
       // The first user creates a dm Id from dmCreateV1 and is directed to second user
       const res3 = request(
@@ -646,7 +646,7 @@ describe('HTTP tests for message/edit', () => {
         {
           json: {
             token: firstToken,
-            uIds: secondToken,
+            uIds: secondUser,
           }
         }
       );
@@ -711,7 +711,7 @@ describe('HTTP tests for message/edit', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
@@ -813,6 +813,7 @@ describe('HTTP tests for message/edit', () => {
       );
       const register1Obj = JSON.parse(res1.getBody() as string);
       const firstToken = register1Obj.token;
+      const firstUser = [register1Obj.authUserId];
 
       // Create another token (second user) from authRegisterV2
       const res2 = request(
@@ -821,7 +822,7 @@ describe('HTTP tests for message/edit', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
@@ -837,7 +838,7 @@ describe('HTTP tests for message/edit', () => {
         {
           json: {
             token: secondToken,
-            uIds: firstToken,
+            uIds: firstUser,
           }
         }
       );
@@ -985,14 +986,14 @@ describe('HTTP tests for message/remove', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
-      const secondToken = register2Obj.token;
+      const secondUser = [register2Obj.authUserId];
 
       // The first user creates a dm Id from dmCreateV1 and is directed to second user
       const res3 = request(
@@ -1001,7 +1002,7 @@ describe('HTTP tests for message/remove', () => {
         {
           json: {
             token: firstToken,
-            uIds: secondToken,
+            uIds: secondUser,
           }
         }
       );
@@ -1134,14 +1135,14 @@ describe('HTTP tests for message/remove', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
-      const secondToken = register2Obj.token;
+      const secondUser = [register2Obj.authUserId];
 
       // The first user creates a dm Id from dmCreateV1 and is directed to second user
       const res3 = request(
@@ -1150,7 +1151,7 @@ describe('HTTP tests for message/remove', () => {
         {
           json: {
             token: firstToken,
-            uIds: secondToken,
+            uIds: secondUser,
           }
         }
       );
@@ -1213,7 +1214,7 @@ describe('HTTP tests for message/remove', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
@@ -1311,6 +1312,7 @@ describe('HTTP tests for message/remove', () => {
       );
       const register1Obj = JSON.parse(res1.getBody() as string);
       const firstToken = register1Obj.token;
+      const firstUser = [register1Obj.authUserId];
 
       // Create another token (second user) from authRegisterV2
       const res2 = request(
@@ -1319,7 +1321,7 @@ describe('HTTP tests for message/remove', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
@@ -1335,7 +1337,7 @@ describe('HTTP tests for message/remove', () => {
         {
           json: {
             token: secondToken,
-            uIds: firstToken,
+            uIds: firstUser,
           }
         }
       );
@@ -1411,14 +1413,14 @@ describe('HTTP tests for message/senddm', () => {
         {
           json: {
             email: 'user@gmail.com',
-            password: 'pw',
+            password: 'abcdefg',
             nameFirst: 'Calvin',
             nameLast: 'Xu',
           }
         }
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
-      const userToken = register2Obj.token;
+      const secondUser = [register2Obj.authUserId];
 
       // Create a dm Id from dm/create/v1
       const dmRes = request(
@@ -1427,7 +1429,7 @@ describe('HTTP tests for message/senddm', () => {
         {
           json: {
             token: authToken,
-            uIds: userToken,
+            uIds: secondUser,
           }
         }
       );
@@ -1518,14 +1520,14 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
         );
         const register2Obj = JSON.parse(res1.getBody() as string);
-        const secondToken = register2Obj.token;
+        const secondUser = [register2Obj.authUserId];
 
         // Create a dm Id from dmCreateV1
         const res2 = request(
@@ -1534,7 +1536,7 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               token: firstToken,
-              uIds: secondToken,
+              uIds: secondUser,
             }
           }
         );
@@ -1588,14 +1590,14 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
         );
         const register2Obj = JSON.parse(res1.getBody() as string);
-        const secondToken = register2Obj.token;
+        const secondUser = [register2Obj.authUserId];
 
         // Create a dm Id from dmCreateV1
         const res2 = request(
@@ -1604,7 +1606,7 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               token: firstToken,
-              uIds: secondToken,
+              uIds: secondUser,
             }
           }
         );
@@ -1653,14 +1655,14 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               email: 'user@gmail.com',
-              password: 'pw',
+              password: 'abcdefg',
               nameFirst: 'Calvin',
               nameLast: 'Xu',
             }
           }
         );
         const register2Obj = JSON.parse(res1.getBody() as string);
-        const secondToken = register2Obj.token;
+        const secondUser = [register2Obj.authUserId];
 
         // Create a dm Id from dmCreateV1
         const res2 = request(
@@ -1669,7 +1671,7 @@ describe('HTTP tests for message/senddm', () => {
           {
             json: {
               token: firstToken,
-              uIds: secondToken,
+              uIds: secondUser,
             }
           }
         );
@@ -1720,7 +1722,7 @@ describe('HTTP tests for message/senddm', () => {
         {
           json: {
             email: 'user@gmail.com',
-            password: 'pw',
+            password: 'abcdefg',
             nameFirst: 'Calvin',
             nameLast: 'Xu',
           }
@@ -1736,14 +1738,14 @@ describe('HTTP tests for message/senddm', () => {
         {
           json: {
             email: 'hi@gmail.com',
-            password: 'what',
+            password: 'abcdefg',
             nameFirst: 'James',
             nameLast: 'Nguyen',
           }
         }
       );
       const register3Obj = JSON.parse(res3.getBody() as string);
-      const secondUserToken = register3Obj.token;
+      const thirdUser = [register3Obj.authUserId];
 
       // Create a dm Id from dm/create/v1 but uses the token from the member user
       // Therefore the authorised user is not a member of the DM
@@ -1753,7 +1755,7 @@ describe('HTTP tests for message/senddm', () => {
         {
           json: {
             token: userToken,
-            uIds: secondUserToken,
+            uIds: thirdUser,
           }
         }
       );
