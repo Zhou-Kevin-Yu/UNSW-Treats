@@ -999,9 +999,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
+      const data = JSON.parse(res4.getBody() as string);
       expect(res4.statusCode).toBe(OK);
       // Expect to return empty object
-      expect(res4).toStrictEqual({ });
+      expect(data).toStrictEqual({ });
     });
 
     test('Test valid removal of message in DM', () => {
@@ -1077,9 +1078,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
+      const data = JSON.parse(res6.getBody() as string);
       expect(res6.statusCode).toBe(OK);
       // Expect to return empty object
-      expect(res6).toStrictEqual({ });
+      expect(data).toStrictEqual({ });
     });
     // Add more success tests later
   });
@@ -1146,9 +1148,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
+      const data = JSON.parse(res6.getBody() as string);
       expect(res6.statusCode).toBe(OK);
       // Expect to return error
-      expect(res6).toStrictEqual(errorReturn);
+      expect(data).toStrictEqual(errorReturn);
     });
 
     // If messageId does not refer to a valid message within DM
@@ -1226,14 +1229,16 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
+      const data = JSON.parse(res6.getBody() as string);
       expect(res6.statusCode).toBe(OK);
       // Expect to return error
-      expect(res6).toStrictEqual(errorReturn);
+      expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in channel was not sent by the authorised user making the request
     test('Test if message in channel was not sent by the authorised user making the request', () => {
       // Create a token from authRegisterV2
+      // First user is owner so can remove
       const res1 = request(
         'POST',
           `${url}:${port}/auth/register/v2`,
@@ -1264,6 +1269,22 @@ describe('HTTP tests for message/remove', () => {
       );
       const register2Obj = JSON.parse(res2.getBody() as string);
       const secondToken = register2Obj.token;
+
+      // Create third user from authRegisterV2
+      const res5 = request(
+        'POST',
+          `${url}:${port}/auth/register/v2`,
+          {
+            json: {
+              email: 'wow@outlook.com',
+              password: 'abcdefghi',
+              nameFirst: 'Alvin',
+              nameLast: 'Chipmunk',
+            }
+          }
+      );
+      const register3Obj = JSON.parse(res5.getBody() as string);
+      const thirdToken = register3Obj.token;
 
       // The second user creates a channel Id from channelsCreateV2
       const res3 = request(
@@ -1321,20 +1342,33 @@ describe('HTTP tests for message/remove', () => {
         }
       );
 
-      // First user did not send message in channel and can't remove it
+      // The third user joins channel created by second user
+      request(
+        'POST',
+        `${url}:${port}/channels/join/v2`,
+        {
+          json: {
+            token: thirdToken,
+            channelId: firstChannelId,
+          }
+        }
+      );
+
+      // Third user did not send message in channel and can't remove it
       const res6 = request(
         'DELETE',
         `${url}:${port}/message/remove/v1`,
         {
           qs: {
-            token: firstToken,
+            token: thirdToken,
             messageId: messageId,
           }
         }
       );
+      const data = JSON.parse(res6.getBody() as string);
       expect(res6.statusCode).toBe(OK);
       // Expect to return error
-      expect(res6).toStrictEqual(errorReturn);
+      expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in DM was not sent by the authorised user making the request
@@ -1412,9 +1446,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
+      const data = JSON.parse(res6.getBody() as string);
       expect(res6.statusCode).toBe(OK);
       // Expect to return error
-      expect(res6).toStrictEqual(errorReturn);
+      expect(data).toStrictEqual(errorReturn);
     });
 
     // // If the authorised user does not have owner permissions in the channel
