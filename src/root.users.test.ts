@@ -30,6 +30,10 @@ function authRegisterSS(email: string, password: string, nameFirst: string, name
   return JSON.parse(res.body as string);
 }
 
+beforeEach(() => {
+  request('DELETE', `${url}:${port}/clear/v1`);
+});
+
 describe('HTTP tests for users/all/v1', () => {
   describe('Testing Error Cases for users/all/v1', () => {
     test('invalid token', () => {
