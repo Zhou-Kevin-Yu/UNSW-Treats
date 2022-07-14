@@ -12,6 +12,11 @@ export interface UserDetailsV1 {
   error?: 'error';
 }
 
+export interface UserAllV1 {
+  users?: User[];
+  error?: 'error';
+}
+
 export interface AuthLoginV1 {
   token?: string;
   authUserId?: number;

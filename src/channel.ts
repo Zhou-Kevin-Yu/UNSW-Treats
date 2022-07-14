@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { userProfileV1 } from './users';
+import { userProfileV1 } from './user';
 
 /*
  * ChannelJoinV1 allows an authorised user to join a valid channel if it is

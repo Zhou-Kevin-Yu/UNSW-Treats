@@ -2,7 +2,7 @@ import { channelsCreateV1, channelsListV1 } from './channels';
 import { clearV1 } from './other';
 import { authRegisterV1 } from './auth';
 import { channelDetailsV1 } from './channel';
-import { userProfileV1 } from './users';
+import { userProfileV1 } from './user';
 
 // let authUserId, name, isPublic;
 
