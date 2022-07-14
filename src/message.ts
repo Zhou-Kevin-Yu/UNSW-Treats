@@ -154,26 +154,60 @@ function messageRemoveV1 (token: string, messageId: number) {
  * @returns
  */
 function messageSendDmV1 (token: string, dmId: number, message: string) {
-  // error
-  // if token invalid pass error
-  // dmId does not refer to a valid DM
-  // loop through channel member and dms (where it is stored)
-  // length of message is less than 1 or over 1000 characters
-  // string . length
-  // dmId is valid and the authorised user is not a member of the DM
-  // token not match and auth user not part of
+ 
+  const data = getData();
+  let existDm = 0;
+  let existAuth = 0;
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return error;
+  }
 
-  // implementation
-  // Send a message from authorisedUser to the DM specified by dmId.
-  // push dm into dm array
-  // dm is array of objects with dmId and name
-  // confused where dm is stored
-  // basically a message
-  // dm is a type of channel
-  // return messageId
+  // If length of message is less than 1 or over 1000 characters
+  if (message.length < 1 || message.length > 1000) {
+    return error;
+  }
 
-  return token + dmId + message;
-  // return messageId which is an integer
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // To loop through all the existing DMs
+  for (const dm of data.dms) {
+    // If the dmId exists
+    if (dmId === dm.dmId) {
+      existDm = 1;
+      // To loop through all the members in selected DM
+      for (const member of dm.members) {
+        // If the auth user is a member of DM
+        if (authUserId === member.uId) {
+          existAuth = 1;
+
+          let messageIdCopy = data.systemInfo.messageTotal;
+          data.systemInfo.messageTotal++;
+
+          const newDmMessage: MessagesObj = {
+            messageId: messageIdCopy,
+            uId: authUserId,
+            message: message,
+            timeSent: 0,
+          };
+          dm.messages.push(newDmMessage);
+          setData(data);
+        }
+      }
+    }
+  }
+
+  // If the dmId does not exist or is invalid
+  if (existDm === 0) {
+    return error;
+  }
+
+  // If dmId is valid and the authorised user is not a member of the DM
+  if (existAuth === 0) {
+    return error;
+  }
+
+  return messageIdCopy;
 }
 
 export { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 };
