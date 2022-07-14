@@ -79,7 +79,6 @@ function messageEditV1 (token: string, messageId: number, message: string) {
   const data = getData();
   let existMessage = 0;
   let existAuth = 0;
-  // let existOwner = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
     return error;
@@ -211,33 +210,119 @@ function messageEditV1 (token: string, messageId: number, message: string) {
  * @returns
  */
 function messageRemoveV1 (token: string, messageId: number) {
-  // error
-  // if token invalid pass error
-  // messageId does not refer to a valid message within a channel/DM that the authorised user has joined
-  // loop through channel.messages
-  // if messageId does not equal anything then is error
-  // the message was not sent by the authorised user making this request
-  // if token of current auth user does not match token with the stored message or instead of token use authId
-  // // the message was not sent by the authorised user making this request
-  // if token of current auth user does not match token with the stored message or instead of token use authId
+  
+  const data = getData();
+  let existMessage = 0;
+  let existAuth = 0;
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return error;
+  }
 
-  // const data = getData();
-  // let existDm = 0;
-  // let existAuth = 0;
-  // // If token is invalid
-  // if (!isTokenValid(token)) {
-  //   return error;
-  // }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  let isGlobalOwner = false;
+  let isChannelOwner = false;
+  let isDmOwner = false;
 
-  // implementation very similart to above
-  // loop channel
-  // loop member
-  // loop channel.message
-  // find it
-  // say it is now equal null
-  // with the other stuff
-  // asked on Edstem for removing stuff
+  // If the auth user is a global owner of Treat
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      // If auth user has owner permissions
+      if (user.permission === 1) {
+        isGlobalOwner = true;
+      }
+    }
+  }
 
+  // If the auth user is the owner of the channel
+  for (const channel of data.channels) {
+    // Loop through all messages in channel
+    for (const msg of channel.messages) {
+      // If messageId exists 
+      if (msg.messageId === messageId) {
+        existMessage = 1;
+        // Loop through all members in ownerMembers
+        for (const ownerMember of channel.ownerMembers) {
+          // If auth user is in ownerMembers
+          if (authUserId === ownerMember.uId) {
+            isChannelOwner = true;
+          }
+        }
+      }
+    }
+  }
+
+  // If the auth user is the original creator of the DM
+  for (const dm of data.dms) {
+    // Loop through messages in DMs
+    for (const dmMsg of dm.messages) {
+      // If message Id exists
+      if (dmMsg.messageId === messageId) {
+        existMessage = 1;
+        // If auth user is the creator of the DM
+        if (authUserId === dm.creator) {
+          isDmOwner = true;
+        }
+      }
+    }
+  }
+  
+  // Auth user trying to remove a message sent in a channel
+  // Loop through all existing channels
+  for (const channel of data.channels) {
+    // Loop through all messages
+    for (const msg of channel.messages) {
+      // If messageId exists
+      if (msg.messageId === messageId) {
+        existMessage = 1;
+        // If message was sent by the auth user making this remove request or is a global/channel owner
+        if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
+          existAuth = 1;
+          // Loop to find message and delete it from selected channel
+          for (let i = 0; i < messageId; i++) {
+            // delete data.channels.messages[i];
+            delete data.channels.MessagesObj[i];
+          }
+          setData(data);
+          return { };
+        }
+      }
+    }
+  }
+
+  // Auth user trying to edit a message sent in a DM
+  // Loop through all existing DMs
+  for (const dm of data.dms) {
+    // Loop through messages in DMs
+    for (const dmMsg of dm.messages) {
+      // If messageId exists
+      if (dmMsg.messageId === messageId) {
+        existMessage = 1;
+        // If message was sent by the auth user making this edit request or is a DM owner
+        if (dmMsg.uId === authUserId || isDmOwner === true) {
+          existAuth = 1;
+          
+          // Loop to find message and delete it from selected DM
+          for (let i = 0; i < messageId; i++) {
+            delete data.dms.messages[i];
+          } 
+          
+          setData(data);
+          return { };
+        }
+      }
+    }
+  }
+
+  // If message was not sent by the authorised user making this edit request
+  if (existAuth === 0) {
+    return error;
+  }
+
+  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
+  if (existMessage === 0) {
+    return error;
+  }
 }
 
 /**
