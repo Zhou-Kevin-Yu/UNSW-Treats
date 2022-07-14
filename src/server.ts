@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { clearV1 } from './other';
 
 // Set up web app, use JSON
@@ -45,6 +46,33 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
   res.json(authLogoutV1(token));
 });
 
+////////////////////////////////////////////////////////////channels functions
+app.post('/channels/create/v2', (req: Request, res: Response) => {
+
+  const { token, name, isPublic } = req.body;
+  if(!isTokenValid(token)) return errorOutput;
+  const authId = tokenToAuthUserId(token).authUserId;
+  res.json(channelsCreateV1(authId, name, isPublic));
+});
+
+app.get('/channels/list/V2', (req, res) => {
+
+  const token = req.query;
+  if(!isTokenValid(token)) return errorOutput;
+  const authId = tokenToAuthUserId(token).authUserId;
+  res.json(channelsListV1(authId));
+});
+
+app.get('/channels/listall/V2', (req, res) => {
+
+  const token = req.query;
+  if(!isTokenValid(token)) return errorOutput;
+  const authId = tokenToAuthUserId(token).authUserId;
+  res.json(channelsListallV1(authId));
+});
+
+////////////////////////////////////////////////////////////
+
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
@@ -53,3 +81,4 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
 app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
 });
+
