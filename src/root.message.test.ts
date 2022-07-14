@@ -900,7 +900,7 @@ describe('HTTP tests for message/edit', () => {
 describe('HTTP tests for message/remove', () => {
   // If messageRemoveV1 is successful
   describe('Testing successful messageRemoveV1', () => {
-    test('Test valid edit of message in channel', () => {
+    test('Test valid removal of message in channel', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
@@ -962,7 +962,7 @@ describe('HTTP tests for message/remove', () => {
       expect(res4).toStrictEqual({ });
     });
 
-    test('Test valid edit of message in DM', () => {
+    test('Test valid removal of message in DM', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',

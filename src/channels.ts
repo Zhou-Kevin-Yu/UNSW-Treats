@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { userProfileV1 } from './users';
+import { userProfileV1 } from './user';
 import { ChannelsCreateV1, ChannelsListAllV1, ChannelsListV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
 

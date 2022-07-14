@@ -8,7 +8,10 @@ import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { channelsCreateV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
+import { usersAllV1 } from './users';
 import { clearV1 } from './other';
+
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
 // Set up web app, use JSON
 const app = express();
@@ -58,6 +61,28 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
+// All user routes
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const u = req.query.uId as string;
+  const uId = parseInt(u);
+  res.json(userProfileV2(token, uId));
+});
+
+app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
+  const { token, nameFirst, nameLast } = req.body;
+  res.json(userProfileSetnameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetemailV1(token, email));
+});
+
+app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+  const { token, handle } = req.body;
+  res.json(userProfileSethandleV1(token, handle));
+});
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
@@ -113,6 +138,13 @@ app.delete('/message/remove/v1', (req: Request, res: Response) => {
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
   const { token, dmId, message } = req.body;
   res.json(messageSendDmV1(token, dmId, message));
+});
+
+// All users requests 
+app.get('/users/all/v1', (req: Request, res: Response) => {
+  const { token } = req.query;
+  const tokenParse = token.toString();
+  res.json(usersAllV1(tokenParse));
 });
 
 // start server
