@@ -7,7 +7,6 @@ import cors from 'cors';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { clearV1 } from './other';
-import { json } from 'stream/consumers';
 
 // Set up web app, use JSON
 const app = express();
@@ -59,23 +58,23 @@ app.post('/dm/create/v1', (req: Request, res: Response) => {
 
 app.get('/dm/list/v1', (req: Request, res: Response) => {
   const { token } = req.query;
-  let tokenParse = token.toString();
+  const tokenParse = token.toString();
   res.json(dmListV1(tokenParse));
 });
 
 app.delete('/dm/remove/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const dmId = req.query.dmId as string;
-  const newDmId = parseInt(dmId)
+  const newDmId = parseInt(dmId);
   // const { token, dmId } = req.query;
-  console.log("=======", token, dmId);
+  console.log('=======', token, dmId);
   res.json(dmRemoveV1(token, newDmId));
 });
 
 app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const dmId = req.query.dmId as string;
-  let newDmId = parseInt(dmId)
+  const newDmId = parseInt(dmId);
   res.json(dmDetailsV1(token, newDmId));
 });
 

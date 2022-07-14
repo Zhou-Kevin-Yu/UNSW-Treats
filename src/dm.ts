@@ -1,10 +1,10 @@
-import { sortAndDeduplicateDiagnostics } from 'typescript';
+// import { sortAndDeduplicateDiagnostics } from 'typescript';
 import { getData, setData } from './dataStore';
-import { DmCreateV1, DmListV1, /*DmRemoveV1,*/ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
+import { DmCreateV1, DmListV1, /* DmRemoveV1, */ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
 import { Dm, DmObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
-import { userProfileV1 } from './users'; //TODO update this with userProfileV2
+import { userProfileV1 } from './users'; // TODO update this with userProfileV2
 
 /**
  * given a token and user ids, creates a new DM (direct message),
@@ -24,32 +24,35 @@ function generateDmName(uIds: number[]) {
     const user = userProfileV1(authUser, uId);
     handleArrs.push(user.user.handleStr);
   }
-  //sort array alphabetically
+  // sort array alphabetically
   handleArrs.sort((a, b) => a.localeCompare(b));
   const len = handleArrs.length;
-  let dmName = "";
+  let dmName = '';
   for (let i = 0; i < len; i++) {
-    dmName = dmName + handleArrs[i] + ', '
+    dmName = dmName + handleArrs[i] + ', ';
   }
   dmName = dmName.substring(0, dmName.length - 2);
   return dmName;
 }
 
 export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
-  let data = getData();
-  //check if uIds are valid
+  const data = getData();
+  // check if uIds are valid
   for (const uId of uIds) {
     if (!(uId in data.users)) {
       return { error: 'error' };
     }
   }
-  //return error if duplicates exist
+  // return error if duplicates exist
   if (new Set(uIds).size !== uIds.length) {
     return { error: 'error' };
   }
-  //strip token and check if authUserId in uIds
+  // strip token and check if authUserId in uIds
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   const dmNum = data.dms.length;
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
   if (uIds.includes(authUserId)) {
     return { error: 'error' };
   }
@@ -60,36 +63,42 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
     creator: authUserId,
     members: uIds,
     name: dmName,
-    messages : [],
-  }
+    messages: [],
+  };
   data.dms[dmNum] = dmNew;
   setData(data);
   return { dmId: dmNum };
 }
 
 export function dmListV1(token: string): DmListV1 {
-  let data = getData();
+  const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  const userDms: Dm[]  = [];
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
+  const userDms: Dm[] = [];
   for (const dm of data.dms) {
     if (dm !== undefined && dm.members.includes(authUserId)) {
-      const tempDm: Dm  = {
+      const tempDm: Dm = {
         dmId: dm.dmId,
         name: dm.name,
       };
       userDms.push(tempDm);
     }
   }
-  return { dms : userDms };
+  return { dms: userDms };
 }
 
-export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1*/ {
-  let data = getData();
-  //check if dmId is valid
+export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
+  const data = getData();
+  // check if dmId is valid
   if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
-      return { error: 'error' };
+    return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
   if (data.dms[dmId].creator !== authUserId) {
     return { error: 'error' };
   }
@@ -103,55 +112,60 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1*/ {
 }
 
 export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
-  let data = getData();
-  //check if dmId is valid
+  const data = getData();
+  // check if dmId is valid
   if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
     return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  //check if authUser is a member of the channel
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
+  // check if authUser is a member of the channel
   if (!(data.dms[dmId].members.includes(authUserId))) {
     return { error: 'error' };
   }
   const dmUsers = [];
   for (const member of data.dms[dmId].members) {
-    const userCurr = userProfileV1(authUserId, member) //TODO update with V2 function
+    const userCurr = userProfileV1(authUserId, member); // TODO update with V2 function
     dmUsers.push(userCurr);
   }
-  //console.log(dmUsers); //temporary testing of functionality
-  return { 
+  // console.log(dmUsers); //temporary testing of functionality
+  return {
     name: data.dms[dmId].name,
     members: dmUsers,
-  }
+  };
 }
 
 export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
-  let data = getData();
-  //check if dmId is valid
-  //console.log("before", data.dms); //temporary testing
+  const data = getData();
+  // check if dmId is valid
+  // console.log("before", data.dms); //temporary testing
   if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
     return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  //check if authUser is a member of the channel
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
+  // check if authUser is a member of the channel
   if (!(data.dms[dmId].members.includes(authUserId))) {
     return { error: 'error' };
   }
-  //splice out member from array
+  // splice out member from array
   const index = data.dms[dmId].members.indexOf(authUserId, 0);
   if (index > -1) {
     data.dms[dmId].members.splice(index, 1);
   }
-  //if leaver is creator
-  if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length > 1) { //TODO figure out what happens when there is one member
-    data.dms[dmId].creator = data.dms[dmId].members[0]; //set first added member as creator
-  } 
-  //if current creator is trying to leave and no one else is left, then delete DM
+  // if leaver is creator
+  if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length > 1) { // TODO figure out what happens when there is one member
+    data.dms[dmId].creator = data.dms[dmId].members[0]; // set first added member as creator
+  }
+  // if current creator is trying to leave and no one else is left, then delete DM
   else if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length <= 1) {
     dmRemoveV1(token, dmId);
   }
-  //console.log("after", data.dms); //temporary testing
-
+  // console.log("after", data.dms); //temporary testing
 }
 
 export function dmMessagesV1(token: string, dmId: number, start: number): DmMessagesV1 {

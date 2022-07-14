@@ -43,7 +43,7 @@ function dmCreateSS(token: string, uIds: number[]) {
   );
   return JSON.parse(res.body as string);
 }
-
+/*
 function dmListSS(token: string) {
   const res = request(
     'GET',
@@ -56,14 +56,14 @@ function dmListSS(token: string) {
   );
   return JSON.parse(res.body as string);
 }
-
+*/
 beforeEach(() => {
   request('DELETE', `${url}:${port}/clear/v1`);
 });
 
 console.log(url);
 describe('HTTP tests for dm/create', () => {
-  //TODO test creating a dm with a userId one higher than max uId (edge case)
+  // TODO test creating a dm with a userId one higher than max uId (edge case)
   describe('Testing Error Cases for dm/create', () => {
     test('Invalid uId', () => {
       let res = request('POST', `${url}:${port}/auth/register/v2`, {
@@ -272,7 +272,7 @@ describe('HTTP tests for dm/list', () => {
 
     test('multiple dm list', () => {
       // create first user that creates the DM
-      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k')
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const token1 = reg1.token;
       // create a second valid register request and get token
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'e', 't');
@@ -498,7 +498,6 @@ describe('HTTP tests for dm/leave/v1', () => {
   });
   */
 });
-
 
 /*
 test('Testing', () => {
