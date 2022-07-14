@@ -8,13 +8,7 @@ export interface User {
 }
 
 export interface UserDetailsV1 {
-  user?:{
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
-  }
+  user?: User;
   error?: 'error';
 }
 
