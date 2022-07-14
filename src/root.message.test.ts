@@ -1451,7 +1451,9 @@ describe('HTTP tests for message/senddm', () => {
       const data = JSON.parse(res3.getBody() as string);
       expect(res3.statusCode).toBe(OK);
       // Expect to return messageId
-      expect(data).toStrictEqual({ messageId: expect.any(Number) });
+      // expect(data).toStrictEqual({ messageId: expect.any(Number) });
+      // expect(data).toStrictEqual(expect.any(Number));
+      expect(data).toStrictEqual(0);
     });
 
     // Add more success tests later
