@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { clearV1 } from './other';
 
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
@@ -73,6 +74,39 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handle } = req.body;
   res.json(userProfileSethandleV1(token, handle));
 });
+// All dm requests
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const { token, uIds } = req.body;
+  res.json(dmCreateV1(token, uIds));
+});
+
+app.get('/dm/list/v1', (req: Request, res: Response) => {
+  const { token } = req.query;
+  const tokenParse = token.toString();
+  res.json(dmListV1(tokenParse));
+});
+
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  // const { token, dmId } = req.query;
+  console.log('=======', token, dmId);
+  res.json(dmRemoveV1(token, newDmId));
+});
+
+app.get('/dm/details/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  res.json(dmDetailsV1(token, newDmId));
+});
+
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmLeaveV1(token, dmId));
+});
+// TODO add dm/messages/v1
 
 // start server
 app.listen(PORT, HOST, () => {

@@ -4,7 +4,7 @@
         "tsc": "tsc --noImplicitAny",
         "lint": "eslint src/**.ts",
         "lint-fix": "eslint --fix src/**.ts",
-        "start": "ts-node src/server.ts",
+         "start": "nodemon src/server.ts",
         "green-tick": "jest && tsc --noImplicitAny && eslint src/**.ts",
         "adv-green-tick": "npm install && tsc --noImplicitAny && eslint --fix src/**.ts && npm start & sleep 10 && npm run test && killall node"
     },
@@ -14,7 +14,6 @@
         "http-errors": "^2.0.0",
         "morgan": "^1.10.0",
         "rewire": "^6.0.0",
-        "sync-request": "^6.1.0",
         "ts-node": "^10.7.0",
         "typescript": "^4.6.3",
         "validator": "^13.7.0"
@@ -33,6 +32,8 @@
         "eslint": "^8.14.0",
         "eslint-plugin-jest": "^26.1.5",
         "jest": "^28.1.0",
+        "nodemon": "^2.0.19",
+        "sync-request": "^6.1.0",
         "ts-jest": "^28.0.2"
     }
 }
