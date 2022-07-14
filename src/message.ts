@@ -6,15 +6,15 @@ const error = { error: 'error' };
 
 /**
  * Send a message from the authorised user to the channel specified by channelId
- * 
+ *
  * @param {string} token - user login token
  * @param {number} channelId - id for the selected channel
  * @param {string} message - actual message string
  * @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
- * @returns {object} {error: 'error'} - return error if channelId is invalid, length of message is less than 1 
+ * @returns {object} {error: 'error'} - return error if channelId is invalid, length of message is less than 1
  * or over 1000 characters, or channelId is valid and the authorised user is not a member of the channel
  */
-function messageSendV1 (token: string, channelId: number, message: string) { 
+function messageSendV1 (token: string, channelId: number, message: string) {
   const data = getData();
   let existChannel = 0;
   let existAuth = 0;
@@ -76,13 +76,12 @@ function messageSendV1 (token: string, channelId: number, message: string) {
  * @param {number} messageId - id for the selected message
  * @param {string} message - actual message string
  * @returns {object} {} - empty object
- * @returns {object} {error: 'error'} - return error if length of message is over 1000 characters, 
+ * @returns {object} {error: 'error'} - return error if length of message is over 1000 characters,
  * messageId does not refer to a valid message within a channel/DM that the authorised user has joined,
  * the message was not sent by the authorised user making this request,
  * or the authorised user does not have owner permissions in the channel/DM
  */
 function messageEditV1 (token: string, messageId: number, message: string) {
-
   const data = getData();
   let existMessage = 0;
   let existAuth = 0;
@@ -115,7 +114,7 @@ function messageEditV1 (token: string, messageId: number, message: string) {
   for (const channel of data.channels) {
     // Loop through all messages in channel
     for (const msg of channel.messages) {
-      // If messageId exists 
+      // If messageId exists
       if (msg.messageId === messageId) {
         existMessage = 1;
         // Loop through all members in ownerMembers
@@ -143,7 +142,9 @@ function messageEditV1 (token: string, messageId: number, message: string) {
       }
     }
   }
-  
+
+  let counter = 0;
+
   // Auth user trying to edit a message sent in a channel
   // Loop through all existing channels
   for (const channel of data.channels) {
@@ -161,8 +162,7 @@ function messageEditV1 (token: string, messageId: number, message: string) {
           // If the new message is an empty string, the message is deleted
           if (message.length === 0) {
             for (let i = 0; i < messageId; i++) {
-              delete data.channels.messages[i];
-              // delete data.channels.MessagesObj[i];
+              delete data.channels[counter].messages[i];
             }
           }
           setData(data);
@@ -170,6 +170,7 @@ function messageEditV1 (token: string, messageId: number, message: string) {
         }
       }
     }
+    counter++;
   }
 
   // Auth user trying to edit a message sent in a DM
@@ -189,8 +190,8 @@ function messageEditV1 (token: string, messageId: number, message: string) {
           // If the new message is an empty string, the message is deleted
           if (message.length === 0) {
             for (let i = 0; i < messageId; i++) {
-              delete data.dms.messages[i];
-            } 
+              delete data.dms[i].messages;
+            }
           }
           setData(data);
           return { };
@@ -215,13 +216,12 @@ function messageEditV1 (token: string, messageId: number, message: string) {
  * @param {string} token - user login token
  * @param {number} messageId - id for the selected message
  * @returns {object} {} - empty object
- * @returns {object} {error: 'error'} - return error if messageId does not refer to a valid message within a channel/DM 
+ * @returns {object} {error: 'error'} - return error if messageId does not refer to a valid message within a channel/DM
  * that the authorised user has joined,
  * the message was not sent by the authorised user making this request,
  * or the authorised user does not have owner permissions in the channel/DM
  */
 function messageRemoveV1 (token: string, messageId: number) {
-  
   const data = getData();
   let existMessage = 0;
   let existAuth = 0;
@@ -249,7 +249,7 @@ function messageRemoveV1 (token: string, messageId: number) {
   for (const channel of data.channels) {
     // Loop through all messages in channel
     for (const msg of channel.messages) {
-      // If messageId exists 
+      // If messageId exists
       if (msg.messageId === messageId) {
         existMessage = 1;
         // Loop through all members in ownerMembers
@@ -277,7 +277,8 @@ function messageRemoveV1 (token: string, messageId: number) {
       }
     }
   }
-  
+
+  let counter = 0;
   // Auth user trying to remove a message sent in a channel
   // Loop through all existing channels
   for (const channel of data.channels) {
@@ -291,14 +292,14 @@ function messageRemoveV1 (token: string, messageId: number) {
           existAuth = 1;
           // Loop to find message and delete it from selected channel
           for (let i = 0; i < messageId; i++) {
-            delete data.channels.messages[i];
-            // delete data.channels.MessagesObj[i];
+            delete data.channels[counter].messages[i];
           }
           setData(data);
           return { };
         }
       }
     }
+    counter++;
   }
 
   // Auth user trying to edit a message sent in a DM
@@ -312,12 +313,12 @@ function messageRemoveV1 (token: string, messageId: number) {
         // If message was sent by the auth user making this edit request or is a DM owner
         if (dmMsg.uId === authUserId || isDmOwner === true) {
           existAuth = 1;
-          
+
           // Loop to find message and delete it from selected DM
           for (let i = 0; i < messageId; i++) {
-            delete data.dms.messages[i];
-          } 
-          
+            delete data.dms[i].messages;
+          }
+
           setData(data);
           return { };
         }
@@ -342,8 +343,8 @@ function messageRemoveV1 (token: string, messageId: number) {
 * @param {number} dmId - id for the selected DM
 * @param {string} message - actual message string
 * @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
-* @returns {object} {error: 'error'} - return error if mdmId does not refer to a valid DM, 
-* length of message is less than 1 or over 1000 characters, 
+* @returns {object} {error: 'error'} - return error if mdmId does not refer to a valid DM,
+* length of message is less than 1 or over 1000 characters,
 * or dmId is valid and the authorised user is not a member of the DM
 */
 function messageSendDmV1 (token: string, dmId: number, message: string) {
