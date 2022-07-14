@@ -5,13 +5,16 @@ import { MessagesObj } from './dataStore';
 const error = { error: 'error' };
 
 /**
- *
- * @param token
- * @param channelId
- * @param message
- * @returns
+ * Send a message from the authorised user to the channel specified by channelId
+ * 
+ * @param {string} token - user login token
+ * @param {number} channelId - id for the selected channel
+ * @param {string} message - actual message string
+ * @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
+ * @returns {object} {error: 'error'} - return error if channelId is invalid, length of message is less than 1 
+ * or over 1000 characters, or channelId is valid and the authorised user is not a member of the channel
  */
-function messageSendV1 (token: string, channelId: number, message: string) { // : MessageSendV1
+function messageSendV1 (token: string, channelId: number, message: string) { 
   const data = getData();
   let existChannel = 0;
   let existAuth = 0;
@@ -68,11 +71,15 @@ function messageSendV1 (token: string, channelId: number, message: string) { // 
 }
 
 /**
- *
- * @param token
- * @param messageId
- * @param message
- * @returns
+ * Given a message, update its text with new text. If the new message is an empty string, the message is deleted.
+ * @param {string} token - user login token
+ * @param {number} messageId - id for the selected message
+ * @param {string} message - actual message string
+ * @returns {object} {} - empty object
+ * @returns {object} {error: 'error'} - return error if length of message is over 1000 characters, 
+ * messageId does not refer to a valid message within a channel/DM that the authorised user has joined,
+ * the message was not sent by the authorised user making this request,
+ * or the authorised user does not have owner permissions in the channel/DM
  */
 function messageEditV1 (token: string, messageId: number, message: string) {
 
@@ -154,8 +161,8 @@ function messageEditV1 (token: string, messageId: number, message: string) {
           // If the new message is an empty string, the message is deleted
           if (message.length === 0) {
             for (let i = 0; i < messageId; i++) {
-              // delete data.channels.messages[i];
-              delete data.channels.MessagesObj[i];
+              delete data.channels.messages[i];
+              // delete data.channels.MessagesObj[i];
             }
           }
           setData(data);
@@ -204,10 +211,14 @@ function messageEditV1 (token: string, messageId: number, message: string) {
 }
 
 /**
- *
- * @param token
- * @param messageId
- * @returns
+ * Given a messageId for a message, this message is removed from the channel/DM
+ * @param {string} token - user login token
+ * @param {number} messageId - id for the selected message
+ * @returns {object} {} - empty object
+ * @returns {object} {error: 'error'} - return error if messageId does not refer to a valid message within a channel/DM 
+ * that the authorised user has joined,
+ * the message was not sent by the authorised user making this request,
+ * or the authorised user does not have owner permissions in the channel/DM
  */
 function messageRemoveV1 (token: string, messageId: number) {
   
@@ -280,8 +291,8 @@ function messageRemoveV1 (token: string, messageId: number) {
           existAuth = 1;
           // Loop to find message and delete it from selected channel
           for (let i = 0; i < messageId; i++) {
-            // delete data.channels.messages[i];
-            delete data.channels.MessagesObj[i];
+            delete data.channels.messages[i];
+            // delete data.channels.MessagesObj[i];
           }
           setData(data);
           return { };
@@ -326,12 +337,15 @@ function messageRemoveV1 (token: string, messageId: number) {
 }
 
 /**
- *
- * @param token
- * @param dmId
- * @param message
- * @returns
- */
+* Send a message from authorisedUser to the DM specified by dmId.
+* @param {string} token - user login token
+* @param {number} dmId - id for the selected DM
+* @param {string} message - actual message string
+* @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
+* @returns {object} {error: 'error'} - return error if mdmId does not refer to a valid DM, 
+* length of message is less than 1 or over 1000 characters, 
+* or dmId is valid and the authorised user is not a member of the DM
+*/
 function messageSendDmV1 (token: string, dmId: number, message: string) {
   const data = getData();
   let existDm = 0;
