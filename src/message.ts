@@ -12,7 +12,6 @@ const error = { error: 'error' };
  * @returns
  */
 function messageSendV1 (token: string, channelId: number, message: string) { // : MessageSendV1
-
   const data = getData();
   let existChannel = 0;
   let existAuth = 0;
@@ -76,7 +75,7 @@ function messageSendV1 (token: string, channelId: number, message: string) { // 
  * @returns
  */
 function messageEditV1 (token: string, messageId: number, message: string) {
-  
+
   // const data = getData();
   // let existMessage = 0;
   // let existAuth = 0;
@@ -97,7 +96,7 @@ function messageEditV1 (token: string, messageId: number, message: string) {
 
   // // For editing messages in channel, loop through all the existing channels
   // for (const channel of data.channels) {
-  //   // Loop through all messages 
+  //   // Loop through all messages
   //   for (const msg of channel.messages) {
   //     // If messageId exists
   //     if (msg.messageId === messageId) {
@@ -107,7 +106,7 @@ function messageEditV1 (token: string, messageId: number, message: string) {
   //         existAuth = 1;
   //         // Loop through users
   //         for (user of data.users) {
-  //           // Check if they have global owner permissions 
+  //           // Check if they have global owner permissions
   //           if (user.uId === authuserId && user.permission === 1) {
   //             existOwner = 1;
   //           }
@@ -124,12 +123,12 @@ function messageEditV1 (token: string, messageId: number, message: string) {
   //         //   message: message,
   //         //   timeSent: 0,
   //         // };
-          
-  //         // wait it is not push just replacing the message
-  //         // ask about this 
 
-  //         // I am confused about permissions so users can edit their own messages and channel owners can?
-  //         // doesnt that contract this statement 
+  //         // wait it is not push just replacing the message
+  //         // ask about this
+
+  //         // I am confused about permissions so users can edit their own messages and  global owners can?
+  //         // doesnt that contract this statement
   //         // "the message was not sent by the authorised user making this request"??
   //         // "You should return an error if an authorised user tries to edit someone else's message, and they don't have owner permissions.
 
@@ -221,7 +220,6 @@ function messageRemoveV1 (token: string, messageId: number) {
  * @returns
  */
 function messageSendDmV1 (token: string, dmId: number, message: string) {
- 
   const data = getData();
   let existDm = 0;
   let existAuth = 0;
