@@ -37,14 +37,6 @@ describe('Testing basic functionality', () => {
             }
         });
         const kevinProfile = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
-        {
-            qs: {
-                token:  bob.token,
-                uId:    bob.uid
-            }
-        });
-        const bobProfile = JSON.parse(res.getBody() as string);
         res = request('POST', `${url}:${port}/src/channels/create/v2`,
         {
             json: {
@@ -53,21 +45,20 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const {cId} = res.getBody();
-        res = request('POST', `${url}:${port}/src/channel/addowner/v1`,
+        const channelId = JSON.parse(res.getBody() as string).channelId;
+        res = request('POST', `${url}:${port}/src/channel/invite/v2`,
         {
             json: {
                 token: kevin.token,
-                channelId: cId,
+                channelId: channelId,
                 uId: bob.uId
             }
         });
-        res = request('POST', `${url}:${port}/src/channel/removeowner/v1`,
+        res = request('DELETE', `${url}:${port}/src/channel/leave/v1`,
         {
             json: {
-                token: kevin.token,
-                channelId: cId,
-                uId: bob.uId
+                token: bob.token,
+                channelId: channelId,
             }
         });
         expect(res.statusCode).toBe(OK);
@@ -75,10 +66,9 @@ describe('Testing basic functionality', () => {
         {
             qs: {
                 token: kevin.token,
-                channelId: cId
+                channelId: channelId
             }
         });
-        expect(res.getBody().allMembers).toStrictEqual([kevinProfile, bobProfile]);
-        expect(res.getBody().ownerMembers).toStrictEqual([kevinProfile]);
+        expect(res.getBody().allMembers).toStrictEqual([kevinProfile])
     });
 });

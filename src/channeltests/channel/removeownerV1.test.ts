@@ -8,7 +8,7 @@ const OK = 200;
 beforeEach (() => clearV1());
 
 describe('Testing basic functionality', () => {
-    test('Adding 1 owner', () => {
+    test('Joining server with 1 owner member', () => {
         let res = request('POST', `${url}:${port}/src/auth/register/v2`,
         {
             json: {
@@ -53,10 +53,18 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const {cId} = res.getBody();
+        const cId = 0;
         res = request('POST', `${url}:${port}/src/channel/addowner/v1`,
         {
-            qs: {
+            json: {
+                token: kevin.token,
+                channelId: cId,
+                uId: bob.uId
+            }
+        });
+        res = request('DELETE', `${url}:${port}/src/channel/removeowner/v1`,
+        {
+            json: {
                 token: kevin.token,
                 channelId: cId,
                 uId: bob.uId
@@ -70,6 +78,7 @@ describe('Testing basic functionality', () => {
                 channelId: cId
             }
         });
-        expect(res.getBody().ownerMembers).toStrictEqual([kevinProfile, bobProfile])
+        expect(res.getBody().allMembers).toStrictEqual([kevinProfile, bobProfile]);
+        expect(res.getBody().ownerMembers).toStrictEqual([kevinProfile]);
     });
 });

@@ -7,13 +7,8 @@ import cors from 'cors';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { clearV1 } from './other';
-import { channelAddOwnerV1 } from './channel/addowner/v2';
-import { channelDetailsV2 } from './channel/details/v2';
-import { channelInviteV2 } from './channel/invite/v2';
-import { channelJoinV1 } from './channel/join/v1';
-import { channelLeaveV1 } from './channel/leave/v1';
-import { channelMessagesV2 } from './channel/messages/v2';
-import { channelRemoveOwnerV1 } from './channel/removeowner/v1';
+import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
+import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrappers/channel/addowner/v2';
 
 // Set up web app, use JSON
 const app = express();
@@ -111,11 +106,12 @@ app.post('/channel/invite/v2', (req: Request, res: Response) => {
 
 app.post('/channel/join/v1', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
-  res.json(channelJoinV1(token, channelId))
+  res.json(channelJoinV2(token, channelId))
 });
 
-app.post('/channe/leave/v1', (req: Request, res: Response) => {
-  const { token, channelId } = req.body;
+app.delete('/channel/leave/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.token as string);
   res.json(channelLeaveV1(token, channelId))
 });
 
@@ -130,6 +126,7 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 })
+
 // start server
 app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
