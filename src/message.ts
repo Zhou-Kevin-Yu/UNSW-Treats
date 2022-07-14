@@ -76,104 +76,132 @@ function messageSendV1 (token: string, channelId: number, message: string) { // 
  */
 function messageEditV1 (token: string, messageId: number, message: string) {
 
-  // const data = getData();
-  // let existMessage = 0;
-  // let existAuth = 0;
+  const data = getData();
+  let existMessage = 0;
+  let existAuth = 0;
   // let existOwner = 0;
-  // // If token is invalid
-  // if (!isTokenValid(token)) {
-  //   return error;
-  // }
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return error;
+  }
 
-  // // If length of message is over 1000 characters
-  // if (message.length > 1000) {
-  //   return error;
-  // }
+  // If length of message is over 1000 characters
+  if (message.length > 1000) {
+    return error;
+  }
 
-  // // i need to loop through channel.messages and dm.mesages
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  let isGlobalOwner = false;
+  let isChannelOwner = false;
+  let isDmOwner = false;
 
-  // const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  // If the auth user is a global owner of Treat
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      // If auth user has owner permissions
+      if (user.permission === 1) {
+        isGlobalOwner = true;
+      }
+    }
+  }
 
-  // // For editing messages in channel, loop through all the existing channels
-  // for (const channel of data.channels) {
-  //   // Loop through all messages
-  //   for (const msg of channel.messages) {
-  //     // If messageId exists
-  //     if (msg.messageId === messageId) {
-  //       existMessage = 1;
-  //       // If message was sent by the auth user making this edit request
-  //       if (msg.uId === authUserId) {
-  //         existAuth = 1;
-  //         // Loop through users
-  //         for (user of data.users) {
-  //           // Check if they have global owner permissions
-  //           if (user.uId === authuserId && user.permission === 1) {
-  //             existOwner = 1;
-  //           }
-  //         }
+  // If the auth user is the owner of the channel
+  for (const channel of data.channels) {
+    // Loop through all messages in channel
+    for (const msg of channel.messages) {
+      // If messageId exists 
+      if (msg.messageId === messageId) {
+        existMessage = 1;
+        // Loop through all members in ownerMembers
+        for (const ownerMember of channel.ownerMembers) {
+          // If auth user is in ownerMembers
+          if (authUserId === ownerMember.uId) {
+            isChannelOwner = true;
+          }
+        }
+      }
+    }
+  }
 
-  //         // Check if they are an owner of the channel
-  //         if () {
+  // If the auth user is the original creator of the DM
+  for (const dm of data.dms) {
+    // Loop through messages in DMs
+    for (const dmMsg of dm.messages) {
+      // If message Id exists
+      if (dmMsg.messageId === messageId) {
+        existMessage = 1;
+        // If auth user is the creator of the DM
+        if (authUserId === dm.creator) {
+          isDmOwner = true;
+        }
+      }
+    }
+  }
+  
+  // Auth user trying to edit a message sent in a channel
+  // Loop through all existing channels
+  for (const channel of data.channels) {
+    // Loop through all messages
+    for (const msg of channel.messages) {
+      // If messageId exists
+      if (msg.messageId === messageId) {
+        existMessage = 1;
+        // If message was sent by the auth user making this edit request or is a global/channel owner
+        if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
+          existAuth = 1;
+          // Access message string and update string with new message
+          msg.message = message;
 
-  //         }
+          // If the new message is an empty string, the message is deleted
+          if (message.length === 0) {
+            for (let i = 0; i < messageId; i++) {
+              // delete data.channels.messages[i];
+              delete data.channels.MessagesObj[i];
+            }
+          }
+          setData(data);
+          return { };
+        }
+      }
+    }
+  }
 
-  //         // const editChannelMessage: MessagesObj = {
-  //         //   messageId: messageId,
-  //         //   uId: authUserId,
-  //         //   message: message,
-  //         //   timeSent: 0,
-  //         // };
+  // Auth user trying to edit a message sent in a DM
+  // Loop through all existing DMs
+  for (const dm of data.dms) {
+    // Loop through messages in DMs
+    for (const dmMsg of dm.messages) {
+      // If messageId exists
+      if (dmMsg.messageId === messageId) {
+        existMessage = 1;
+        // If message was sent by the auth user making this edit request or is a DM owner
+        if (dmMsg.uId === authUserId || isDmOwner === true) {
+          existAuth = 1;
+          // Access message string and update string with new message
+          dmMsg.message = message;
 
-  //         // wait it is not push just replacing the message
-  //         // ask about this
+          // If the new message is an empty string, the message is deleted
+          if (message.length === 0) {
+            for (let i = 0; i < messageId; i++) {
+              delete data.dms.messages[i];
+            } 
+          }
+          setData(data);
+          return { };
+        }
+      }
+    }
+  }
 
-  //         // I am confused about permissions so users can edit their own messages and  global owners can?
-  //         // doesnt that contract this statement
-  //         // "the message was not sent by the authorised user making this request"??
-  //         // "You should return an error if an authorised user tries to edit someone else's message, and they don't have owner permissions.
+  // If message was not sent by the authorised user making this edit request
+  if (existAuth === 0) {
+    return error;
+  }
 
-  //         // If the new message is an empty string, the message is deleted
-  //         // how do i do this
-  //         if (message.length === 0) {
-  //           delete data.channels.messages[messageId];
-  //         }
-
-  //         setData(data);
-  //         // return { };
-
-  //       }
-  //     }
-  //   }
-  // }
-
-  // // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
-  // if (existMessage === 0) {
-  //   return error;
-  // }
-
-  // // If message was not sent by the authorised user making this edit request
-  // if (existAuth === 0) {
-  //   return error;
-  // }
-
-  // // If the authorised user does not have owner permissions in the channel/DM
-  // // The only users with owner permissions in DMs are the original creators of each DM.
-  // if (existOwner === 0) {
-  //   return error;
-  // }
-
-  // // implementation down below
-  // // the logic is to loop through the channels
-  // // loop through all members in selected channel
-  // // if member token not the same return error
-  // // if message ID never recgosnied return error
-  // // if permission Id not the same returne error
-  // // then can now implement
-  // // have new text replace old text using some sort of function
-  // // maybe spacer function [...array] spread opeartor
-  // // say if new message in parameter is an empty string, then use some form of message = null or message id = null
-
-  // return { };
+  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
+  if (existMessage === 0) {
+    return error;
+  }
 }
 
 /**
