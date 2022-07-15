@@ -1,6 +1,8 @@
 import { getData, setData } from './dataStore';
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
+import { tokenToAuthUserId, isTokenValid } from './token';
+import { userProfileV1 } from './user';
 
 /*
  * ChannelJoinV1 allows an authorised user to join a valid channel if it is
@@ -172,7 +174,6 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
                 ownerMembers:   array of user objects,
                 allMembers:     array of user objects,
             }
-
  * @returns { error : 'error' } - when channelId is invalid
  *                              - when authUserId does not exist
                                 - when user is not a member of that channel
@@ -295,4 +296,53 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
     end: endCopy,
   };
 }
+
+export function channelAddOwnerV1(token: string, channelId: number, uId: number) {
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const { user } = userProfileV1(authUserId, uId);
+  if (authUserId === undefined || uId === undefined ||
+    data.channels[channelId] === undefined ||
+    data.channels[channelId].ownerMembers.some(entry => entry.uId === user.uId) ||
+    !(data.channels[channelId].allMembers.some(entry => entry.uId === user.uId)) ||
+    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === authUserId))
+  ) {
+    return { error: 'error' };
+  }
+  data.channels[channelId].ownerMembers.push(user);
+  setData(data);
+  return {};
+}
+
+export function channelLeaveV1(token: string, channelId: number) {
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null || data.channels[channelId] === undefined ||
+  !(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+    return { error: 'error' };
+  }
+  data.channels[channelId].allMembers = data.channels[channelId].allMembers.filter(user => user.uId !== authUserId);
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== authUserId);
+  setData(data);
+  return {};
+}
+
+export function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const ownerToBeRemoved = userProfileV1(authUserId, uId);
+  const data = getData();
+  if (authUserId === undefined || uId === undefined ||
+    data.channels[channelId] === undefined ||
+    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === ownerToBeRemoved.user.uId)) ||
+    data.channels[channelId].ownerMembers.length === 1 ||
+    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === authUserId))
+  ) {
+    return { error: 'error' };
+  }
+
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== ownerToBeRemoved.user.uId);
+  setData(data);
+  return {};
+}
+
 export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1 };

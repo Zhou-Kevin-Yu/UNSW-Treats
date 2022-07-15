@@ -11,6 +11,8 @@ import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
+import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
+import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
 const errorOutput = { error: 'error' };
@@ -146,6 +148,44 @@ app.post('/dm/messages/v1', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 // TODO add dm/messages/v1
+
+app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelAddOwnerV1(token, channelId, uId));
+});
+
+app.get('/channel/details/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const cId = parseInt(req.query.channelId as string);
+  res.json(channelDetailsV2(token, cId));
+});
+
+app.post('/channel/invite/v2', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelInviteV2(token, channelId, uId));
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelJoinV2(token, channelId));
+});
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelLeaveV1(token, channelId));
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(channelMessagesV2(token, channelId, start));
+});
+
+app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV1(token, channelId, uId));
+});
 
 // All message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
