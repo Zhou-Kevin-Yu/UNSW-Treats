@@ -44,7 +44,6 @@ describe('Testing basic functionality', () => {
                 start: 0
             }
         });
-        expect(res.statusCode).toBe(OK);
         res = request('GET', `${url}:${port}/channel/details/v2`,
         {
             qs: {
@@ -52,8 +51,8 @@ describe('Testing basic functionality', () => {
                 channelId: channelId
             }
         });
-        
-        expect(res.getBody().messages).toStrictEqual({
+        const data = JSON.parse(res.body as string);
+        expect(data.messages).toStrictEqual({
             messages:   [
                 {
                     messageId:  messageId,
