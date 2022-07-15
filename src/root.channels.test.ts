@@ -17,6 +17,16 @@ beforeEach(() => {
 describe('HTTP tests channelsCreateV2', () => {
   /*
   test('error output - invalid token to create channel', () => {
+    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      json: {
+        email: 'gary.sun@gmail.com',
+        password: 'password',
+        nameFirst: 'gary',
+        nameLast: 'sun'
+      }
+    });
+    expect(res1.statusCode).toBe(200);
+
     const res = request('POST', `${url}:${port}/channels/create/v2`, {
       json: {
         token: 'invalid-token',
@@ -40,15 +50,14 @@ describe('HTTP tests channelsCreateV2', () => {
     });
 
     const authId = JSON.parse(res1.body as string);
-
     const res = request('POST', `${url}:${port}/channels/create/v2`, {
       json: {
         token: authId.token,
         name: '',
         isPublic: true
       }
-    }
-    );
+    });
+
     const channel = JSON.parse(res.body as string);
     expect(res.statusCode).toBe(200);
     expect(channel).toStrictEqual(errorOutput);
