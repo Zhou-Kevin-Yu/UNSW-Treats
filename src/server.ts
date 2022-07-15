@@ -8,6 +8,7 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
@@ -178,6 +179,30 @@ app.delete('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 })
 
+// All message requests
+app.post('/message/send/v1', (req: Request, res: Response) => {
+  const { token, channelId, message } = req.body;
+  res.json(messageSendV1(token, channelId, message));
+});
+
+app.put('/message/edit/v1', (req: Request, res: Response) => {
+  const { token, messageId, message } = req.body;
+  res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const messageId = req.query.messageId as string;
+  const newMessageId = parseInt(messageId);
+  res.json(messageRemoveV1(token, newMessageId));
+});
+
+app.post('/message/senddm/v1', (req: Request, res: Response) => {
+  const { token, dmId, message } = req.body;
+  res.json(messageSendDmV1(token, dmId, message));
+});
+
+// All users requests
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
