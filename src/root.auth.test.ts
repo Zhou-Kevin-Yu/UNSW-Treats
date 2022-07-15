@@ -4,6 +4,9 @@ import os from 'os';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
 
+import { authLoginV2ServerSide } from './wrapped.auth';
+import { userProfileV2ServerSide } from './wrapped.user';
+
 const OK = 200;
 const port = config.port;
 let url = config.url;
@@ -241,5 +244,15 @@ describe('Testing /auth/logout/v1', () => {
     );
     expect(res.statusCode).toBe(OK);
     expect(isTokenValid(token)).toBe(false);
+  });
+});
+
+describe('further testing combining login, logout and user', () => {
+  test('user1', () => {
+    authRegisterServerSide('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
+    const newTok = authLoginV2ServerSide('ben.kerno4@gmail.com', 'dogIsCute');
+    const user = userProfileV2ServerSide(newTok.token, 0);
+    console.log(user);
+    expect(user.user.email).toStrictEqual('ben.kerno4@gmail.com');
   });
 });
