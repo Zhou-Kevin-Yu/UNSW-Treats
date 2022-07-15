@@ -107,7 +107,13 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
     return { error: 'error' };
   }
   */
-  delete data.dms[dmId];
+  // delete data.dms[dmId];
+  let newDms: DmObj[] = [];
+  newDms = data.dms.filter((dm) => dm.dmId !== dmId);
+  for (const i in newDms) {
+    newDms[i].dmId = parseInt(i);
+  }
+  data.dms = newDms;
   setData(data);
 }
 

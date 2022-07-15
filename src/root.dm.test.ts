@@ -529,3 +529,43 @@ describe('HTTP tests for dm/', () => {
       expect(bodyObj).toEqual('Hello');
     });
     */
+
+describe('Testing Success Cases of dm/remove/v1', () => {
+  test.only('Testing remove', () => {
+    const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+    const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+    const dmIdValid = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm1 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm2 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm3 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    expect(dm1).toBe(dm1);
+    expect(dm2).toBe(dm2);
+    expect(dm3).toBe(dm3);
+    // test dm has been created
+    request('GET', `${url}:${port}/dm/list/v1`, {
+      qs: {
+        token: token1,
+      }
+    });
+    // const res4Obj = JSON.parse(res4.body as string);
+    // expect(res4Obj.dms).toStrictEqual([{ dmId: dmIdValid, name: 'bk, et' }]);
+
+    // delete channel
+    request('DELETE', `${url}:${port}/dm/remove/v1`, {
+      qs: {
+        token: token1,
+        dmId: dmIdValid,
+      }
+    });
+
+    const res5 = request('GET', `${url}:${port}/dm/list/v1`, {
+      qs: {
+        token: token1,
+      }
+    });
+    const res5Obj = JSON.parse(res5.body as string);
+    expect(res5Obj.dms).toStrictEqual(
+      [{ dmId: 0, name: 'bk, et' }, { dmId: 0 + 1, name: 'bk, et' }, { dmId: 0 + 2, name: 'bk, et' }]
+    );
+  });
+});
