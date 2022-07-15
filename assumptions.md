@@ -22,3 +22,6 @@ dm/create/v1:
 
 dm/leave/v1
 - when creator leave the dm, another person is promoted. This is decided by the order of which the creator made the dm.
+
+dm/messages/v1
+- start should cause a fail in the case when start = 1 and there is only one message. because start is the index and there is no message at index 1

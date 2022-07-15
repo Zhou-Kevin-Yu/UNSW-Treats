@@ -1,3 +1,5 @@
+import { persistantSaveData, persistantReadData } from './persistant';
+
 // types here
 export interface User {
   uId: number;
@@ -76,6 +78,25 @@ export interface ChannelsListAllV1 {
 
 export interface ChannelsListV1 {
   channels?: ChannelsObj[];
+  error?: 'error';
+}
+
+// Message Interfaces
+export interface MessageSendV1 {
+  messageId?: number;
+  error?: 'error';
+}
+
+export interface MessageEditV1 {
+  error?: 'error';
+}
+
+export interface MessageRemoveV1 {
+  error?: 'error';
+}
+
+export interface MessageSendDmV1 {
+  messageId?: number;
   error?: 'error';
 }
 
@@ -182,12 +203,23 @@ Example usage
 
 // Use get() to access the data
 function getData() {
+  const readData = persistantReadData();
+  // console.log('************ COMPARE *********************************');
+  // console.log('Comparing file data and local data:');
+  // console.log(readData);
+  // console.log('__');
+  // console.log(data);
+  // data = { ...readData };
+  data = Object.assign(data, readData);
   return data;
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
 function setData(newData : Data) {
+  persistantSaveData(newData);
   data = newData;
 }
+
+setData(data);
 
 export { getData, setData };

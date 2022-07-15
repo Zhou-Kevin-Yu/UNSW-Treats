@@ -123,6 +123,7 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   }
 
   data.users[authUserId].handleStr = handle;
+  setData(data);
 
   return {};
 }
