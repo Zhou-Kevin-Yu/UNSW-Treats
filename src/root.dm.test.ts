@@ -648,7 +648,7 @@ describe('Testing Success Cases of dm/remove/v1', () => {
     });
     const res5Obj = JSON.parse(res5.body as string);
     expect(res5Obj.dms).toStrictEqual(
-      [{ dmId: 0, name: 'bk, et' }, { dmId: 0 + 1, name: 'bk, et' }, { dmId: 0 + 2, name: 'bk, et' }]
+      [{ dmId: 1, name: 'bk, et' }, { dmId: 1 + 1, name: 'bk, et' }, { dmId: 1 + 2, name: 'bk, et' }]
     );
   });
 });
