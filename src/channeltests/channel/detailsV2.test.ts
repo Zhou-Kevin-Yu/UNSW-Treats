@@ -1,4 +1,3 @@
-import { channelsCreateV2 } from '../../channels/create/v2'
 import { url, port }        from '../../config.json'
 import { clearV1 } from '../../other';
 
