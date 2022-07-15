@@ -53,6 +53,7 @@ function userProfileV2(token: string, uId: number): UserDetailsV1 {
   if (authUserId === null) {
     return { error: 'error' };
   }
+
   return userProfileV1(authUserId, uId);
 }
 
