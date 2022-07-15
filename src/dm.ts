@@ -78,7 +78,7 @@ export function dmListV1(token: string): DmListV1 {
   }
   const userDms: Dm[] = [];
   for (const dm of data.dms) {
-    if (dm !== undefined && dm.members.includes(authUserId)) {
+    if (dm !== undefined && dm !== null && dm.members.includes(authUserId)) {
       const tempDm: Dm = {
         dmId: dm.dmId,
         name: dm.name,
@@ -108,6 +108,12 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   }
   */
   delete data.dms[dmId];
+  // let newDms: DmObj[] = [];
+  // newDms = data.dms.filter((dm) => dm.dmId !== dmId);
+  // for (const i in newDms) {
+  //   newDms[i].dmId = parseInt(i);
+  // }
+  // data.dms = newDms;
   setData(data);
 }
 
@@ -164,6 +170,7 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   // if current creator is trying to leave and no one else is left, then delete DM
     dmRemoveV1(token, dmId);
   }
+  setData(data);
   // console.log("after", data.dms); //temporary testing
 }
 
