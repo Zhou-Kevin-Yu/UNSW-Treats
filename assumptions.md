@@ -25,3 +25,6 @@ dm/leave/v1
 
 dm/messages/v1
 - start should cause a fail in the case when start = 1 and there is only one message. because start is the index and there is no message at index 1
+
+General
+- all tokens and authUserId has to be valid, otherwise we return { error }
