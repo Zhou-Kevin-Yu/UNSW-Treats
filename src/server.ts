@@ -7,7 +7,7 @@ import cors from 'cors';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
-import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
@@ -136,6 +136,11 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
 app.post('/dm/leave/v1', (req: Request, res: Response) => {
   const { token, dmId } = req.body;
   res.json(dmLeaveV1(token, dmId));
+});
+
+app.post('/dm/messages/v1', (req: Request, res: Response) => {
+  const { token, dmId, start } = req.body;
+  res.json(dmMessagesV1(token, dmId, start));
 });
 // TODO add dm/messages/v1
 
