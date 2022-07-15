@@ -169,3 +169,6 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+
+# Ignore data file
+data.json

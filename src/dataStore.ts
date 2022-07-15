@@ -1,3 +1,5 @@
+import { persistantSaveData, persistantReadData } from './persistant';
+
 // types here
 export interface User {
   uId: number;
@@ -182,11 +184,20 @@ Example usage
 
 // Use get() to access the data
 function getData() {
+  const readData = persistantReadData();
+  console.log("************ COMPARE *********************************");
+  console.log("Comparing file data and local data:")
+  console.log(readData);
+  console.log("__")
+  console.log(data);
+  // data = { ...readData };
+  data = Object.assign(data, readData);
   return data;
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
 function setData(newData : Data) {
+  persistantSaveData(newData);
   data = newData;
 }
 
