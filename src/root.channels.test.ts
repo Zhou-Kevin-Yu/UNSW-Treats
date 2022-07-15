@@ -16,22 +16,18 @@ beforeEach(() => {
 });
 
 describe('HTTP tests channelsCreateV2', () => {
-  /*
-    test('error output - invalid token to create channel', () => {
-
-        let res = request('POST', `${url}:${port}/channels/create/v2`, {
-            json: {
-                token: 'invalid token',
-                name: 'COMP1531',
-                isPublic: true
-            }
-        });
-
-    let channel = JSON.parse(res.body as string);
+  test('error output - invalid token to create channel', () => {
+    const res = request('POST', `${url}:${port}/channels/create/v2`, {
+      json: {
+        token: 'invalid-token',
+        name: 'COMP1531',
+        isPublic: true
+      }
+    });
     expect(res.statusCode).toBe(200);
-    expect(channel).toBe({errorOutput});
-
-    }); */
+    const channel = JSON.parse(res.body as string);
+    expect(channel).toBe(errorOutput);
+  });
 
   test('Testing invalid name inputs - less than 1 character', () => {
     const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
