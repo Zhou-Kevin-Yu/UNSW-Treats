@@ -1,8 +1,7 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { MessagesObj } from './dataStore';
-
-const error = { error: 'error' };
+import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1 } from './dataStore';
 
 /**
  * Send a message from the authorised user to the channel specified by channelId
@@ -11,22 +10,22 @@ const error = { error: 'error' };
  * @param {number} channelId - id for the selected channel
  * @param {string} message - actual message string
  * @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
- * @returns {object} {error: 'error'} - return error if channelId is invalid, length of message is less than 1
+ * @returns {object} { error: 'error' } - return error if channelId is invalid, length of message is less than 1
  * or over 1000 characters, or channelId is valid and the authorised user is not a member of the channel
  */
-function messageSendV1 (token: string, channelId: number, message: string) {
+export function messageSendV1 (token: string, channelId: number, message: string): MessageSendV1 {
   const data = getData();
   let existChannel = 0;
   let existAuth = 0;
   let messageIdCopy = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return error;
+    return { error: 'error' };
   }
 
   // If length of message is less than 1 or over 1000 characters
   if (message.length < 1 || message.length > 1000) {
-    return error;
+    return { error: 'error' };
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -60,12 +59,12 @@ function messageSendV1 (token: string, channelId: number, message: string) {
 
   // If the channel Id does not exist or is invalid
   if (existChannel === 0) {
-    return error;
+    return { error: 'error' };
   }
 
   // If channelId is valid and the authorised user is not a member of the channel
   if (existAuth === 0) {
-    return error;
+    return { error: 'error' };
   }
 }
 
@@ -75,23 +74,23 @@ function messageSendV1 (token: string, channelId: number, message: string) {
  * @param {number} messageId - id for the selected message
  * @param {string} message - actual message string
  * @returns {object} {} - empty object
- * @returns {object} {error: 'error'} - return error if length of message is over 1000 characters,
+ * @returns {object} { error: 'error' } - return error if length of message is over 1000 characters,
  * messageId does not refer to a valid message within a channel/DM that the authorised user has joined,
  * the message was not sent by the authorised user making this request,
  * or the authorised user does not have owner permissions in the channel/DM
  */
-function messageEditV1 (token: string, messageId: number, message: string) {
+export function messageEditV1 (token: string, messageId: number, message: string): MessageEditV1 {
   const data = getData();
   let existMessage = 0;
   let existAuth = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return error;
+    return { error: 'error' };
   }
 
   // If length of message is over 1000 characters
   if (message.length > 1000) {
-    return error;
+    return { error: 'error' };
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -201,12 +200,12 @@ function messageEditV1 (token: string, messageId: number, message: string) {
 
   // If message was not sent by the authorised user making this edit request
   if (existAuth === 0) {
-    return error;
+    return { error: 'error' };
   }
 
   // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
   if (existMessage === 0) {
-    return error;
+    return { error: 'error' };
   }
 }
 
@@ -215,18 +214,18 @@ function messageEditV1 (token: string, messageId: number, message: string) {
  * @param {string} token - user login token
  * @param {number} messageId - id for the selected message
  * @returns {object} {} - empty object
- * @returns {object} {error: 'error'} - return error if messageId does not refer to a valid message within a channel/DM
+ * @returns {object} { error: 'error' } - return error if messageId does not refer to a valid message within a channel/DM
  * that the authorised user has joined,
  * the message was not sent by the authorised user making this request,
  * or the authorised user does not have owner permissions in the channel/DM
  */
-function messageRemoveV1 (token: string, messageId: number) {
+export function messageRemoveV1 (token: string, messageId: number): MessageRemoveV1 {
   const data = getData();
   let existMessage = 0;
   let existAuth = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return error;
+    return { error: 'error' };
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -327,12 +326,12 @@ function messageRemoveV1 (token: string, messageId: number) {
 
   // If message was not sent by the authorised user making this edit request
   if (existAuth === 0) {
-    return error;
+    return { error: 'error' };
   }
 
   // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
   if (existMessage === 0) {
-    return error;
+    return { error: 'error' };
   }
 }
 
@@ -342,23 +341,23 @@ function messageRemoveV1 (token: string, messageId: number) {
 * @param {number} dmId - id for the selected DM
 * @param {string} message - actual message string
 * @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
-* @returns {object} {error: 'error'} - return error if mdmId does not refer to a valid DM,
+* @returns {object} { error: 'error' } - return error if mdmId does not refer to a valid DM,
 * length of message is less than 1 or over 1000 characters,
 * or dmId is valid and the authorised user is not a member of the DM
 */
-function messageSendDmV1 (token: string, dmId: number, message: string) {
+export function messageSendDmV1 (token: string, dmId: number, message: string): MessageSendDmV1 {
   const data = getData();
   let existDm = 0;
   let existAuth = 0;
   let messageIdCopy = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return error;
+    return { error: 'error' };
   }
 
   // If length of message is less than 1 or over 1000 characters
   if (message.length < 1 || message.length > 1000) {
-    return error;
+    return { error: 'error' };
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -393,15 +392,13 @@ function messageSendDmV1 (token: string, dmId: number, message: string) {
 
   // If the dmId does not exist or is invalid
   if (existDm === 0) {
-    return error;
+    return { error: 'error' };
   }
 
   // If dmId is valid and the authorised user is not a member of the DM
   if (existAuth === 0) {
-    return error;
+    return { error: 'error' };
   }
 
   return { messageId: messageIdCopy };
 }
-
-export { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 };
