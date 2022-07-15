@@ -108,6 +108,19 @@ export function messageEditV1 (token: string, messageId: number, message: string
     }
   }
 
+  /*
+  //to find message
+  const currMessage = 0;
+  const messageToFind = 56;
+  for (channel of channels) {
+    currMessage = currMessage + channel.messages.length:
+    if (messageToFind < currMessage) {
+      //found the message
+      channel.ownerMember.includes(the auatalsjdhflajsdh f)
+    }
+  }
+  */
+
   // If the auth user is the owner of the channel
   for (const channel of data.channels) {
     // Loop through all messages in channel
