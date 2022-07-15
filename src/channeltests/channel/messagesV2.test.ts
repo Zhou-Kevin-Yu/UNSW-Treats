@@ -60,4 +60,46 @@ describe('Testing basic functionality', () => {
             end:        -1
         });
     });
+    test('invalid channelId', () => {
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
+        {
+            json: {
+                email: 'kevinyu@email.com',
+                password: 'KevinsPassword0',
+                nameFirst: 'Kevin',
+                nameLast: 'Yu'
+            }
+        });
+        const kevin = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channels/create/v2`,
+        {
+            json: {
+                token: kevin.token,
+                name: 'name',
+                isPublic: true
+            }
+        });
+        const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/message/send/v1`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: channelId,
+                message: 'Hello World!'
+            }
+        });
+        console.log(JSON.parse(res.body as string));
+        const timeSent = Math.floor((new Date()).getTime() / 1000);
+        const {messageId} = JSON.parse(res.body as string);
+        res = request('GET',`${url}:${port}/channel/messages/v2`,
+        {
+            qs: {
+                token: kevin.token,
+                channelId: 1,
+                start: 0
+            }
+        });
+        const data = JSON.parse(res.body as string);
+        expect(data).toStrictEqual({ error: 'error' });
+    })
 });

@@ -317,30 +317,37 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
 export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  const authUser = userProfileV1(authUserId, authUserId).user;
   if (authUserId === null || data.channels[channelId] === undefined ||
-  data.channels[channelId].allMembers.includes(authUser)) {
+  data.channels[channelId].allMembers.some(user => user.uId === authUserId)) {
     return { error: 'error' };
   }
-  data.channels[channelId].allMembers.filter(user => user !== authUser);
+  let index; let count = 0;
+  for (const user of data.channels[channelId].allMembers) {
+    if (user.uId === authUserId) {
+      index = count;
+    }
+    count++;
+  }
+  data.channels[channelId].allMembers.splice(index, 1);
+  data.channels[channelId].ownerMembers.splice(index, 1);
   setData(data);
   return {};
 }
 
 export function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  const ownerToBeRemoved = userProfileV1(authUserId, uId).user;
+  const ownerToBeRemoved = userProfileV1(authUserId, uId);
   const data = getData();
   if (authUserId === undefined || uId === undefined ||
     data.channels[channelId] === undefined ||
-    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === ownerToBeRemoved.uId)) ||
+    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === ownerToBeRemoved.user.uId)) ||
     data.channels[channelId].ownerMembers.length === 1 ||
     !(data.channels[channelId].ownerMembers.some(entry => entry.uId === authUserId))
   ) {
     return { error: 'error' };
   }
 
-  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== ownerToBeRemoved.uId);
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== ownerToBeRemoved.user.uId);
   setData(data);
   return {};
 }

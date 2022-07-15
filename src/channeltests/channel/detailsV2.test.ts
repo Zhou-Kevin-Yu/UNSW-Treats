@@ -47,4 +47,32 @@ describe('Testing basic functionality', () => {
             allMembers: [user],
         })
     });
+    test('invalid channelId', () => {
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
+        {
+            json: {
+                email: 'kevinyu@email.com',
+                password: 'KevinsPassword0',
+                nameFirst: 'Kevin',
+                nameLast: 'Yu'
+            }
+        });
+        const kevin = JSON.parse(res.body as string);
+        res = request('GET', `${url}:${port}/user/profile/v2`,
+        {
+            qs: {
+                token:  kevin.token,
+                uId:    kevin.authUserId
+            }
+        });
+        const {user} = JSON.parse(res.body as string);
+        res = request('GET', `${url}:${port}/channel/details/v2`, {
+            qs: {
+                token: kevin.token,
+                channelId: 0
+            }
+        });
+        const data = JSON.parse(res.body as string)
+        expect(data).toStrictEqual({error: 'error'})
+    })
 });

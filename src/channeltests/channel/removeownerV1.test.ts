@@ -79,4 +79,56 @@ describe('Testing basic functionality', () => {
         expect(data.ownerMembers).toStrictEqual([kevinProfile.user]);
         expect(res.statusCode).toBe(OK);
     });
+    test('case where owner to be removed isn\'t an owner', () => {
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
+        {
+            json: {
+                email: 'kevinyu@unsw.com',
+                password: 'KevinsPassword0',
+                nameFirst: 'Kevin',
+                nameLast: 'Yu'
+            }
+        });
+        const kevin = JSON.parse(res.body as string);
+        console.log(kevin);
+        res = request('POST', `${url}:${port}/auth/register/v2`,
+        {
+            json: {
+                email: 'bob@unsw.com',
+                password: 'BobsPassword0',
+                nameFirst: 'Bob',
+                nameLast: 'Smith'
+            }
+        });
+        const bob = JSON.parse(res.body as string);
+        const kevinProfile = userProfileV2ServerSide(kevin.token, kevin.authUserId);
+        const bobProfile = userProfileV2ServerSide(bob.token, bob.authUserId);
+        res = request('POST', `${url}:${port}/channels/create/v2`,
+        {
+            json: {
+                token: kevin.token,
+                name: 'name',
+                isPublic: true
+            }
+        });
+        const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channel/invite/v2`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: channelId,
+                uId: bob.authUserId
+            }
+        });
+        res = request('POST', `${url}:${port}/channel/removeowner/v1`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: channelId,
+                uId: bob.authUserId
+            }
+        });
+        expect(JSON.parse(res.body as string)).toStrictEqual({ error: 'error' });
+    })
+
 });
