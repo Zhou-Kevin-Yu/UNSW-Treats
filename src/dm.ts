@@ -118,7 +118,7 @@ export function dmListV1(token: string): DmListV1 {
 export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   const data = getData();
   // check if dmId is valid
-  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
     return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
