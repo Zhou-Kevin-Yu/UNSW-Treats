@@ -7,7 +7,7 @@ import isEmail from 'validator/lib/isEmail';
  *
  * For a valid user, returns information about their userId,
  * email, first name, last name, and handle
- *
+ *`
  * @param {number} authUserId - authorised user that can grab into about another user
  * @param {number} uId - id of the user to be queried
  * @returns {user: {
@@ -38,6 +38,16 @@ function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   return { user };
 }
 
+/**
+ *
+ * For a valid user, returns information about their userId,
+ * email, first name, last name, and handle
+ * calls userProfileV1
+ *`
+ * @param {string} token - valid login token
+ * @param {number} uId - id of the user to be queried
+ */
+
 function userProfileV2(token: string, uId: number): UserDetailsV1 {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   if (authUserId === null) {
@@ -46,6 +56,14 @@ function userProfileV2(token: string, uId: number): UserDetailsV1 {
   return userProfileV1(authUserId, uId);
 }
 
+/**
+ *
+ * For a valid user, updates their name
+ *`
+ * @param {string} token - valid login token
+ * @param {string} nameFirst - namefirst (must be less than 50 characters)
+ * @param {string} nameLast - nameLast (must be less than 50 characters)
+ */
 function userProfileSetnameV1(token: string, nameFirst: string, nameLast: string): { error?: 'error' } {
   // check if token is invalid
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -69,6 +87,13 @@ function userProfileSetnameV1(token: string, nameFirst: string, nameLast: string
   return {};
 }
 
+/**
+ *
+ * For a valid user, updates their email
+ *`
+ * @param {string} token - valid login token
+ * @param {string} email - new email
+ */
 function userProfileSetemailV1(token: string, email: string): { error?: 'error' } {
   // check if token is invalid
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -96,6 +121,13 @@ function userProfileSetemailV1(token: string, email: string): { error?: 'error' 
   return {};
 }
 
+/**
+ *
+ * For a valid user, updates their handleStr
+ *`
+ * @param {string} token - valid login token
+ * @param {string} handle - new handle (must be greater than 3 and less than 20)
+ */
 function userProfileSethandleV1(token: string, handle: string): { error?: 'error' } {
   // check if token is invalid
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -122,6 +154,7 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   }
 
   data.users[authUserId].handleStr = handle;
+  setData(data);
 
   return {};
 }

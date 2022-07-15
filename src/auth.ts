@@ -15,12 +15,12 @@ import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 */
 function authLoginV1(email: string, password: string): AuthLoginV1 {
   const data = getData();
-  for (const user of data.users) {
-    if (user.email === email && user.password === password) {
-      const token = generateToken(user.uId);
-      user.tokens.push(token);
+  for (const user in data.users) {
+    if (data.users[user].email === email && data.users[user].password === password) {
+      const token = generateToken(data.users[user].uId);
+      data.users[user].tokens.push(token);
       setData(data);
-      return { token: token, authUserId: user.uId };
+      return { token: token, authUserId: data.users[user].uId };
     }
   }
   return { error: 'error' };
@@ -87,6 +87,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     permission: perm,
     tokens: []
   };
+  setData(data);
   const token = generateToken(authUserId);
   data.users[authUserId].tokens.push(token);
   setData(data);
