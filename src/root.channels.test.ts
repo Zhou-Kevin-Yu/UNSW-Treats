@@ -1,10 +1,9 @@
-
+const request = require('sync-request');
 import config from './config.json';
 import os from 'os';
 
 const port = config.port;
 let url = config.url;
-const request = require('sync-request');
 const errorOutput = { error: 'error' };
 
 if (os.platform() === 'darwin') {
@@ -17,21 +16,28 @@ beforeEach(() => {
 
 describe('HTTP tests channelsCreateV2', () => {
   /*
-    test('error output - invalid token to create channel', () => {
+  test('error output - invalid token to create channel', () => {
+    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      json: {
+        email: 'gary.sun@gmail.com',
+        password: 'password',
+        nameFirst: 'gary',
+        nameLast: 'sun'
+      }
+    });
+    expect(res1.statusCode).toBe(200);
 
-        let res = request('POST', `${url}:${port}/channels/create/v2`, {
-            json: {
-                token: 'invalid token',
-                name: 'COMP1531',
-                isPublic: true
-            }
-        });
-
-    let channel = JSON.parse(res.body as string);
+    const res = request('POST', `${url}:${port}/channels/create/v2`, {
+      json: {
+        token: 'invalid-token',
+        name: 'COMP1531',
+        isPublic: true
+      }
+    });
     expect(res.statusCode).toBe(200);
-    expect(channel).toBe({errorOutput});
-
-    }); */
+    const channel = JSON.parse(res.body as string);
+    expect(channel).toBe(errorOutput);
+  }); */
 
   test('Testing invalid name inputs - less than 1 character', () => {
     const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
@@ -44,15 +50,14 @@ describe('HTTP tests channelsCreateV2', () => {
     });
 
     const authId = JSON.parse(res1.body as string);
-
     const res = request('POST', `${url}:${port}/channels/create/v2`, {
       json: {
         token: authId.token,
         name: '',
         isPublic: true
       }
-    }
-    );
+    });
+
     const channel = JSON.parse(res.body as string);
     expect(res.statusCode).toBe(200);
     expect(channel).toStrictEqual(errorOutput);
