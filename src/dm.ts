@@ -141,6 +141,7 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   // }
   // data.dms = newDms;
   setData(data);
+  return {};
 }
 
 /**
@@ -214,6 +215,7 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   }
   setData(data);
   // console.log("after", data.dms); //temporary testing
+  return {};
 }
 
 /**
