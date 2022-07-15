@@ -167,14 +167,14 @@ app.post('/channel/leave/v1', (req: Request, res: Response) => {
   res.json(channelLeaveV1(token, channelId));
 });
 
-app.get('/channel/message/v2', (req: Request, res: Response) => {
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelId = parseInt(req.query.channelId as string);
   const start = parseInt(req.query.start as string);
   res.json(channelMessagesV2(token, channelId, start));
 });
 
-app.delete('/channel/removeowner/v1', (req: Request, res: Response) => {
+app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });

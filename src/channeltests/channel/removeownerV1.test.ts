@@ -42,6 +42,14 @@ describe('Testing basic functionality', () => {
             }
         });
         const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channel/invite/v2`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: channelId,
+                uId: bob.authUserId
+            }
+        });
         res = request('POST', `${url}:${port}/channel/addowner/v1`,
         {
             json: {
@@ -50,7 +58,7 @@ describe('Testing basic functionality', () => {
                 uId: bob.authUserId
             }
         });
-        res = request('DELETE', `${url}:${port}/channel/removeowner/v1`,
+        res = request('POST', `${url}:${port}/channel/removeowner/v1`,
         {
             json: {
                 token: kevin.token,
@@ -58,16 +66,17 @@ describe('Testing basic functionality', () => {
                 uId: bob.authUserId
             }
         });
-        res = request('GET', `${url}:${port}/chanel/details/v2`,
+       console.log(JSON.parse(res.body as string));
+        res = request('GET', `${url}:${port}/channel/details/v2`,
         {
             qs: {
                 token: kevin.token,
                 channelId: channelId
             }
         });
-        const data = res.body.toString();
-        expect(data.allMembers).toStrictEqual([kevinProfile, bobProfile]);
-        expect(data.ownerMembers).toStrictEqual([kevinProfile]);
+        const data = JSON.parse(res.body as string);
+        expect(data.allMembers).toStrictEqual([kevinProfile.user, bobProfile.user]);
+        expect(data.ownerMembers).toStrictEqual([kevinProfile.user]);
         expect(res.statusCode).toBe(OK);
     });
 });

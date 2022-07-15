@@ -23,6 +23,14 @@ describe('Testing basic functionality', () => {
             }
         });
         const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channel/invite/v2`,
+        {
+            json: {
+                token: kevin.token,
+                channelId: channelId,
+                uId: bob.authUserId
+            }
+        });
         res = request('POST', `${url}:${port}/channel/addowner/v1`,
         {
             json: {
@@ -31,9 +39,15 @@ describe('Testing basic functionality', () => {
                 uId: bob.authUserId
             }
         });
-        console.log (kevin.token, channelId, bob.authUserId);
+        console.log(JSON.parse(res.body as string));
+        res = request('GET', `${url}:${port}/channel/details/v2`, {
+            qs: {
+                token: kevin.token,
+                channelId: channelId
+            }
+        });
         const data = JSON.parse(res.body as string);
-        expect(data.ownerMembers).toStrictEqual([kevinProfile, bobProfile])
+        expect(data.ownerMembers).toStrictEqual([kevinProfile.user, bobProfile.user])
         expect(res.statusCode).toBe(OK);
     });
 });

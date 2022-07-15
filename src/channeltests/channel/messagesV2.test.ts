@@ -32,9 +32,11 @@ describe('Testing basic functionality', () => {
             json: {
                 token: kevin.token,
                 channelId: channelId,
-                message: 'Hello World'
+                message: 'Hello World!'
             }
         });
+        console.log(JSON.parse(res.body as string));
+        const timeSent = Math.floor((new Date()).getTime() / 1000);
         const {messageId} = JSON.parse(res.body as string);
         res = request('GET',`${url}:${port}/channel/messages/v2`,
         {
@@ -44,21 +46,14 @@ describe('Testing basic functionality', () => {
                 start: 0
             }
         });
-        res = request('GET', `${url}:${port}/channel/details/v2`,
-        {
-            qs: {
-                token: kevin.token,
-                channelId: channelId
-            }
-        });
         const data = JSON.parse(res.body as string);
-        expect(data.messages).toStrictEqual({
+        expect(data).toStrictEqual({
             messages:   [
                 {
                     messageId:  messageId,
-                    uId:        kevin.uId,
+                    uId:        kevin.authUserId,
                     message:    'Hello World!',
-                    timeSent:   messageId.timeSent
+                    timeSent:   timeSent
                 }
             ],
             start:      0,

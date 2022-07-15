@@ -32,7 +32,7 @@ describe('Testing basic functionality', () => {
         {
             qs: {
                 token:  kevin.token,
-                uId:    kevin.uid
+                uId:    kevin.authUserId
             }
         });
         const kevinProfile = JSON.parse(res.body as string);
@@ -69,6 +69,6 @@ describe('Testing basic functionality', () => {
             }
         });
         const data = JSON.parse(res.body as string);
-        expect(data.allMembers).toStrictEqual([kevinProfile])
+        expect(data.allMembers).toStrictEqual([kevinProfile.user])
     });
 });

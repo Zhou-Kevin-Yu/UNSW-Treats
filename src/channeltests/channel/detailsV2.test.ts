@@ -22,7 +22,7 @@ describe('Testing basic functionality', () => {
         {
             qs: {
                 token:  kevin.token,
-                uId:    kevin.uid
+                uId:    kevin.authUserId
             }
         });
         const {user} = JSON.parse(res.body as string);
@@ -30,16 +30,17 @@ describe('Testing basic functionality', () => {
             json: {
                 token: kevin.token,
                 name: 'name',
-                isPublic: 'true'
+                isPublic: true
             }
         });
-        res = request('GET', `${url}:${port}/channels/details/v2`, {
+        res = request('GET', `${url}:${port}/channel/details/v2`, {
             qs: {
                 token: kevin.token,
                 channelId: 0
             }
         });
-        expect(res.bodyObj).toStrictEqual({
+        const data = JSON.parse(res.body as string)
+        expect(data).toStrictEqual({
             name: 'name',
             isPublic: true,
             ownerMembers: [user],
