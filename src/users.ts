@@ -1,39 +1,20 @@
-import { getData } from './dataStore';
-import { UserDetailsV1 } from './dataStore';
+import { getData, UserAllV1, User } from './dataStore';
+import { tokenToAuthUserId, isTokenValid } from './token';
+import { userProfileV1 } from './user';
 
-/**
- *
- * For a valid user, returns information about their userId,
- * email, first name, last name, and handle
- *
- * @param {number} authUserId - authorised user that can grab into about another user
- * @param {number} uId - id of the user to be queried
- * @returns {user: {
- *            uId: number,
- *            email: string,
- *            nameFirst: string,
- *            nameLast: string,
- *            handleStr: string
- *          }} - user object of queired user
- */
-
-function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
-  const dataStore = getData();
-
-  if (!(authUserId in dataStore.users && uId in dataStore.users)) {
+function usersAllV1(token: string): UserAllV1 {
+  const data = getData();
+  // get token and return error if invalid
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
     return { error: 'error' };
   }
-
-  const data = dataStore.users[uId];
-  const user = {
-    uId: data.uId,
-    email: data.email,
-    nameFirst: data.nameFirst,
-    nameLast: data.nameLast,
-    handleStr: data.handleStr,
-  };
-
-  return { user };
+  const userArr: User[] = [];
+  for (const user of data.users) {
+    const currUser : User = userProfileV1(authUserId, user.uId).user;
+    userArr.push(currUser);
+  }
+  return { users: userArr };
 }
 
-export { userProfileV1 };
+export { usersAllV1 };

@@ -8,6 +8,7 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
+import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
@@ -136,6 +137,12 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   res.json(dmLeaveV1(token, dmId));
 });
 // TODO add dm/messages/v1
+
+app.get('/users/all/v1', (req: Request, res: Response) => {
+  const { token } = req.query;
+  const tokenParse = token.toString();
+  res.json(usersAllV1(tokenParse));
+});
 
 // start server
 app.listen(PORT, HOST, () => {

@@ -4,7 +4,7 @@ import { DmCreateV1, DmListV1, /* DmRemoveV1, */ DmDetailsV1, DmLeaveV1, DmMessa
 import { Dm, DmObj, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
-import { userProfileV1 } from './users'; // TODO update this with userProfileV2
+import { userProfileV1 } from './user'; // TODO update this with userProfileV2
 
 /**
  * given a token and user ids, creates a new DM (direct message),

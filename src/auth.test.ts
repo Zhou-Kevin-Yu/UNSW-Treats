@@ -1,6 +1,6 @@
 import { authLoginV1, authLogoutV1, authRegisterV1 } from './auth';
 import { clearV1 } from './other';
-import { userProfileV1 } from './users';
+import { userProfileV1 } from './user';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
 beforeEach(() => {
