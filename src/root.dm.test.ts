@@ -536,11 +536,12 @@ describe('HTTP tests for dm/', () => {
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
       const mId = messageSendDmV1SS(reg1.token, dm1.dmId, "first message").messageId; //send one message
       const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
+      console.log(dmMessage);
       expect(dmMessage.messages[0].messageId).toBe(mId);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
       expect(dmMessage.messages[0].message).toBe("first message");
-      expect(dmMessage.start.messageId).toBe(0);
-      expect(dmMessage.end.messageId).toBe(-1);
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(-1);
       /*
       expect(dmMessage).toContainEqual(
         {
@@ -560,11 +561,11 @@ describe('HTTP tests for dm/', () => {
         messageSendDmV1SS(reg1.token, dm1.dmId, "message"); 
       }
       const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
-      expect(dmMessage.messages[0].length).toBe(50);
+      expect(dmMessage.messages.length).toBe(50);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
       expect(dmMessage.messages[25].message).toBe("message");
-      expect(dmMessage.start.messageId).toBe(0);
-      expect(dmMessage.end.messageId).toBe(50);
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(50);
     });
     test('testing 30 message success', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
@@ -575,11 +576,11 @@ describe('HTTP tests for dm/', () => {
         messageSendDmV1SS(reg1.token, dm1.dmId, "message"); 
       }
       const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
-      expect(dmMessage.messages[0].length).toBe(30);
+      expect(dmMessage.messages.length).toBe(30);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
       expect(dmMessage.messages[25].message).toBe("message");
-      expect(dmMessage.start.messageId).toBe(0);
-      expect(dmMessage.end.messageId).toBe(-1);
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(-1);
     });
   });
 });

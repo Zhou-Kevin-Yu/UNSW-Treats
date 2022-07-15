@@ -1,7 +1,7 @@
 // import { sortAndDeduplicateDiagnostics } from 'typescript';
 import { getData, setData } from './dataStore';
 import { DmCreateV1, DmListV1, /* DmRemoveV1, */ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
-import { Dm, DmObj, User } from './dataStore';
+import { Dm, DmObj, User, MessagesObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 
 import { userProfileV1 } from './user'; // TODO update this with userProfileV2
@@ -168,5 +168,45 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
 }
 
 export function dmMessagesV1(token: string, dmId: number, start: number): DmMessagesV1 {
-  return {};
+  let data = getData();
+  // check if dmId is valid
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+    return { error: 'error' };
+  }
+  //start is greater than total number of messages in the channel
+  console.log("========", start, data.dms[dmId].messages.length-1)
+  if (start > (data.dms[dmId].messages.length - 1)) {
+    return { error: 'error' };
+  }
+  //
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  //error if user is not in dm with dmId: dmId
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    return { error: 'error' };
+  }
+  const messagesReturn : MessagesObj[] = [];
+  const dm = data.dms[dmId];
+  let counter = 0;
+  let endM = -1;
+  for (const message of dm.messages) {
+    if (counter >= 50) {
+      endM = start + 50;
+      break;
+    }
+    const messageCurr = {
+      messageId: message.messageId,
+      uId: message.uId,
+      message: message.message,
+      timeSent: message.timeSent
+    }
+    messagesReturn.push(messageCurr);
+    counter ++;
+  }
+  messagesReturn.reverse();
+
+  return {
+    messages: messagesReturn,
+    start: start,
+    end: endM,
+  };
 }
