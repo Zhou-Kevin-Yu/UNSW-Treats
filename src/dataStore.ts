@@ -79,6 +79,25 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
+// Message Interfaces
+export interface MessageSendV1 {
+  messageId?: number;
+  error?: 'error';
+}
+
+export interface MessageEditV1 {
+  error?: 'error';
+}
+
+export interface MessageRemoveV1 {
+  error?: 'error';
+}
+
+export interface MessageSendDmV1 {
+  messageId?: number;
+  error?: 'error';
+}
+
 // DM interfaces
 export interface Dm {
   dmId: number;
