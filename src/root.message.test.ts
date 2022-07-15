@@ -25,6 +25,483 @@ beforeEach(() => {
   clearV1ServerSide();
 });
 
+// HTTP testing for a combination of message functions being used
+describe('HTTP tests using multiple message functions', () => {
+  // Success testing for message in channel where functions are used again after remove
+  test('Remove a message in channel and then see if /send, /edit and /remove still works', () => {
+    // Create a token from authRegisterV2
+    const res1 = request(
+      'POST',
+      `${url}:${port}/auth/register/v2`,
+      {
+        json: {
+          email: 'kevinyu@email.com',
+          password: 'KevinsPassword0',
+          nameFirst: 'Kevin',
+          nameLast: 'Yu',
+        }
+      }
+    );
+    const registerObj = JSON.parse(res1.getBody() as string);
+    const token = registerObj.token;
+    // Create a channel Id from channelsCreateV2
+    const res2 = request(
+      'POST',
+      `${url}:${port}/channels/create/v2`,
+      {
+        json: {
+          token: token,
+          name: 'COMP1531',
+          isPublic: true,
+        }
+      }
+    );
+    const channelObj = JSON.parse(res2.getBody() as string);
+    const channelId = channelObj.channelId;
+
+    // Create a messageId from messageSendV1
+    const res3 = request(
+      'POST',
+      `${url}:${port}/message/send/v1`,
+      {
+        json: {
+          token: token,
+          channelId: channelId,
+          message: 'I love COMP1531',
+        }
+      }
+    );
+    const message1Obj = JSON.parse(res3.getBody() as string);
+    const messageId = message1Obj.messageId;
+
+    // The user removes message
+    const res4 = request(
+      'DELETE',
+      `${url}:${port}/message/remove/v1`,
+      {
+        qs: {
+          token: token,
+          messageId: messageId,
+        }
+      }
+    );
+    const data = JSON.parse(res4.getBody() as string);
+    expect(res4.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data).toStrictEqual({ });
+
+    // The user sends another message
+    const res5 = request(
+      'POST',
+      `${url}:${port}/message/send/v1`,
+      {
+        json: {
+          token: token,
+          channelId: channelId,
+          message: 'I do not like engineering',
+        }
+      }
+    );
+    const message2Obj = JSON.parse(res5.getBody() as string);
+    const messageId2 = message2Obj.messageId;
+    const data2 = JSON.parse(res5.getBody() as string);
+
+    expect(res5.statusCode).toBe(OK);
+    // Expect to return message Id
+    expect(data2).toStrictEqual({ messageId: expect.any(Number) });
+    expect(data2.messageId).toBe(1); // second message ever sent should have the messageId : 1;
+
+    // The user edits the just sent message (second message ever sent)
+    const res6 = request(
+      'PUT',
+      `${url}:${port}/message/edit/v1`,
+      {
+        json: {
+          token: token,
+          messageId: messageId2,
+          message: 'I love engineering!',
+        }
+      }
+    );
+    const data3 = JSON.parse(res6.getBody() as string);
+    expect(res6.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data3).toStrictEqual({ });
+
+    // The user then removes just edited message (second message ever sent)
+    const res7 = request(
+      'DELETE',
+      `${url}:${port}/message/remove/v1`,
+      {
+        qs: {
+          token: token,
+          messageId: messageId2,
+        }
+      }
+    );
+    const data4 = JSON.parse(res7.getBody() as string);
+    expect(res7.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data4).toStrictEqual({ });
+  });
+
+  // Success testing for message in DM where functions are used again after remove
+  test('Remove a message in DM and then see if /sendDM, /edit and /remove still works', () => {
+    // Create a token from authRegisterV2
+    const res1 = request(
+      'POST',
+      `${url}:${port}/auth/register/v2`,
+      {
+        json: {
+          email: 'kevinyu@email.com',
+          password: 'KevinsPassword0',
+          nameFirst: 'Kevin',
+          nameLast: 'Yu',
+        }
+      }
+    );
+    const registerObj = JSON.parse(res1.getBody() as string);
+    const firstToken = registerObj.token;
+
+    // Create a second user from authRegisterV2
+    const res2 = request(
+      'POST',
+      `${url}:${port}/auth/register/v2`,
+      {
+        json: {
+          email: 'user@gmail.com',
+          password: 'abcdefg',
+          nameFirst: 'Calvin',
+          nameLast: 'Xu',
+        }
+      }
+    );
+    const register2Obj = JSON.parse(res2.getBody() as string);
+    const secondUser = [register2Obj.authUserId];
+
+    // Create a dm Id from dm/create/v1
+    const dmRes = request(
+      'POST',
+      `${url}:${port}/dm/create/v1`,
+      {
+        json: {
+          token: firstToken,
+          uIds: secondUser,
+        }
+      }
+    );
+    const dmObj = JSON.parse(dmRes.getBody() as string);
+    const dmId = dmObj.dmId;
+
+    // Send a message from authorisedUser to the DM specified by dmId
+    const res3 = request(
+      'POST',
+      `${url}:${port}/message/senddm/v1`,
+      {
+        json: {
+          token: firstToken,
+          dmId: dmId,
+          message: 'Hi everyone GLHF',
+        }
+      }
+    );
+    const data = JSON.parse(res3.getBody() as string);
+    const messageObj = JSON.parse(res3.getBody() as string);
+    const messageId = messageObj.messageId;
+
+    expect(res3.statusCode).toBe(OK);
+    // Expect to return messageId
+    expect(data).toStrictEqual({ messageId: expect.any(Number) });
+    expect(data.messageId).toBe(0); // first message should have the messageId : 0;
+
+    // The user removes message sent in DM
+    const res4 = request(
+      'DELETE',
+      `${url}:${port}/message/remove/v1`,
+      {
+        qs: {
+          token: firstToken,
+          messageId: messageId,
+        }
+      }
+    );
+    const data2 = JSON.parse(res4.getBody() as string);
+    expect(res4.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data2).toStrictEqual({ });
+
+    // The user sends another message (second message ever)
+    const res5 = request(
+      'POST',
+      `${url}:${port}/message/senddm/v1`,
+      {
+        json: {
+          token: firstToken,
+          dmId: dmId,
+          message: 'Good luck',
+        }
+      }
+    );
+    const data3 = JSON.parse(res5.getBody() as string);
+    const message2Obj = JSON.parse(res5.getBody() as string);
+    const messageId2 = message2Obj.messageId;
+
+    expect(res5.statusCode).toBe(OK);
+    // Expect to return messageId
+    expect(data3).toStrictEqual({ messageId: expect.any(Number) });
+    expect(data3.messageId).toBe(1); // second message should have the messageId : 1;
+
+    // The user edits the just sent message (second message ever sent)
+    const res6 = request(
+      'PUT',
+      `${url}:${port}/message/edit/v1`,
+      {
+        json: {
+          token: firstToken,
+          messageId: messageId2,
+          message: 'Bad luck to everyone!',
+        }
+      }
+    );
+    const data4 = JSON.parse(res6.getBody() as string);
+    expect(res6.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data4).toStrictEqual({ });
+
+    // The user then removes just edited message (second message ever sent)
+    const res7 = request(
+      'DELETE',
+      `${url}:${port}/message/remove/v1`,
+      {
+        qs: {
+          token: firstToken,
+          messageId: messageId2,
+        }
+      }
+    );
+    const data5 = JSON.parse(res7.getBody() as string);
+    expect(res7.statusCode).toBe(OK);
+    // Expect to return empty object
+    expect(data5).toStrictEqual({ });
+  });
+
+  // // Error test for where user sends message in channel, removes it, and if user trys to edit and remove deleted message
+  // test('Error test where user tries to edit and remove deleted channel message', () => {
+  //   // Create a token from authRegisterV2
+  //   const res1 = request(
+  //     'POST',
+  //     `${url}:${port}/auth/register/v2`,
+  //     {
+  //       json: {
+  //         email: 'kevinyu@email.com',
+  //         password: 'KevinsPassword0',
+  //         nameFirst: 'Kevin',
+  //         nameLast: 'Yu',
+  //       }
+  //     }
+  //   );
+  //   const registerObj = JSON.parse(res1.getBody() as string);
+  //   const token = registerObj.token;
+  //   // Create a channel Id from channelsCreateV2
+  //   const res2 = request(
+  //     'POST',
+  //     `${url}:${port}/channels/create/v2`,
+  //     {
+  //       json: {
+  //         token: token,
+  //         name: 'COMP1531',
+  //         isPublic: true,
+  //       }
+  //     }
+  //   );
+  //   const channelObj = JSON.parse(res2.getBody() as string);
+  //   const channelId = channelObj.channelId;
+
+  //   // Create a messageId from messageSendV1
+  //   const res3 = request(
+  //     'POST',
+  //     `${url}:${port}/message/send/v1`,
+  //     {
+  //       json: {
+  //         token: token,
+  //         channelId: channelId,
+  //         message: 'I love COMP1531',
+  //       }
+  //     }
+  //   );
+  //   const message1Obj = JSON.parse(res3.getBody() as string);
+  //   const messageId = message1Obj.messageId;
+
+  //   // The user removes message
+  //   const res4 = request(
+  //     'DELETE',
+  //     `${url}:${port}/message/remove/v1`,
+  //     {
+  //       qs: {
+  //         token: token,
+  //         messageId: messageId,
+  //       }
+  //     }
+  //   );
+  //   const data = JSON.parse(res4.getBody() as string);
+  //   expect(res4.statusCode).toBe(OK);
+  //   // Expect to return empty object
+  //   expect(data).toStrictEqual({ });
+
+  //   // The user edits the just deleted message (first message ever sent)
+  //   const res6 = request(
+  //     'PUT',
+  //     `${url}:${port}/message/edit/v1`,
+  //     {
+  //       json: {
+  //         token: token,
+  //         messageId: messageId,
+  //         message: 'I love engineering!',
+  //       }
+  //     }
+  //   );
+  //   const data3 = JSON.parse(res6.getBody() as string);
+  //   expect(res6.statusCode).toBe(OK);
+  //   // Expect to return error
+  //   expect(data3).toStrictEqual(errorReturn);
+
+  //   // The user removes the just deleted message (first message ever sent)
+  //   const res7 = request(
+  //     'DELETE',
+  //     `${url}:${port}/message/remove/v1`,
+  //     {
+  //       qs: {
+  //         token: token,
+  //         messageId: messageId,
+  //       }
+  //     }
+  //   );
+  //   const data4 = JSON.parse(res7.getBody() as string);
+  //   expect(res7.statusCode).toBe(OK);
+  //   // Expect to return error
+  //   expect(data4).toStrictEqual(errorReturn);
+  // });
+
+  // // Error test for where user sends message in DM, removes it, and if user trys to edit and remove deleted message
+  // test('Error test where user tries to edit and remove deleted DM message', () => {
+  //   // Create a token from authRegisterV2
+  //   const res1 = request(
+  //     'POST',
+  //     `${url}:${port}/auth/register/v2`,
+  //     {
+  //       json: {
+  //         email: 'kevinyu@email.com',
+  //         password: 'KevinsPassword0',
+  //         nameFirst: 'Kevin',
+  //         nameLast: 'Yu',
+  //       }
+  //     }
+  //   );
+  //   const registerObj = JSON.parse(res1.getBody() as string);
+  //   const firstToken = registerObj.token;
+
+  //   // Create a second user from authRegisterV2
+  //   const res2 = request(
+  //     'POST',
+  //     `${url}:${port}/auth/register/v2`,
+  //     {
+  //       json: {
+  //         email: 'user@gmail.com',
+  //         password: 'abcdefg',
+  //         nameFirst: 'Calvin',
+  //         nameLast: 'Xu',
+  //       }
+  //     }
+  //   );
+  //   const register2Obj = JSON.parse(res2.getBody() as string);
+  //   const secondUser = [register2Obj.authUserId];
+
+  //   // Create a dm Id from dm/create/v1
+  //   const dmRes = request(
+  //     'POST',
+  //     `${url}:${port}/dm/create/v1`,
+  //     {
+  //       json: {
+  //         token: firstToken,
+  //         uIds: secondUser,
+  //       }
+  //     }
+  //   );
+  //   const dmObj = JSON.parse(dmRes.getBody() as string);
+  //   const dmId = dmObj.dmId;
+
+  //   // Send a message from authorisedUser to the DM specified by dmId
+  //   const res3 = request(
+  //     'POST',
+  //     `${url}:${port}/message/senddm/v1`,
+  //     {
+  //       json: {
+  //         token: firstToken,
+  //         dmId: dmId,
+  //         message: 'Hi everyone GLHF',
+  //       }
+  //     }
+  //   );
+  //   const data = JSON.parse(res3.getBody() as string);
+  //   const messageObj = JSON.parse(res3.getBody() as string);
+  //   const messageId = messageObj.messageId;
+
+  //   expect(res3.statusCode).toBe(OK);
+  //   // Expect to return messageId
+  //   expect(data).toStrictEqual({ messageId: expect.any(Number) });
+  //   expect(data.messageId).toBe(0); // first message should have the messageId : 0;
+
+  //   // The user removes message sent in DM
+  //   const res4 = request(
+  //     'DELETE',
+  //     `${url}:${port}/message/remove/v1`,
+  //     {
+  //       qs: {
+  //         token: firstToken,
+  //         messageId: messageId,
+  //       }
+  //     }
+  //   );
+  //   const data2 = JSON.parse(res4.getBody() as string);
+  //   expect(res4.statusCode).toBe(OK);
+  //   // Expect to return empty object
+  //   expect(data2).toStrictEqual({ });
+
+  //   // The user edits the just deleted message (first message ever sent)
+  //   const res6 = request(
+  //     'PUT',
+  //     `${url}:${port}/message/edit/v1`,
+  //     {
+  //       json: {
+  //         token: firstToken,
+  //         messageId: messageId,
+  //         message: 'Bad luck to everyone!',
+  //       }
+  //     }
+  //   );
+  //   const data4 = JSON.parse(res6.getBody() as string);
+  //   expect(res6.statusCode).toBe(OK);
+  //   // Expect to return error
+  //   expect(data4).toStrictEqual(errorReturn);
+
+  //   // The user then removes the just deleted message (first message ever sent)
+  //   const res7 = request(
+  //     'DELETE',
+  //     `${url}:${port}/message/remove/v1`,
+  //     {
+  //       qs: {
+  //         token: firstToken,
+  //         messageId: messageId,
+  //       }
+  //     }
+  //   );
+  //   const data5 = JSON.parse(res7.getBody() as string);
+  //   expect(res7.statusCode).toBe(OK);
+  //   // Expect to return error
+  //   expect(data5).toStrictEqual(errorReturn);
+  // });
+});
+
 // HTTP testing for message/send/v1
 describe('HTTP tests for message/send', () => {
   // If messageSendV1 is successful
