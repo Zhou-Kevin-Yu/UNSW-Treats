@@ -303,6 +303,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
     const authUserId = tokenToAuthUserId(token, isTokenValid(token));
     const {user} = userProfileV1(authUserId, uId);
     const authUser = userProfileV1(authUserId, uId).user;
+
     if (authUserId === null || uId === undefined
     || data.channels[channelId] === undefined 
     || data.channels[channelId].ownerMembers.includes(user)

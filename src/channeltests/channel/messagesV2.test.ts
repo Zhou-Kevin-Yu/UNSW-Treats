@@ -1,5 +1,4 @@
 import { url, port } from '../../config.json'
-import { clearV1 } from '../../other';
 
 const request = require('sync-request');
 
@@ -9,7 +8,7 @@ beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('single message in channel', () => {
-        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
                 email: 'kevinyu@email.com',
@@ -18,8 +17,8 @@ describe('Testing basic functionality', () => {
                 nameLast: 'Yu'
             }
         });
-        const kevin = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/channels/create/v2`,
+        const kevin = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channels/create/v2`,
         {
             json: {
                 token: kevin.token,
@@ -27,30 +26,30 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const {cId} = res.getBody();
-        res = request('POST', `${url}:${port}/src/message/send/v1`,
+        const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/message/send/v1`,
         {
             json: {
                 token: kevin.token,
-                channelId: cId,
+                channelId: channelId,
                 message: 'Hello World'
             }
         });
-        const {messageId} = JSON.parse(res.getBody() as string);
-        res = request('GET',`${url}:${port}/src/channel/messages/v2.ts`,
+        const {messageId} = JSON.parse(res.body as string);
+        res = request('GET',`${url}:${port}/channel/messages/v2`,
         {
             qs: {
                 token: kevin.token,
-                channelId: cId,
+                channelId: channelId,
                 start: 0
             }
         });
         expect(res.statusCode).toBe(OK);
-        res = request('GET', `${url}:${port}/src/chanel/details/v2`,
+        res = request('GET', `${url}:${port}/channel/details/v2`,
         {
             qs: {
                 token: kevin.token,
-                channelId: cId
+                channelId: channelId
             }
         });
         

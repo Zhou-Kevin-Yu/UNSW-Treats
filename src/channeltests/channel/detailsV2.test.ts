@@ -1,5 +1,4 @@
 import { url, port }        from '../../config.json'
-import { clearV1 } from '../../other';
 
 const request = require('sync-request');
 
@@ -9,7 +8,7 @@ beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('Detailing one channel', () => {
-        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
                 email: 'kevinyu@email.com',
@@ -18,7 +17,7 @@ describe('Testing basic functionality', () => {
                 nameLast: 'Yu'
             }
         });
-        const kevin = JSON.parse(res.getBody() as string);
+        const kevin = JSON.parse(res.body as string);
         res = request('GET', `${url}:${port}/user/profile/v2`,
         {
             qs: {
@@ -26,7 +25,7 @@ describe('Testing basic functionality', () => {
                 uId:    kevin.uid
             }
         });
-        const {user} = JSON.parse(res.getBody() as string);
+        const {user} = JSON.parse(res.body as string);
         res = request('POST',`${url}:${port}/channels/create/v2`, {
             json: {
                 token: kevin.token,
@@ -40,7 +39,6 @@ describe('Testing basic functionality', () => {
                 channelId: 0
             }
         });
-        expect(res.statusCode).toBe(OK)
         expect(res.bodyObj).toStrictEqual({
             name: 'name',
             isPublic: true,

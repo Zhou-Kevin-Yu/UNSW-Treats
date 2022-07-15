@@ -1,5 +1,4 @@
 import { url, port }      from '../../config.json'
-import { clearV1 } from '../../other';
 
 const request = require('sync-request');
 
@@ -9,7 +8,7 @@ beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('Joining server with 1 owner member', () => {
-        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
                 email: 'kevinyu@email.com',
@@ -18,8 +17,8 @@ describe('Testing basic functionality', () => {
                 nameLast: 'Yu'
             }
         });
-        const kevin = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        const kevin = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
                 email: 'bob@email.com',
@@ -28,16 +27,16 @@ describe('Testing basic functionality', () => {
                 nameLast: 'Smith'
             }
         });
-        const bob = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
+        const bob = JSON.parse(res.body as string);
+        res = request('GET', `${url}:${port}/user/profile/v2`,
         {
             qs: {
                 token:  kevin.token,
                 uId:    kevin.uid
             }
         });
-        const kevinProfile = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/channels/create/v2`,
+        const kevinProfile = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channels/create/v2`,
         {
             json: {
                 token: kevin.token,
@@ -45,8 +44,8 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const channelId = JSON.parse(res.getBody() as string).channelId;
-        res = request('POST', `${url}:${port}/src/channel/invite/v2`,
+        const channelId = JSON.parse(res.body as string).channelId;
+        res = request('POST', `${url}:${port}/channel/invite/v2`,
         {
             json: {
                 token: kevin.token,
@@ -54,7 +53,7 @@ describe('Testing basic functionality', () => {
                 uId: bob.uId
             }
         });
-        res = request('DELETE', `${url}:${port}/src/channel/leave/v1`,
+        res = request('POST', `${url}:${port}/channel/leave/v1`,
         {
             json: {
                 token: bob.token,
@@ -62,13 +61,14 @@ describe('Testing basic functionality', () => {
             }
         });
         expect(res.statusCode).toBe(OK);
-        res = request('GET', `${url}:${port}/src/chanel/details/v2`,
+        res = request('GET', `${url}:${port}/channel/details/v2`,
         {
             qs: {
                 token: kevin.token,
                 channelId: channelId
             }
         });
-        expect(res.getBody().allMembers).toStrictEqual([kevinProfile])
+        const data = JSON.parse(res.body as string);
+        expect(data.allMembers).toStrictEqual([kevinProfile])
     });
 });

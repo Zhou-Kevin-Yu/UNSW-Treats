@@ -1,5 +1,4 @@
 import { url, port }      from '../../config.json'
-import { clearV1 } from '../../other';
 import request from 'sync-request';
 import { authRegisterV2ServerSide } from '../../wrapped.auth';
 import { userProfileV2ServerSide } from '../../wrapped.user';
@@ -26,12 +25,13 @@ describe('Testing basic functionality', () => {
         const {channelId} = JSON.parse(res.body as string);
         res = request('POST', `${url}:${port}/channel/addowner/v1`,
         {
-            qs: {
+            json: {
                 token: kevin.token,
                 channelId: channelId,
                 uId: bob.authUserId
             }
         });
+        console.log (kevin.token, channelId, bob.authUserId);
         const data = JSON.parse(res.body as string);
         expect(data.ownerMembers).toStrictEqual([kevinProfile, bobProfile])
         expect(res.statusCode).toBe(OK);

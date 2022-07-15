@@ -156,14 +156,13 @@ app.post('/channel/invite/v2', (req: Request, res: Response) => {
   res.json(channelInviteV2(token, channelId, uId));
 });
 
-app.post('/channel/join/v1', (req: Request, res: Response) => {
+app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
   res.json(channelJoinV2(token, channelId))
 });
 
-app.delete('/channel/leave/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const channelId = parseInt(req.query.token as string);
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
   res.json(channelLeaveV1(token, channelId))
 });
 
@@ -174,7 +173,7 @@ app.get('/channel/message/v2', (req: Request, res: Response) => {
   res.json(channelMessagesV2(token, channelId, start));
 });
 
-app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
+app.delete('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 })
