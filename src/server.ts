@@ -11,7 +11,7 @@ import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1 } from './dm';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
-import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrappers/channel/addowner/v2';
+import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap'
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
 const errorOutput = { error: 'error' };

@@ -1,51 +1,39 @@
-import { url, port }      from '../../config.json'
-import { clearV1 } from '../../other';
+import { url, port }    from '../../config.json'
+import { authRegisterV2ServerSide } from '../../wrapped.auth';
+import { userProfileV2ServerSide } from '../../wrapped.user';
 
 const request = require('sync-request');
 
 const OK = 200;
 
-beforeEach (() => clearV1());
+beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('Joining server with 1 owner member', () => {
-        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        let res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
-                email: 'kevinyu@email.com',
+                email: 'kevinyu@unsw.com',
                 password: 'KevinsPassword0',
                 nameFirst: 'Kevin',
                 nameLast: 'Yu'
             }
         });
-        const kevin = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/auth/register/v2`,
+        const kevin = JSON.parse(res.body as string);
+        console.log(kevin);
+        res = request('POST', `${url}:${port}/auth/register/v2`,
         {
             json: {
-                email: 'bob@email.com',
-                password: 'BobsPassword',
+                email: 'bob@unsw.com',
+                password: 'BobsPassword0',
                 nameFirst: 'Bob',
                 nameLast: 'Smith'
             }
         });
-        const bob = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
-        {
-            qs: {
-                token:  kevin.token,
-                uId:    kevin.uid
-            }
-        });
-        const kevinProfile = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
-        {
-            qs: {
-                token:  bob.token,
-                uId:    bob.uid
-            }
-        });
-        const bobProfile = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/channels/create/v2`,
+        const bob = JSON.parse(res.body as string);
+        const kevinProfile = userProfileV2ServerSide(kevin.token, kevin.authUserId);
+        const bobProfile = userProfileV2ServerSide(bob.token, bob.authUserId);
+        res = request('POST', `${url}:${port}/channels/create/v2`,
         {
             json: {
                 token: kevin.token,
@@ -53,32 +41,33 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const cId = 0;
-        res = request('POST', `${url}:${port}/src/channel/addowner/v1`,
+        const {channelId} = JSON.parse(res.body as string);
+        res = request('POST', `${url}:${port}/channel/addowner/v1`,
         {
             json: {
                 token: kevin.token,
-                channelId: cId,
-                uId: bob.uId
+                channelId: channelId,
+                uId: bob.authUserId
             }
         });
-        res = request('DELETE', `${url}:${port}/src/channel/removeowner/v1`,
+        res = request('DELETE', `${url}:${port}/channel/removeowner/v1`,
         {
             json: {
                 token: kevin.token,
-                channelId: cId,
-                uId: bob.uId
+                channelId: channelId,
+                uId: bob.authUserId
             }
         });
-        expect(res.statusCode).toBe(OK);
-        res = request('GET', `${url}:${port}/src/chanel/details/v2`,
+        res = request('GET', `${url}:${port}/chanel/details/v2`,
         {
             qs: {
                 token: kevin.token,
-                channelId: cId
+                channelId: channelId
             }
         });
-        expect(res.getBody().allMembers).toStrictEqual([kevinProfile, bobProfile]);
-        expect(res.getBody().ownerMembers).toStrictEqual([kevinProfile]);
+        const data = res.body.toString();
+        expect(data.allMembers).toStrictEqual([kevinProfile, bobProfile]);
+        expect(data.ownerMembers).toStrictEqual([kevinProfile]);
+        expect(res.statusCode).toBe(OK);
     });
 });

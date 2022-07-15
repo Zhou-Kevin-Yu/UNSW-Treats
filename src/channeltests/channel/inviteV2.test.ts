@@ -1,5 +1,7 @@
 import { url, port }      from '../../config.json'
 import { clearV1 } from '../../other';
+import { authRegisterV2ServerSide } from '../../wrapped.auth';
+import { userProfileV2ServerSide } from '../../wrapped.user';
 
 const request = require('sync-request');
 
@@ -9,43 +11,12 @@ beforeEach (() => clearV1());
 
 describe('Testing basic functionality', () => {
     test('Adding 1 member', () => {
-        let res = request('POST', `${url}:${port}/src/auth/register/v2`,
-        {
-            json: {
-                email: 'kevinyu@email.com',
-                password: 'KevinsPassword0',
-                nameFirst: 'Kevin',
-                nameLast: 'Yu'
-            }
-        });
-        const kevin = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/auth/register/v2`,
-        {
-            json: {
-                email: 'bob@email.com',
-                password: 'BobsPassword',
-                nameFirst: 'Bob',
-                nameLast: 'Smith'
-            }
-        });
-        const bob = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
-        {
-            qs: {
-                token:  kevin.token,
-                uId:    kevin.uid
-            }
-        });
-        const kevinProfile = JSON.parse(res.getBody() as string);
-        res = request('GET', `${url}:${port}/src/user/profile/v2`,
-        {
-            qs: {
-                token:  bob.token,
-                uId:    bob.uid
-            }
-        });
-        const bobProfile = JSON.parse(res.getBody() as string);
-        res = request('POST', `${url}:${port}/src/channels/create/v2`,
+        const kevin = authRegisterV2ServerSide('kevinyu@email.com', 
+                                                'KevinsPassword0', 'Kevin', 'Yu');
+        const bob = authRegisterV2ServerSide('bob@email.com', 'BobsPassword', 'Bob', 'Smith');
+        const kevinProfile = userProfileV2ServerSide(kevin.token, kevin.authUserId);
+        const bobProfile = userProfileV2ServerSide(bob.token, bob.authUserId);
+        let res = request('POST', `${url}:${port}/src/channels/create/v2`,
         {
             json: {
                 token: kevin.token,
@@ -53,24 +24,25 @@ describe('Testing basic functionality', () => {
                 isPublic: true
             }
         });
-        const {cId} = res.getBody();
+        const {channelId} = JSON.parse(res.body as string);
         res = request('POST', `${url}:${port}/src/channel/invite/v2`,
         {
             json: {
                 token: kevin.token,
-                channelId: cId,
-                uId: bob.uId
+                channelId: channelId,
+                uId: bob.authUserId
             }
         });
-        expect(res.statusCode).toBe(OK);
         res = request('GET', `${url}:${port}/src/chanel/details/v2`,
         {
             qs: {
                 token: kevin.token,
-                channelId: cId
+                channelId: channelId
             }
         });
-        expect(res.getBody().allMembers).toStrictEqual([kevinProfile, bobProfile])
-        expect(res.getBody().ownerMembers).toStrictEqual([kevinProfile, bobProfile])
+        const channel = JSON.parse(res.body as string);
+        expect(res.statusCode).toBe(OK);
+        expect(channel.allMembers).toStrictEqual([kevinProfile, bobProfile])
+        expect(channel.ownerMembers).toStrictEqual([kevinProfile, bobProfile])
     });
 });
