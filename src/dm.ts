@@ -78,7 +78,7 @@ export function dmListV1(token: string): DmListV1 {
   }
   const userDms: Dm[] = [];
   for (const dm of data.dms) {
-    if (dm !== undefined && dm!== null && dm.members.includes(authUserId)) {
+    if (dm !== undefined && dm !== null && dm.members.includes(authUserId)) {
       const tempDm: Dm = {
         dmId: dm.dmId,
         name: dm.name,
