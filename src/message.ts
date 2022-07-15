@@ -48,7 +48,7 @@ function messageSendV1 (token: string, channelId: number, message: string) {
             messageId: messageIdCopy,
             uId: authUserId,
             message: message,
-            timeSent: 0,
+            timeSent: Math.floor((new Date()).getTime() / 1000),
           };
           channel.messages.push(newChannelMessage);
           setData(data);
@@ -67,8 +67,6 @@ function messageSendV1 (token: string, channelId: number, message: string) {
   if (existAuth === 0) {
     return error;
   }
-
-  // return { messageId: messageIdCopy };
 }
 
 /**
@@ -384,7 +382,7 @@ function messageSendDmV1 (token: string, dmId: number, message: string) {
             messageId: messageIdCopy,
             uId: authUserId,
             message: message,
-            timeSent: 0,
+            timeSent: Math.floor((new Date()).getTime() / 1000),
           };
           dm.messages.push(newDmMessage);
           setData(data);
