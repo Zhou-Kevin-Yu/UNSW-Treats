@@ -7,7 +7,7 @@ const request = require('sync-request');
 
 const OK = 200;
 
-beforeEach (() => clearV1());
+beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('Joining server with 1 owner member', () => {

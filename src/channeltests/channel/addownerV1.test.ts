@@ -6,7 +6,7 @@ import { userProfileV2ServerSide } from '../../wrapped.user';
 
 const OK = 200;
 
-beforeEach (() => clearV1());
+beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
     test('Adding 1 owner', () => {
