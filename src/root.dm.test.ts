@@ -1,7 +1,9 @@
 import request from 'sync-request';
 import config from './config.json';
-
+// import { userProfileV2ServerSide } from './wrapped.user';
+import { messageSendDmV1SS } from './wrapped.message';
 import os from 'os';
+import { dmMessagesV1SS } from './wrapped.dm';
 // import { register } from 'ts-node';
 
 // const OK = 200;
@@ -499,6 +501,87 @@ describe('HTTP tests for dm/leave/v1', () => {
   */
 });
 
+describe('HTTP tests for dm/', () => {
+  describe('Testing Error Cases for dm/', () => {
+    test('dmId not valid', () => {
+      const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+      const res = dmMessagesV1SS(token, 0, 0);
+      expect(res).toStrictEqual({ error: 'error' });
+    });
+
+    test('start too large', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'first message'); // send one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 1); // no message at index 1
+      expect(dmMessage).toStrictEqual({ error: 'error' });
+    });
+
+    test('authUser not part of DM', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const reg3 = authRegisterSS('bmk@gmail.com', 'validPass23', 'b', 'k');
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]); // dm with user 0 and 1
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'first message');
+      const dmMessage = dmMessagesV1SS(reg3.token, dm1.dmId, 0);
+      expect(dmMessage).toStrictEqual({ error: 'error' });
+    });
+  });
+  describe('Testing Success Cases of dm/', () => {
+    test('testing one message success', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
+      const mId = messageSendDmV1SS(reg1.token, dm1.dmId, 'first message').messageId; // send one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
+      expect(dmMessage.messages[0].messageId).toBe(mId);
+      expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
+      expect(dmMessage.messages[0].message).toBe('first message');
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(-1);
+      /*
+      expect(dmMessage).toContainEqual(
+        {
+          messages: [{messageId: mId, uId: reg1.authUserId, message: "first message"}],
+          start: 0,
+          end: -1,
+        }
+      );
+      */
+    });
+    test('testing 52 message success', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
+      // send 52 messages
+      for (let i = 0; i < 52; i++) {
+        messageSendDmV1SS(reg1.token, dm1.dmId, 'message');
+      }
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
+      expect(dmMessage.messages.length).toBe(50);
+      expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
+      expect(dmMessage.messages[25].message).toBe('message');
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(50);
+    });
+    test('testing 30 message success', () => {
+      const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
+      const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
+      // send 52 messages
+      for (let i = 0; i < 30; i++) {
+        messageSendDmV1SS(reg1.token, dm1.dmId, 'message');
+      }
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
+      expect(dmMessage.messages.length).toBe(30);
+      expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
+      expect(dmMessage.messages[25].message).toBe('message');
+      expect(dmMessage.start).toBe(0);
+      expect(dmMessage.end).toBe(-1);
+    });
+  });
+});
 /*
 test('Testing', () => {
 
@@ -529,3 +612,43 @@ describe('HTTP tests for dm/', () => {
       expect(bodyObj).toEqual('Hello');
     });
     */
+
+describe('Testing Success Cases of dm/remove/v1', () => {
+  test('Testing remove', () => {
+    const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
+    const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
+    const dmIdValid = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm1 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm2 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    const dm3 = dmCreateSS(token1, [obj2.authUserId]).dmId;
+    expect(dm1).toBe(dm1);
+    expect(dm2).toBe(dm2);
+    expect(dm3).toBe(dm3);
+    // test dm has been created
+    request('GET', `${url}:${port}/dm/list/v1`, {
+      qs: {
+        token: token1,
+      }
+    });
+    // const res4Obj = JSON.parse(res4.body as string);
+    // expect(res4Obj.dms).toStrictEqual([{ dmId: dmIdValid, name: 'bk, et' }]);
+
+    // delete channel
+    request('DELETE', `${url}:${port}/dm/remove/v1`, {
+      qs: {
+        token: token1,
+        dmId: dmIdValid,
+      }
+    });
+
+    const res5 = request('GET', `${url}:${port}/dm/list/v1`, {
+      qs: {
+        token: token1,
+      }
+    });
+    const res5Obj = JSON.parse(res5.body as string);
+    expect(res5Obj.dms).toStrictEqual(
+      [{ dmId: 1, name: 'bk, et' }, { dmId: 1 + 1, name: 'bk, et' }, { dmId: 1 + 2, name: 'bk, et' }]
+    );
+  });
+});

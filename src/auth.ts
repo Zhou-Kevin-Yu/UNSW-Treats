@@ -87,6 +87,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     permission: perm,
     tokens: []
   };
+  setData(data);
   const token = generateToken(authUserId);
   data.users[authUserId].tokens.push(token);
   setData(data);

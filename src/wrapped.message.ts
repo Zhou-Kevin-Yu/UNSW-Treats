@@ -12,15 +12,19 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
-function dmMessagesV1SS(token: string, dmId: number, start: number) {
-  const res = request('POST', `${url}:${port}/dm/messages/v1`, {
-    json: {
-      token: token,
-      dmId: dmId, // no Dm has been created so any number here should fail
-      start: start,
-    }
-  });
+function messageSendDmV1SS(token: string, dmId: number, message: string) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/senddm/v1`,
+        {
+          json: {
+            token,
+            dmId,
+            message,
+          }
+        }
+  );
   return JSON.parse(res.body as string);
 }
 
-export { dmMessagesV1SS };
+export { messageSendDmV1SS };
