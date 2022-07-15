@@ -167,20 +167,39 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   // console.log("after", data.dms); //temporary testing
 }
 
+/**
+ * given a token and user ids, creates a new DM (direct message),
+ * returns Id of dm.
+ *
+ * @param {string} token - user login token
+ * @param {number} dmId - dmId
+ * @param {number} start - start index of the message (i.e 0 = first message)
+ * @return  {
+ *            messages: MessageObj[]
+ *            start: number;
+ *            end: number;
+ *          } - object containing messageObject array, start and end (-1 if no messages left)
+ *            - if more messages are remaining end = start + 50
+ * @returns { error : 'error' } - token, dmId is invalid
+ *                              - start is greater than total messages in Dm
+ *                              - tokened user not in DM with DmId: DmId
+*/
 export function dmMessagesV1(token: string, dmId: number, start: number): DmMessagesV1 {
-  let data = getData();
+  const data = getData();
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
   // check if dmId is valid
   if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
     return { error: 'error' };
   }
-  //start is greater than total number of messages in the channel
-  console.log("========", start, data.dms[dmId].messages.length-1)
+  // start is greater than total number of messages in the channel
   if (start > (data.dms[dmId].messages.length - 1)) {
     return { error: 'error' };
   }
   //
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  //error if user is not in dm with dmId: dmId
+  // error if user is not in dm with dmId: dmId
   if (!(data.dms[dmId].members.includes(authUserId))) {
     return { error: 'error' };
   }
@@ -198,9 +217,9 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
       uId: message.uId,
       message: message.message,
       timeSent: message.timeSent
-    }
+    };
     messagesReturn.push(messageCurr);
-    counter ++;
+    counter++;
   }
   messagesReturn.reverse();
 

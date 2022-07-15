@@ -2,7 +2,6 @@ import request from 'sync-request';
 import config from './config.json';
 // import { userProfileV2ServerSide } from './wrapped.user';
 import { messageSendDmV1SS } from './wrapped.message';
-import { dmMessagesV1 } from './dm';
 import os from 'os';
 import { dmMessagesV1SS } from './wrapped.dm';
 // import { register } from 'ts-node';
@@ -506,7 +505,7 @@ describe('HTTP tests for dm/', () => {
   describe('Testing Error Cases for dm/', () => {
     test('dmId not valid', () => {
       const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
-      const res = dmMessagesV1SS(token, 0 , 0);
+      const res = dmMessagesV1SS(token, 0, 0);
       expect(res).toStrictEqual({ error: 'error' });
     });
 
@@ -514,19 +513,19 @@ describe('HTTP tests for dm/', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
-      messageSendDmV1SS(reg1.token, dm1.dmId, "first message"); //send one message
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 1); //no message at index 1
-      expect(dmMessage).toStrictEqual({ error:'error' });
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'first message'); // send one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 1); // no message at index 1
+      expect(dmMessage).toStrictEqual({ error: 'error' });
     });
 
     test('authUser not part of DM', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const reg3 = authRegisterSS('bmk@gmail.com', 'validPass23', 'b', 'k');
-      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]); //dm with user 0 and 1
-      messageSendDmV1SS(reg1.token, dm1.dmId, "first message");
+      const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]); // dm with user 0 and 1
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'first message');
       const dmMessage = dmMessagesV1SS(reg3.token, dm1.dmId, 0);
-      expect(dmMessage).toStrictEqual({ error:'error' });
+      expect(dmMessage).toStrictEqual({ error: 'error' });
     });
   });
   describe('Testing Success Cases of dm/', () => {
@@ -534,12 +533,11 @@ describe('HTTP tests for dm/', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
-      const mId = messageSendDmV1SS(reg1.token, dm1.dmId, "first message").messageId; //send one message
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
-      console.log(dmMessage);
+      const mId = messageSendDmV1SS(reg1.token, dm1.dmId, 'first message').messageId; // send one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
       expect(dmMessage.messages[0].messageId).toBe(mId);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
-      expect(dmMessage.messages[0].message).toBe("first message");
+      expect(dmMessage.messages[0].message).toBe('first message');
       expect(dmMessage.start).toBe(0);
       expect(dmMessage.end).toBe(-1);
       /*
@@ -556,14 +554,14 @@ describe('HTTP tests for dm/', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
-      //send 52 messages
-      for (let i = 0; i < 52; i ++) {
-        messageSendDmV1SS(reg1.token, dm1.dmId, "message"); 
+      // send 52 messages
+      for (let i = 0; i < 52; i++) {
+        messageSendDmV1SS(reg1.token, dm1.dmId, 'message');
       }
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
       expect(dmMessage.messages.length).toBe(50);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
-      expect(dmMessage.messages[25].message).toBe("message");
+      expect(dmMessage.messages[25].message).toBe('message');
       expect(dmMessage.start).toBe(0);
       expect(dmMessage.end).toBe(50);
     });
@@ -571,14 +569,14 @@ describe('HTTP tests for dm/', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
-      //send 52 messages
-      for (let i = 0; i < 30; i ++) {
-        messageSendDmV1SS(reg1.token, dm1.dmId, "message"); 
+      // send 52 messages
+      for (let i = 0; i < 30; i++) {
+        messageSendDmV1SS(reg1.token, dm1.dmId, 'message');
       }
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); //get one message
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
       expect(dmMessage.messages.length).toBe(30);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
-      expect(dmMessage.messages[25].message).toBe("message");
+      expect(dmMessage.messages[25].message).toBe('message');
       expect(dmMessage.start).toBe(0);
       expect(dmMessage.end).toBe(-1);
     });

@@ -14,13 +14,13 @@ if (os.platform() === 'darwin') {
 
 function dmMessagesV1SS(token: string, dmId: number, start: number) {
   const res = request('POST', `${url}:${port}/dm/messages/v1`, {
-        json: {
-          token: token,
-          dmId: dmId, // no Dm has been created so any number here should fail
-          start: start,
-        }
-      });
-      return JSON.parse(res.body as string);
+    json: {
+      token: token,
+      dmId: dmId, // no Dm has been created so any number here should fail
+      start: start,
+    }
+  });
+  return JSON.parse(res.body as string);
 }
 
 export { dmMessagesV1SS };
