@@ -12,7 +12,7 @@ import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from '
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
-import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap'
+import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
 const errorOutput = { error: 'error' };
@@ -143,7 +143,7 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
 
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
-  res.json(channelAddOwnerV1(token, channelId, uId))
+  res.json(channelAddOwnerV1(token, channelId, uId));
 });
 
 app.get('/channel/details/v2', (req: Request, res: Response) => {
@@ -159,12 +159,12 @@ app.post('/channel/invite/v2', (req: Request, res: Response) => {
 
 app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
-  res.json(channelJoinV2(token, channelId))
+  res.json(channelJoinV2(token, channelId));
 });
 
 app.post('/channel/leave/v1', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
-  res.json(channelLeaveV1(token, channelId))
+  res.json(channelLeaveV1(token, channelId));
 });
 
 app.get('/channel/message/v2', (req: Request, res: Response) => {
@@ -177,7 +177,7 @@ app.get('/channel/message/v2', (req: Request, res: Response) => {
 app.delete('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, channelId, uId));
-})
+});
 
 // All message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {

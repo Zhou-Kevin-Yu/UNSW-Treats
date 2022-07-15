@@ -41,7 +41,7 @@ describe('Testing basic functionality', () => {
         });
         const channel = JSON.parse(res.body as string);
         expect(res.statusCode).toBe(OK);
-        expect(channel.allMembers).toStrictEqual([kevinProfile, bobProfile])
-        expect(channel.ownerMembers).toStrictEqual([kevinProfile, bobProfile])
+        expect(channel.allMembers).toStrictEqual([kevinProfile.user, bobProfile.user])
+        expect(channel.ownerMembers).toStrictEqual([kevinProfile.user])
     });
 });

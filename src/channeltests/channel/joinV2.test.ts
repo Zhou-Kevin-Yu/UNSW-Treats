@@ -41,6 +41,6 @@ describe('Testing basic functionality', () => {
             }
         });
         const data = JSON.parse(res.body as string);
-        expect(data.allMembers).toStrictEqual([kevinProfile, bobProfile])
+        expect(data.allMembers).toStrictEqual([kevinProfile.user, bobProfile.user])
     });
 });
