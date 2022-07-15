@@ -18,6 +18,7 @@ export function messageSendV1 (token: string, channelId: number, message: string
   let existChannel = 0;
   let existAuth = 0;
   let messageIdCopy = 0;
+
   // If token is invalid
   if (!isTokenValid(token)) {
     return { error: 'error' };
@@ -88,6 +89,10 @@ export function messageEditV1 (token: string, messageId: number, message: string
     return { error: 'error' };
   }
 
+  if (messageId === null || messageId === undefined) {
+    return { error: 'error' };
+  }
+
   // If length of message is over 1000 characters
   if (message.length > 1000) {
     return { error: 'error' };
@@ -112,14 +117,17 @@ export function messageEditV1 (token: string, messageId: number, message: string
   for (const channel of data.channels) {
     // Loop through all messages in channel
     for (const msg of channel.messages) {
-      // If messageId exists
-      if (msg.messageId === messageId) {
-        existMessage = 1;
-        // Loop through all members in ownerMembers
-        for (const ownerMember of channel.ownerMembers) {
-          // If auth user is in ownerMembers
-          if (authUserId === ownerMember.uId) {
-            isChannelOwner = true;
+      // Check that the message is not undefined or null
+      if (msg !== undefined || msg !== null) {
+        // If messageId exists
+        if (msg.messageId === messageId) {
+          existMessage = 1;
+          // Loop through all members in ownerMembers
+          for (const ownerMember of channel.ownerMembers) {
+            // If auth user is in ownerMembers
+            if (authUserId === ownerMember.uId) {
+              isChannelOwner = true;
+            }
           }
         }
       }
@@ -128,14 +136,20 @@ export function messageEditV1 (token: string, messageId: number, message: string
 
   // If the auth user is the original creator of the DM
   for (const dm of data.dms) {
-    // Loop through messages in DMs
-    for (const dmMsg of dm.messages) {
-      // If message Id exists
-      if (dmMsg.messageId === messageId) {
-        existMessage = 1;
-        // If auth user is the creator of the DM
-        if (authUserId === dm.creator) {
-          isDmOwner = true;
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // Loop through messages in DMs
+      for (const dmMsg of dm.messages) {
+        // Check the the DM message is not undefined or null
+        if (dmMsg !== undefined || dmMsg !== null) {
+          // If message Id exists
+          if (dmMsg.messageId === messageId) {
+            existMessage = 1;
+            // If auth user is the creator of the DM
+            if (authUserId === dm.creator) {
+              isDmOwner = true;
+            }
+          }
         }
       }
     }
@@ -148,23 +162,26 @@ export function messageEditV1 (token: string, messageId: number, message: string
   for (const channel of data.channels) {
     // Loop through all messages
     for (const msg of channel.messages) {
-      // If messageId exists
-      if (msg.messageId === messageId) {
-        existMessage = 1;
-        // If message was sent by the auth user making this edit request or is a global/channel owner
-        if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
-          existAuth = 1;
-          // Access message string and update string with new message
-          msg.message = message;
+      // Check that the message is not undefined or null
+      if (msg !== undefined || msg !== null) {
+        // If messageId exists
+        if (msg.messageId === messageId) {
+          existMessage = 1;
+          // If message was sent by the auth user making this edit request or is a global/channel owner
+          if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
+            existAuth = 1;
+            // Access message string and update string with new message
+            msg.message = message;
 
-          // If the new message is an empty string, the message is deleted
-          if (message.length === 0) {
-            for (let i = 0; i < messageId; i++) {
-              delete data.channels[counter].messages[i];
+            // If the new message is an empty string, the message is deleted
+            if (message.length === 0) {
+              for (let i = 0; i < messageId; i++) {
+                delete data.channels[counter].messages[i];
+              }
             }
+            setData(data);
+            return { };
           }
-          setData(data);
-          return { };
         }
       }
     }
@@ -174,25 +191,31 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // Auth user trying to edit a message sent in a DM
   // Loop through all existing DMs
   for (const dm of data.dms) {
-    // Loop through messages in DMs
-    for (const dmMsg of dm.messages) {
-      // If messageId exists
-      if (dmMsg.messageId === messageId) {
-        existMessage = 1;
-        // If message was sent by the auth user making this edit request or is a DM owner
-        if (dmMsg.uId === authUserId || isDmOwner === true) {
-          existAuth = 1;
-          // Access message string and update string with new message
-          dmMsg.message = message;
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // Loop through messages in DMs
+      for (const dmMsg of dm.messages) {
+        // Check that the DM message is not undefined or null
+        if (dmMsg !== undefined || dmMsg !== null) {
+          // If messageId exists
+          if (dmMsg.messageId === messageId) {
+            existMessage = 1;
+            // If message was sent by the auth user making this edit request or is a DM owner
+            if (dmMsg.uId === authUserId || isDmOwner === true) {
+              existAuth = 1;
+              // Access message string and update string with new message
+              dmMsg.message = message;
 
-          // If the new message is an empty string, the message is deleted
-          if (message.length === 0) {
-            for (let i = 0; i < messageId; i++) {
-              delete data.dms[i].messages;
+              // If the new message is an empty string, the message is deleted
+              if (message.length === 0) {
+                for (let i = 0; i < messageId; i++) {
+                  delete data.dms[i].messages;
+                }
+              }
+              setData(data);
+              return { };
             }
           }
-          setData(data);
-          return { };
         }
       }
     }
@@ -228,6 +251,10 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
     return { error: 'error' };
   }
 
+  if (messageId === null || messageId === undefined) {
+    return { error: 'error' };
+  }
+
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   let isGlobalOwner = false;
   let isChannelOwner = false;
@@ -247,14 +274,17 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
   for (const channel of data.channels) {
     // Loop through all messages in channel
     for (const msg of channel.messages) {
-      // If messageId exists
-      if (msg.messageId === messageId) {
-        existMessage = 1;
-        // Loop through all members in ownerMembers
-        for (const ownerMember of channel.ownerMembers) {
-          // If auth user is in ownerMembers
-          if (authUserId === ownerMember.uId) {
-            isChannelOwner = true;
+      // Check that the message is not undefined or null
+      if (msg !== undefined || msg !== null) {
+        // If messageId exists
+        if (msg.messageId === messageId) {
+          existMessage = 1;
+          // Loop through all members in ownerMembers
+          for (const ownerMember of channel.ownerMembers) {
+            // If auth user is in ownerMembers
+            if (authUserId === ownerMember.uId) {
+              isChannelOwner = true;
+            }
           }
         }
       }
@@ -263,14 +293,20 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
 
   // If the auth user is the original creator of the DM
   for (const dm of data.dms) {
-    // Loop through messages in DMs
-    for (const dmMsg of dm.messages) {
-      // If message Id exists
-      if (dmMsg.messageId === messageId) {
-        existMessage = 1;
-        // If auth user is the creator of the DM
-        if (authUserId === dm.creator) {
-          isDmOwner = true;
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // Loop through messages in DMs
+      for (const dmMsg of dm.messages) {
+        // Check that the DM message is not undefined or null
+        if (dmMsg !== undefined || dmMsg !== null) {
+          // If message Id exists
+          if (dmMsg.messageId === messageId) {
+            existMessage = 1;
+            // If auth user is the creator of the DM
+            if (authUserId === dm.creator) {
+              isDmOwner = true;
+            }
+          }
         }
       }
     }
@@ -282,18 +318,21 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
   for (const channel of data.channels) {
     // Loop through all messages
     for (const msg of channel.messages) {
-      // If messageId exists
-      if (msg.messageId === messageId) {
-        existMessage = 1;
-        // If message was sent by the auth user making this remove request or is a global/channel owner
-        if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
-          existAuth = 1;
-          // Loop to find message and delete it from selected channel
-          for (let i = 0; i < messageId; i++) {
-            delete data.channels[counter].messages[i];
+      // Check that the message is not undefined or null
+      if (msg !== undefined || msg !== null) {
+        // If messageId exists
+        if (msg.messageId === messageId) {
+          existMessage = 1;
+          // If message was sent by the auth user making this remove request or is a global/channel owner
+          if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
+            existAuth = 1;
+            // Loop to find message and delete it from selected channel
+            for (let i = 0; i < messageId; i++) {
+              delete data.channels[counter].messages[i];
+            }
+            setData(data);
+            return { };
           }
-          setData(data);
-          return { };
         }
       }
     }
@@ -303,22 +342,28 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
   // Auth user trying to edit a message sent in a DM
   // Loop through all existing DMs
   for (const dm of data.dms) {
-    // Loop through messages in DMs
-    for (const dmMsg of dm.messages) {
-      // If messageId exists
-      if (dmMsg.messageId === messageId) {
-        existMessage = 1;
-        // If message was sent by the auth user making this edit request or is a DM owner
-        if (dmMsg.uId === authUserId || isDmOwner === true) {
-          existAuth = 1;
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // Loop through messages in DMs
+      for (const dmMsg of dm.messages) {
+        // Check that the message is not undefined or null
+        if (dmMsg !== undefined || dmMsg !== null) {
+          // If messageId exists
+          if (dmMsg.messageId === messageId) {
+            existMessage = 1;
+            // If message was sent by the auth user making this edit request or is a DM owner
+            if (dmMsg.uId === authUserId || isDmOwner === true) {
+              existAuth = 1;
 
-          // Loop to find message and delete it from selected DM
-          for (let i = 0; i < messageId; i++) {
-            delete data.dms[i].messages;
+              // Loop to find message and delete it from selected DM
+              for (let i = 0; i < messageId; i++) {
+                delete data.dms[i].messages;
+              }
+
+              setData(data);
+              return { };
+            }
           }
-
-          setData(data);
-          return { };
         }
       }
     }
@@ -364,27 +409,30 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
 
   // To loop through all the existing DMs
   for (const dm of data.dms) {
-    // If the dmId exists
-    if (dmId === dm.dmId) {
-      existDm = 1;
-      // To loop through all the members in selected DM
-      // for (const member of dm.members) {
-      for (let i = 0; i < dm.members.length; i++) {
-        // If the auth user is a member of DM
-        if (dm.members[i] === authUserId) {
-          existAuth = 1;
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // If the dmId exists
+      if (dmId === dm.dmId) {
+        existDm = 1;
+        // To loop through all the members in selected DM
+        // for (const member of dm.members) {
+        for (let i = 0; i < dm.members.length; i++) {
+          // If the auth user is a member of DM
+          if (dm.members[i] === authUserId) {
+            existAuth = 1;
 
-          messageIdCopy = data.systemInfo.messageTotal;
-          data.systemInfo.messageTotal++;
+            messageIdCopy = data.systemInfo.messageTotal;
+            data.systemInfo.messageTotal++;
 
-          const newDmMessage: MessagesObj = {
-            messageId: messageIdCopy,
-            uId: authUserId,
-            message: message,
-            timeSent: Math.floor((new Date()).getTime() / 1000),
-          };
-          dm.messages.push(newDmMessage);
-          setData(data);
+            const newDmMessage: MessagesObj = {
+              messageId: messageIdCopy,
+              uId: authUserId,
+              message: message,
+              timeSent: Math.floor((new Date()).getTime() / 1000),
+            };
+            dm.messages.push(newDmMessage);
+            setData(data);
+          }
         }
       }
     }
