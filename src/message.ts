@@ -89,6 +89,10 @@ export function messageEditV1 (token: string, messageId: number, message: string
     return { error: 'error' };
   }
 
+  if (messageId === null || messageId === undefined) {
+    return { error: 'error' };
+  }
+
   // If length of message is over 1000 characters
   if (message.length > 1000) {
     return { error: 'error' };
@@ -244,6 +248,10 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
   let existAuth = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
+
+  if (messageId === null || messageId === undefined) {
     return { error: 'error' };
   }
 
