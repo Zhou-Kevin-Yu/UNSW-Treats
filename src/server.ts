@@ -15,6 +15,9 @@ import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
 
 const errorOutput = { error: 'error' };
 
+import { getData, setData } from './dataStore';
+import { persistantReadData } from './persistant';
+
 // Set up web app, use JSON
 const app = express();
 app.use(express.json());
@@ -173,6 +176,12 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
 });
+
+// get Data before spinning up server
+const readData = persistantReadData();
+let data = getData();
+data = Object.assign(data, readData);
+setData(data);
 
 // start server
 app.listen(PORT, HOST, () => {

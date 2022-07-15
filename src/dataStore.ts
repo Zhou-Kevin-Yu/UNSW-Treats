@@ -1,4 +1,4 @@
-import { persistantSaveData, persistantReadData } from './persistant';
+import { persistantSaveData } from './persistant';
 
 // types here
 export interface User {
@@ -203,14 +203,14 @@ Example usage
 
 // Use get() to access the data
 function getData() {
-  const readData = persistantReadData();
+  // const readData = persistantReadData();
   // console.log('************ COMPARE *********************************');
   // console.log('Comparing file data and local data:');
   // console.log(readData);
   // console.log('__');
   // console.log(data);
   // data = { ...readData };
-  data = Object.assign(data, readData);
+  // data = Object.assign(data, readData);
   return data;
 }
 
