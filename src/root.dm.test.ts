@@ -614,7 +614,7 @@ describe('HTTP tests for dm/', () => {
     */
 
 describe('Testing Success Cases of dm/remove/v1', () => {
-  test.only('Testing remove', () => {
+  test('Testing remove', () => {
     const token1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
     const obj2 = authRegisterSS('bsk@gmail.com', 'validPass23', 'e', 't');
     const dmIdValid = dmCreateSS(token1, [obj2.authUserId]).dmId;
