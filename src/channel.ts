@@ -318,18 +318,11 @@ export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   if (authUserId === null || data.channels[channelId] === undefined ||
-  data.channels[channelId].allMembers.some(user => user.uId === authUserId)) {
+  !(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
     return { error: 'error' };
   }
-  let index; let count = 0;
-  for (const user of data.channels[channelId].allMembers) {
-    if (user.uId === authUserId) {
-      index = count;
-    }
-    count++;
-  }
-  data.channels[channelId].allMembers.splice(index, 1);
-  data.channels[channelId].ownerMembers.splice(index, 1);
+  data.channels[channelId].allMembers = data.channels[channelId].allMembers.filter(user => user.uId !== authUserId);
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== authUserId);
   setData(data);
   return {};
 }
