@@ -7,15 +7,13 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user'; // TODO update this with userProfileV2
 
 /**
- * given a token and user ids, creates a new DM (direct message),
- * returns Id of dm.
+ * given array of user ids, make a string for the name of a dm
+ * The name should be an alphabetically-sorted, comma-and-space-separated
+ *  array of user handles, e.g. 'ahandle1, bhandle2, chandle3'.
  *
- * @param {string} token - user login token
  * @param {number[]} uIds - array of userIds that the DM is created for
- * @return { dmId: number} - object with key authUserId of the valid user and token
- * @returns { error : 'error' } - when any uIds are invalid
- *                              - duplicate uIds in uId array
- *                              - when user creating the dm is also in the uIds array
+ * @returns {string}  - concatenated string
+ *
 */
 function generateDmName(uIds: number[]) {
   const handleArrs = [];
@@ -35,6 +33,17 @@ function generateDmName(uIds: number[]) {
   return dmName;
 }
 
+/**
+ * given a token and user ids, creates a new DM (direct message),
+ * returns Id of dm.
+ *
+ * @param {string} token - user login token
+ * @param {number[]} uIds - array of userIds that the DM is created for
+ * @return { dmId: number} - object with key authUserId of the valid user and token
+ * @returns { error : 'error' } - when any uIds are invalid
+ *                              - duplicate uIds in uId array
+ *                              - when user creating the dm is also in the uIds array
+*/
 export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   const data = getData();
   // check if uIds are valid
@@ -70,6 +79,14 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   return { dmId: dmNum };
 }
 
+/**
+ * given a valid token, lists the dms that the user is a part of
+ *
+ * @param {string} token - user login token
+ * @return { dms: Dm[]} - array of Dms the user is part of
+ * @returns { error : 'error' } - if token is invalid
+ *
+*/
 export function dmListV1(token: string): DmListV1 {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -89,6 +106,15 @@ export function dmListV1(token: string): DmListV1 {
   return { dms: userDms };
 }
 
+/**
+ * given a valid token of an authorised user and a dmId, deletes the Dm.
+ *
+ * @param {string} token - user login token
+ * @param {number} dmId - user login token
+ * @return { dms: Dm[]} - array of Dms the user is part of
+ * @returns { error : 'error' } - if token is invalid
+ *
+*/
 export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   const data = getData();
   // check if dmId is valid
@@ -117,10 +143,18 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   setData(data);
 }
 
+/**
+ * given a valid token and dmId, it returns name and members of that Dm
+ *
+ * @param {string} token - user login token
+ * @param {number} dmId - dmId
+ * @return {DmDetailsV1} - array of Dms the user is part of
+ *
+*/
 export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
   const data = getData();
   // check if dmId is valid
-  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
     return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -143,11 +177,19 @@ export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
   };
 }
 
+/**
+ * given a valid token and dmId, it allows the user to leave the Dm
+ *
+ * @param {string} token - user login token
+ * @param {number} dmId - dmId
+ * @return {error: 'error'} - if token or dmId is invalid
+ *
+*/
 export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   const data = getData();
   // check if dmId is valid
   // console.log("before", data.dms); //temporary testing
-  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
     return { error: 'error' };
   }
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
