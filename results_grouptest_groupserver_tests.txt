@@ -1,0 +1,160 @@
+npm verb cli [
+npm verb cli   '/import/kamen/3/cs1531/.nvm/versions/node/v16.14.2/bin/node',
+npm verb cli   '/import/kamen/3/cs1531/.nvm/versions/node/v16.14.2/bin/npm',
+npm verb cli   'run',
+npm verb cli   'test',
+npm verb cli   '--verbose',
+npm verb cli   '--testMatch',
+npm verb cli   '**/?(*.)+(test).ts'
+npm verb cli ]
+npm info using npm@8.5.0
+npm info using node@v16.14.2
+npm timing npm:load:whichnode Completed in 0ms
+npm timing config:load:defaults Completed in 4ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v16.14.2/lib/node_modules/npm/npmrc Completed in 5ms
+npm timing config:load:builtin Completed in 6ms
+npm timing config:load:cli Completed in 3ms
+npm timing config:load:env Completed in 1ms
+npm timing config:load:file:/import/kamen/3/cs1531/project-automarking/tempstore/.npmrc Completed in 0ms
+npm timing config:load:project Completed in 33ms
+npm timing config:load:file:/import/kamen/3/cs1531/.npmrc Completed in 0ms
+npm timing config:load:user Completed in 1ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v16.14.2/etc/npmrc Completed in 0ms
+npm timing config:load:global Completed in 0ms
+npm timing config:load:validate Completed in 1ms
+npm timing config:load:credentials Completed in 2ms
+npm timing config:load:setEnvs Completed in 2ms
+npm timing config:load Completed in 54ms
+npm timing npm:load:configload Completed in 55ms
+npm timing npm:load:setTitle Completed in 0ms
+npm timing config:load:flatten Completed in 6ms
+npm timing npm:load:display Completed in 11ms
+npm verb logfile /import/kamen/3/cs1531/.npm/_logs/2022-07-16T07_04_09_492Z-debug-0.log
+npm timing npm:load:logFile Completed in 11ms
+npm timing npm:load:timers Completed in 0ms
+npm timing npm:load:configScope Completed in 0ms
+npm timing npm:load Completed in 81ms
+
+> test
+> jest "**/?(*.)+(test).ts"
+
+  Invalid testPattern **/?(*.)+(test).ts supplied. Running all tests instead.
+  Invalid testPattern **/?(*.)+(test).ts supplied. Running all tests instead.
+PASS src/echo.test.ts (5.24 s)
+  ● Console
+
+    console.log
+      linux
+
+      at Object.<anonymous> (src/echo.test.ts:10:9)
+
+    console.log
+      http://127.0.0.1
+
+      at Object.<anonymous> (src/echo.test.ts:16:9)
+
+PASS src/channelsListV1.test.ts
+PASS src/channelsCreateV1.test.ts
+PASS src/root.message.test.ts (7.477 s)
+PASS src/root.dm.test.ts (8.665 s)
+  ● Console
+
+    console.log
+      linux
+
+      at Object.<anonymous> (src/root.dm.test.ts:13:9)
+
+    console.log
+      http://127.0.0.1
+
+      at Object.<anonymous> (src/root.dm.test.ts:66:9)
+
+PASS src/root.user.test.ts
+PASS src/root.channels.test.ts
+PASS src/root.auth.test.ts
+  ● Console
+
+    console.log
+      {
+        user: {
+          uId: 0,
+          email: 'ben.kerno4@gmail.com',
+          nameFirst: 'benjamined',
+          nameLast: 'kernohandomeessdfsdfrt',
+          handleStr: 'benjaminedkernohando'
+        }
+      }
+
+      at Object.<anonymous> (src/root.auth.test.ts:255:13)
+
+PASS src/channelDetailsV1.test.ts
+PASS src/channeltests/channel/addownerV1.test.ts
+  ● Console
+
+    console.log
+      {}
+
+      at Object.<anonymous> (src/channeltests/channel/addownerV1.test.ts:42:17)
+
+PASS src/channeltests/channel/inviteV2.test.ts
+PASS src/channeltests/channel/joinV2.test.ts
+PASS src/channelMessagesV1.test.ts
+PASS src/channeltests/channel/removeownerV1.test.ts
+  ● Console
+
+    console.log
+      { token: '0.5639731668774823', authUserId: 0 }
+
+      at Object.<anonymous> (src/channeltests/channel/removeownerV1.test.ts:23:17)
+
+    console.log
+      {}
+
+      at Object.<anonymous> (src/channeltests/channel/removeownerV1.test.ts:69:16)
+
+    console.log
+      { token: '0.13730341485895403', authUserId: 0 }
+
+      at Object.<anonymous> (src/channeltests/channel/removeownerV1.test.ts:93:17)
+
+PASS src/channeltests/channel/messagesV2.test.ts
+  ● Console
+
+    console.log
+      { messageId: 0 }
+
+      at Object.<anonymous> (src/channeltests/channel/messagesV2.test.ts:38:17)
+
+    console.log
+      { messageId: 0 }
+
+      at Object.<anonymous> (src/channeltests/channel/messagesV2.test.ts:91:17)
+
+PASS src/channeltests/channel/leaveV1.test.ts
+PASS src/channeltests/channel/detailsV2.test.ts
+PASS src/authLoginV1.test.ts
+PASS src/root.users.test.ts
+  ● Console
+
+    console.log
+      linux
+
+      at Object.<anonymous> (src/root.users.test.ts:11:9)
+
+PASS src/token.test.ts
+PASS src/users.test.ts
+PASS src/other.test.ts
+PASS src/channels.test.ts
+PASS src/channelJoinV1.test.ts
+PASS src/channelInviteV1.test.ts
+PASS src/auth.test.ts
+
+Test Suites: 26 passed, 26 total
+Tests:       202 passed, 202 total
+Snapshots:   0 total
+Time:        53.105 s
+Ran all test suites.
+npm timing command:run Completed in 55375ms
+npm verb exit 0
+npm timing npm Completed in 55833ms
+npm info ok 
