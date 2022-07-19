@@ -61,7 +61,7 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 /// /////////////////////////////////////////////////////////channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
-  if (!isTokenValid(token)) return errorOutput;
+  if (!isTokenValid(token)) return { error: 'error' };
   const authId = tokenToAuthUserId(token, true);
   res.json(channelsCreateV1(authId, name, isPublic));
 });
@@ -69,7 +69,7 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 app.get('/channels/list/v2', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
-  if (!isTokenValid(tokenParse)) return errorOutput;
+  if (!isTokenValid(tokenParse)) return { error: 'error' };
   const authId = tokenToAuthUserId(tokenParse, true);
   res.json(channelsListV1(authId));
 });
@@ -77,7 +77,7 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 app.get('/channels/listall/v2', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
-  if (!isTokenValid(tokenParse)) return errorOutput;
+  if (!isTokenValid(tokenParse)) return { error: 'error' };
   const authId = tokenToAuthUserId(tokenParse, true);
   res.json(channelsListallV1(authId));
 });
