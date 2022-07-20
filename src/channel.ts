@@ -325,15 +325,51 @@ export function channelLeaveV1(token: string, channelId: number) {
 export function channelAddOwnerV1(token: string, channelId: number, uId: number) {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  const { user } = userProfileV1(authUserId, uId);
-  if (authUserId === undefined || uId === undefined ||
-    data.channels[channelId] === undefined ||
-    data.channels[channelId].ownerMembers.some(entry => entry.uId === user.uId) ||
-    !(data.channels[channelId].allMembers.some(entry => entry.uId === user.uId)) ||
-    !(data.channels[channelId].ownerMembers.some(entry => entry.uId === authUserId))
-  ) {
+
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
+  if (uId === null || uId === undefined) {
+    return { error: 'error' };
+  }
+
+  const userObj = userProfileV1(authUserId, uId);
+
+  if (userObj === { error: 'error' }) {
+    return { error: 'error' };
+  }
+
+  const user = userObj.user;
+
+  // if (authUserId === undefined || uId === undefined ||
+  //   data.channels[channelId] === undefined ||
+  //   data.channels[channelId].ownerMembers.some(entry => entry.uId === user.uId) ||
+  //   !(data.channels[channelId].allMembers.some(entry => entry.uId === user.uId)) ||
+  //   !(data.channels[channelId].ownerMembers.some(entry => entry.uId === authUserId))
+  // ) {
+  //   return { error: 'error' };
+  // }
+
+  // checks if chanellId does not refer to a valid channel
+  if (data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+    return { error: 'error' };
+  }
+  // checks if uId referes to a user who is not a member of the channel
+  if (!(data.channels[channelId].allMembers.some(member => member.uId === user.uId))) {
+    return { error: 'error' };
+  }
+  // checks if Uid refers to a user who is already an owner of the channel
+  if (data.channels[channelId].ownerMembers.some(member => member.uId === user.uId)) {
+    return { error: 'error' };
+  }
+  // check if authUserId refers to a user who doesn't have owner permissions in this channel
+  const authUserOjb = userProfileV1(authUserId, authUserId);
+  if (authUserOjb === { error: 'error' }) { return { error: 'error' }; }
+  const authUserGlobal = data.users[authUserId].permission;
+  if (authUserGlobal !== 2 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+    return { error: 'error' };
+  }
+
   data.channels[channelId].ownerMembers.push(user);
   setData(data);
   return {};
