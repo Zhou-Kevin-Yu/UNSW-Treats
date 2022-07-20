@@ -61,25 +61,34 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 /// /////////////////////////////////////////////////////////channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
-  if (!isTokenValid(token)) return errorOutput;
-  const authId = tokenToAuthUserId(token, true);
-  res.json(channelsCreateV1(authId, name, isPublic));
+  if (!isTokenValid(token)) {
+    res.json( { error: 'error' } );
+  } else {
+    const authId = tokenToAuthUserId(token, true);
+    res.json(channelsCreateV1(authId, name, isPublic));
+  }
 });
 
 app.get('/channels/list/v2', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
-  if (!isTokenValid(tokenParse)) return errorOutput;
-  const authId = tokenToAuthUserId(tokenParse, true);
-  res.json(channelsListV1(authId));
+  if (!isTokenValid(tokenParse)) {
+    res.json( { error: 'error' } );
+  } else {
+    const authId = tokenToAuthUserId(tokenParse, true);
+    res.json(channelsListV1(authId));
+  }
 });
 
 app.get('/channels/listall/v2', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
-  if (!isTokenValid(tokenParse)) return errorOutput;
-  const authId = tokenToAuthUserId(tokenParse, true);
-  res.json(channelsListallV1(authId));
+  if (!isTokenValid(tokenParse)) {
+    res.json( { error: 'error' } );
+  } else {
+    const authId = tokenToAuthUserId(tokenParse, true);
+    res.json(channelsListallV1(authId));
+  }
 });
 
 /// /////////////////////////////////////////////////////////
