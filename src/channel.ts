@@ -300,10 +300,22 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
 export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  if (authUserId === null || data.channels[channelId] === undefined ||
-  !(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+
+  // if (authUserId === null || data.channels[channelId] === undefined ||
+  // !(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+  //   return { error: 'error' };
+  // }
+
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
+  if(data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+    return { error: 'error' };
+  }
+  if(!(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+    return { error: 'error' };
+  }
+
   data.channels[channelId].allMembers = data.channels[channelId].allMembers.filter(user => user.uId !== authUserId);
   data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== authUserId);
   setData(data);
