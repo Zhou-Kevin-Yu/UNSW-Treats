@@ -28,3 +28,6 @@ dm/messages/v1
 
 General
 - all tokens and authUserId has to be valid, otherwise we return { error }
+
+channel/addowner/v1 & channel/removeowner/v1
+- Global Owner can add and remove themselves as a channel owner
