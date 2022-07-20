@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
+import { messageSendDmV1 } from './message';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user';
 
@@ -290,6 +291,7 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
     return { error: 'error' };
   }
 
+  msgArray.reverse();
   return {
     messages: msgArray,
     start: start,
