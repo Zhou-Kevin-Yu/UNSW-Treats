@@ -1,5 +1,5 @@
 import request from 'sync-request';
-import config from './config.json';
+import config from '../config.json';
 
 import os from 'os';
 // import { register } from 'ts-node';

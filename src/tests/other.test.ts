@@ -1,6 +1,6 @@
-import { clearV1 } from './other';
-import { getData, setData } from './dataStore';
-import { Data } from './dataStore';
+import { clearV1 } from '../other';
+import { getData, setData } from '../dataStore';
+import { Data } from '../dataStore';
 
 test('Test successful user clear', () => {
   clearV1();

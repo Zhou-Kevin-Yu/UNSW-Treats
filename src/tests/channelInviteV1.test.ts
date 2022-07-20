@@ -1,8 +1,8 @@
-import { authRegisterV1 } from './auth';
-import { channelsCreateV1 } from './channels';
-import { channelInviteV1 } from './channel';
+import { authRegisterV1 } from '../auth';
+import { channelsCreateV1 } from '../channels';
+import { channelInviteV1 } from '../channel';
 // import { userProfileV1 }                        from './users';
-import { clearV1 } from './other';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();

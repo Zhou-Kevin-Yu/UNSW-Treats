@@ -1,13 +1,13 @@
 import request from 'sync-request';
-import config from './config.json';
+import config from '../config.json';
 import os from 'os';
 
 // const OK = 200;
 const port = config.port;
 let url = config.url;
 
-import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide } from './wrapped.user';
-import { authRegisterV2ServerSide, authLogoutV1ServerSide } from './wrapped.auth';
+import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide } from '../wrapped.user';
+import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.auth';
 
 if (os.platform() === 'darwin') {
   url = 'http://localhost';

@@ -1,6 +1,6 @@
-import { userProfileV1 } from './user';
-import { authRegisterV1 } from './auth';
-import { clearV1 } from './other';
+import { userProfileV1 } from '../user';
+import { authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();

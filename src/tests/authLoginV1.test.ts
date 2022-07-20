@@ -1,5 +1,5 @@
-import { authLoginV1, authRegisterV1 } from './auth';
-import { clearV1 } from './other';
+import { authLoginV1, authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
 
 // TODO: Add ClearV1 to tests
 

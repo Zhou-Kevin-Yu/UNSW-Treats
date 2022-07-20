@@ -1,6 +1,6 @@
-import { tokenToAuthUserId, generateToken, isTokenValid } from './token';
-import { authRegisterV1 } from './auth';
-import { clearV1 } from './other';
+import { tokenToAuthUserId, generateToken, isTokenValid } from '../token';
+import { authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
