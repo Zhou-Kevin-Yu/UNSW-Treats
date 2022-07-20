@@ -309,10 +309,10 @@ export function channelLeaveV1(token: string, channelId: number) {
   if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
-  if(data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+  if (data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
     return { error: 'error' };
   }
-  if(!(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+  if (!(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
     return { error: 'error' };
   }
 
@@ -321,7 +321,6 @@ export function channelLeaveV1(token: string, channelId: number) {
   setData(data);
   return {};
 }
-
 
 export function channelAddOwnerV1(token: string, channelId: number, uId: number) {
   const data = getData();

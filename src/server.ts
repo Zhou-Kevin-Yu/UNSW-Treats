@@ -15,7 +15,7 @@ import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './chann
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
-const errorOutput = { error: 'error' };
+// const errorOutput = { error: 'error' };
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
