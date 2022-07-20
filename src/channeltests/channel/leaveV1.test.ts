@@ -1,8 +1,16 @@
-import { url, port }      from '../../config.json'
+import config from '../../config.json'
 
 const request = require('sync-request');
 
+import os from 'os';
+
 const OK = 200;
+const port = config.port;
+let url = config.url;
+
+if (os.platform() === 'darwin') {
+  url = 'http://localhost';
+}
 
 beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 

@@ -1,9 +1,17 @@
-import { url, port }      from '../../config.json'
+import config from '../../config.json'
 import request from 'sync-request';
 import { authRegisterV2ServerSide } from '../../wrapped.auth';
 import { userProfileV2ServerSide } from '../../wrapped.user';
 
+import os from 'os';
+
 const OK = 200;
+const port = config.port;
+let url = config.url;
+
+if (os.platform() === 'darwin') {
+  url = 'http://localhost';
+}
 
 beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 

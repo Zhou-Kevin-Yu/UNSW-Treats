@@ -1,10 +1,18 @@
-import { url, port }    from '../../config.json'
+import config from '../../config.json'
 import { authRegisterV2ServerSide } from '../../wrapped.auth';
 import { userProfileV2ServerSide } from '../../wrapped.user';
 
 const request = require('sync-request');
 
+import os from 'os';
+
 const OK = 200;
+const port = config.port;
+let url = config.url;
+
+if (os.platform() === 'darwin') {
+  url = 'http://localhost';
+}
 
 beforeEach (() => request('DELETE', `${url}:${port}/clear/v1`));
 
@@ -75,6 +83,7 @@ describe('Testing basic functionality', () => {
             }
         });
         const data = JSON.parse(res.body as string);
+        console.log(data); 
         expect(data.allMembers).toStrictEqual([kevinProfile.user, bobProfile.user]);
         expect(data.ownerMembers).toStrictEqual([kevinProfile.user]);
         expect(res.statusCode).toBe(OK);
