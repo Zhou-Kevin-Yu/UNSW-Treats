@@ -292,6 +292,10 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   }
 
   msgArray.reverse();
+  for (const index in msgArray) {
+    msgArray[index].messageId = parseInt(index);
+  } 
+  
   return {
     messages: msgArray,
     start: start,
