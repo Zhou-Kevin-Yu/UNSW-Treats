@@ -3,7 +3,7 @@ import { isTokenValid, tokenToAuthUserId } from './token';
 
 export function channelDetailsV2(token: string, channelId: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  if (authUserId === null) {
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
   return channelDetailsV1(authUserId, channelId);
@@ -11,7 +11,7 @@ export function channelDetailsV2(token: string, channelId: number) {
 
 export function channelInviteV2(token :string, channelId: number, uId: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  if (authUserId === null) {
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
   return channelInviteV1(authUserId, channelId, uId);
@@ -19,7 +19,7 @@ export function channelInviteV2(token :string, channelId: number, uId: number) {
 
 export function channelJoinV2(token :string, channelId: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  if (authUserId === null) {
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
   return channelJoinV1(authUserId, channelId);
@@ -27,7 +27,7 @@ export function channelJoinV2(token :string, channelId: number) {
 
 export function channelMessagesV2(token: string, channelId: number, start: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
-  if (authUserId === null) {
+  if (authUserId === null || authUserId === undefined) {
     return { error: 'error' };
   }
   return channelMessagesV1(authUserId, channelId, start);

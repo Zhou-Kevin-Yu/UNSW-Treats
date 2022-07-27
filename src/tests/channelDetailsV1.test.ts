@@ -1,9 +1,9 @@
-import { clearV1 } from './other';
-import { authRegisterV1 } from './auth';
-import { channelDetailsV1 } from './channel';
-import { userProfileV1 } from './user';
-import { channelsCreateV1 } from './channels';
-import { channelInviteV1 } from './channel';
+import { clearV1 } from '../other';
+import { authRegisterV1 } from '../auth';
+import { channelDetailsV1 } from '../channel';
+import { userProfileV1 } from '../user';
+import { channelsCreateV1 } from '../channels';
+import { channelInviteV1 } from '../channel';
 
 const error = { error: 'error' };
 

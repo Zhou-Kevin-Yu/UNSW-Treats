@@ -1,11 +1,11 @@
 import request from 'sync-request';
-import config from './config.json';
+import config from '../config.json';
 import os from 'os';
 
-import { tokenToAuthUserId, isTokenValid } from './token';
+import { tokenToAuthUserId, isTokenValid } from '../token';
 
-import { authLoginV2ServerSide } from './wrapped.auth';
-import { userProfileV2ServerSide } from './wrapped.user';
+import { authLoginV2ServerSide } from '../wrapped.auth';
+import { userProfileV2ServerSide } from '../wrapped.user';
 
 const OK = 200;
 const port = config.port;

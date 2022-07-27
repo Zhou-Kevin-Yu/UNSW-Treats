@@ -1,9 +1,9 @@
 import request from 'sync-request';
-import config from './config.json';
+import config from '../config.json';
 // import { userProfileV2ServerSide } from './wrapped.user';
-import { messageSendDmV1SS } from './wrapped.message';
+import { messageSendDmV1SS } from '../wrapped.message';
 import os from 'os';
-import { dmMessagesV1SS } from './wrapped.dm';
+import { dmMessagesV1SS } from '../wrapped.dm';
 // import { register } from 'ts-node';
 
 // const OK = 200;

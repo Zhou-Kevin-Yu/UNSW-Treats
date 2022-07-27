@@ -1,5 +1,5 @@
 const request = require('sync-request');
-import config from './config.json';
+import config from '../config.json';
 import os from 'os';
 
 const port = config.port;
