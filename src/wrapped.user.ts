@@ -62,14 +62,14 @@ function userSetemailV1ServerSide(token: string, email: string) : { error?: 'err
   return JSON.parse(data);
 }
 
-function userSethandleV1ServerSide(token: string, handle: string) : { error?: 'error' } {
+function userSethandleV1ServerSide(token: string, handleStr: string) : { error?: 'error' } {
   const res = request(
     'PUT',
         `${url}:${port}/user/profile/sethandle/v1`,
         {
           json: {
             token,
-            handle,
+            handleStr,
           }
         }
   );

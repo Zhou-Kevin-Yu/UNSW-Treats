@@ -116,8 +116,8 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
 });
 
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
-  const { token, handle } = req.body;
-  res.json(userProfileSethandleV1(token, handle));
+  const { token, handleStr } = req.body;
+  res.json(userProfileSethandleV1(token, handleStr));
 });
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
