@@ -220,6 +220,4 @@ function setData(newData : Data) {
   data = newData;
 }
 
-setData(data);
-
 export { getData, setData };
