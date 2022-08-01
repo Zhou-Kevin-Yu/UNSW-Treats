@@ -32,12 +32,26 @@ describe('Testing iteration 2 Errors', () => {
     expect(chMsgs.messages.length).toBe(30);
     expect(chMsgs.messages[0].uId).toBe(user1.authUserId);
     expect(chMsgs.messages[25].message).toBe('message 4');
+    expect(chMsgs.messages[25].messageId).toBe(4);
     expect(chMsgs.start).toBe(0);
     expect(chMsgs.end).toBe(-1);
-    //create user
-    //create user
-    //create channel
-    //send messages
-    //view messages
+  });
+
+  test('local - testOverFiftyMessagesSent', () => {
+    const user1 = authRegisterV2ServerSide("bk@gmail.com", "thisPass68", "b", "k");
+    //const user2 = authRegisterV2ServerSide("et@gmail.com", "thisPass68", "e", "t");
+    const channel1 = channelsCreateV2SS(user1.token, "Channel1", true);
+
+    for (let i = 0; i < 52; i++) {
+      messageSendV1SS(user1.token, channel1.channelId, `message ${i}`);
+    }
+
+    const chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+    expect(chMsgs.messages.length).toBe(50);
+    expect(chMsgs.messages[0].uId).toBe(user1.authUserId);
+    expect(chMsgs.messages[48].message).toBe('message 1');
+    expect(chMsgs.messages[48].messageId).toBe(1);
+    expect(chMsgs.start).toBe(0);
+    expect(chMsgs.end).toBe(50);
   });
 });
