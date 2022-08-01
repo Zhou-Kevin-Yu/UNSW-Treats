@@ -1,15 +1,26 @@
 // import { echo } from './echo';
 import request from 'sync-request';
-import config from './config.json';
+import config from '../config.json';
+
+import os from 'os';
 
 const OK = 200;
 const INPUT_ERROR = 400;
-const url = config.url;
 const port = config.port;
+let url = config.url;
+
+console.log(os.platform());
+
+if (os.platform() === 'darwin') {
+  url = 'http://localhost';
+}
+
+console.log(url);
 
 /*
 Iteration 3
 */
+// comment me out after u setup express
 describe('HTTP tests using Jest', () => {
   test('Test successful echo', () => {
     const res = request(
@@ -39,4 +50,8 @@ describe('HTTP tests using Jest', () => {
     expect(res.statusCode).toBe(INPUT_ERROR);
     expect(bodyObj.error).toStrictEqual({ message: 'Cannot echo "echo"' });
   });
+});
+
+test('Test successful echo', () => {
+  expect(1).toBe(1);
 });
