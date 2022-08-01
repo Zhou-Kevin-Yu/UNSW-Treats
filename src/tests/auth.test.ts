@@ -68,6 +68,7 @@ describe('Testing valid returns from register user', () => {
     authRegisterV1('ben.kerno2@gmail.com', 'dogIsCute', 'benjamin', 'kernohan');
     const returned = authRegisterV1('ben.kerno3@gmail.com', 'dogIsCute', 'benjamin', 'kernohan');
     expect(returned.authUserId).toBe(3);
+    expect(returned).toStrictEqual(expect.objectContaining({ authUserId: expect.any(Number) }))
   });
 
   test('3 registered users', () => {
@@ -78,6 +79,7 @@ describe('Testing valid returns from register user', () => {
     authRegisterV1('ben.kerno4@gmail.com', 'dogIsCute', 'benjamin', 'kernohan');
     const returned = authRegisterV1('ben.kerno5@gmail.com', 'dogIsCute', 'benjamin', 'kernohan');
     expect(returned.authUserId).toBe(5);
+    expect(returned).toStrictEqual(expect.objectContaining({ authUserId: expect.any(Number) }))
   });
 });
 
