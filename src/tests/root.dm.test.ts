@@ -517,7 +517,7 @@ describe('HTTP tests for dm/messages', () => {
       messageSendDmV1SS(reg1.token, dm1.dmId, 'second message'); // send one message
       messageSendDmV1SS(reg1.token, dm1.dmId, 'third message'); // send one message
 
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 3); // no message at index 1
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 4); // no message at index 1
       expect(dmMessage).toStrictEqual({ error: 'error' });
     });
 
