@@ -501,8 +501,8 @@ describe('HTTP tests for dm/leave/v1', () => {
   */
 });
 
-describe('HTTP tests for dm/', () => {
-  describe('Testing Error Cases for dm/', () => {
+describe('HTTP tests for dm/messages', () => {
+  describe('Testing Error Cases for dm/messages', () => {
     test('dmId not valid', () => {
       const token = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k').token;
       const res = dmMessagesV1SS(token, 0, 0);
@@ -514,7 +514,10 @@ describe('HTTP tests for dm/', () => {
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
       messageSendDmV1SS(reg1.token, dm1.dmId, 'first message'); // send one message
-      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 1); // no message at index 1
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'second message'); // send one message
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'third message'); // send one message
+
+      const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 3); // no message at index 1
       expect(dmMessage).toStrictEqual({ error: 'error' });
     });
 
@@ -569,14 +572,14 @@ describe('HTTP tests for dm/', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass23', 'b', 'k');
       const reg2 = authRegisterSS('bdk@gmail.com', 'validPass23', 'b', 'k');
       const dm1 = dmCreateSS(reg1.token, [reg2.authUserId]);
-      // send 52 messages
+      // send 30 messages
       for (let i = 0; i < 30; i++) {
-        messageSendDmV1SS(reg1.token, dm1.dmId, 'message');
+        messageSendDmV1SS(reg1.token, dm1.dmId, `message ${i}`);
       }
       const dmMessage = dmMessagesV1SS(reg1.token, dm1.dmId, 0); // get one message
       expect(dmMessage.messages.length).toBe(30);
       expect(dmMessage.messages[0].uId).toBe(reg1.authUserId);
-      expect(dmMessage.messages[25].message).toBe('message');
+      expect(dmMessage.messages[25].message).toBe('message 4');
       expect(dmMessage.start).toBe(0);
       expect(dmMessage.end).toBe(-1);
     });

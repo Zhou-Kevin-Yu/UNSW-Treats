@@ -136,7 +136,6 @@ app.delete('/dm/remove/v1', (req: Request, res: Response) => {
   const dmId = req.query.dmId as string;
   const newDmId = parseInt(dmId);
   // const { token, dmId } = req.query;
-  console.log('=======', token, dmId);
   res.json(dmRemoveV1(token, newDmId));
 });
 
@@ -152,8 +151,11 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   res.json(dmLeaveV1(token, dmId));
 });
 
-app.post('/dm/messages/v1', (req: Request, res: Response) => {
-  const { token, dmId, start } = req.body;
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  // const { token, dmId, start } = req.query;
+  const token = req.query.token as string
+  const dmId = parseInt(req.query.token as string)
+  const start = parseInt(req.query.start as string)
   res.json(dmMessagesV1(token, dmId, start));
 });
 // TODO add dm/messages/v1
