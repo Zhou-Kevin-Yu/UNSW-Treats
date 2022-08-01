@@ -241,7 +241,7 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     return { error: 'error' };
   }
   // check if dmId is valid
-  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined) {
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
     return { error: 'error' };
   }
   // start is greater than total number of messages in the channel
@@ -255,7 +255,7 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     return { error: 'error' };
   }
   const messagesReturn : MessagesObj[] = [];
-  const dm = data.dms[dmId];
+  const dm : DmObj = data.dms[dmId];
   let counter = 0;
   let endM = -1;
   for (const message of dm.messages) {
@@ -273,10 +273,10 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     counter++;
   }
   messagesReturn.reverse();
-
-  return {
+  const returnObj : DmMessagesV1 = {
     messages: messagesReturn,
     start: start,
     end: endM,
-  };
+  }
+  return returnObj;
 }
