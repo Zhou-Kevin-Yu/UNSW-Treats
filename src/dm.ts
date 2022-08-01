@@ -245,7 +245,7 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     return { error: 'error' };
   }
   // start is greater than total number of messages in the channel
-  if (start > (data.dms[dmId].messages.length - 1)) {
+  if (start > (data.dms[dmId].messages.length)) {
     return { error: 'error' };
   }
   //
