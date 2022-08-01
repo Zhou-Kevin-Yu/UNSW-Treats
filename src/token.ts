@@ -12,7 +12,6 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
     return null;
   }
   // Check if token is a float
-  // This could be improved later
   if (token.includes('.')) {
     const testToken = token.replace('.', '');
     // Check if remaining is a number
@@ -20,6 +19,12 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
       return null;
     }
   } else {
+    return null;
+  }
+  if (isNaN(Number(token))) {
+    return null;
+  }
+  if (token.indexOf('.') === -1 || token.indexOf('.') === 0) {
     return null;
   }
 
@@ -66,11 +71,7 @@ function isTokenValid(token: string): boolean {
   }
 
   const usertokens = data.users[tryAuthUserId].tokens;
-  if (usertokens.includes(token)) {
-    return true;
-  } else {
-    return false;
-  }
+  return usertokens.includes(token);
 }
 
 export { tokenToAuthUserId, generateToken, isTokenValid };
