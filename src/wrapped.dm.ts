@@ -23,4 +23,18 @@ function dmMessagesV1SS(token: string, dmId: number, start: number) {
   return JSON.parse(res.body as string);
 }
 
-export { dmMessagesV1SS };
+function dmCreateV1SS(token: string, uIds: number[]) {
+  const res = request(
+    'POST',
+    `${url}:${port}/dm/create/v1`,
+    {
+      json: {
+        token,
+        uIds,
+      }
+    }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export { dmMessagesV1SS, dmCreateV1SS };

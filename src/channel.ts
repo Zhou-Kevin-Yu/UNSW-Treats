@@ -256,19 +256,30 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
 
           // If function returns the last message in the channel
           // The last message in channel messages got pushed into the last element of msgArray
+          
+          /*
           if (channel.messages[endCopy - 1] === msgArray[msgArray.length - 1]) {
+            console.log("================ last messages in");
+            endCopy = -1;
+          }
+          */
+          //bug fix for commented out section above
+          if (channel.messages.length === msgArray.length) {
+            // console.log("================ last messages in");
             endCopy = -1;
           }
 
           // If function returns less than 50 messages
           // Meaning that there are no more messages to return
           if (msgArray.length < 50) {
+            // console.log("================ returned less than 50");
             endCopy = -1;
           }
         }
       }
       // If there were no existing messages for the selected channel
       if (channel.messages.length === 0) {
+        // console.log("================ no messages in channel");
         endCopy = -1;
         msgArray = [];
         break;
@@ -292,9 +303,12 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   }
 
   msgArray.reverse();
+  /*
+  // commented out becauase i dont think we have to flip the indexes  
   for (const index in msgArray) {
     msgArray[index].messageId = parseInt(index);
   } 
+  */
   
   return {
     messages: msgArray,
@@ -372,7 +386,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   const authUserOjb = userProfileV1(authUserId, authUserId);
   if (authUserOjb === { error: 'error' }) { return { error: 'error' }; }
   const authUserGlobal = data.users[authUserId].permission;
-  if (authUserGlobal !== 2 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
   }
 
@@ -390,6 +404,10 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
     return { error: 'error' };
   }
   if (uId === null || uId === undefined) {
+    return { error: 'error' };
+  }
+  //checks if uId is a valid user
+  if (!(uId in data.users)) {
     return { error: 'error' };
   }
 
@@ -426,7 +444,7 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
     return { error: 'error' };
   }
   const authUserGlobal = data.users[authUserId].permission;
-  if (authUserGlobal !== 2 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
   }
 
