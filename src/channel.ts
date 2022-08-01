@@ -386,7 +386,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   const authUserOjb = userProfileV1(authUserId, authUserId);
   if (authUserOjb === { error: 'error' }) { return { error: 'error' }; }
   const authUserGlobal = data.users[authUserId].permission;
-  if (authUserGlobal !== 2 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
   }
 
@@ -404,6 +404,10 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
     return { error: 'error' };
   }
   if (uId === null || uId === undefined) {
+    return { error: 'error' };
+  }
+  //checks if uId is a valid user
+  if (!(uId in data.users)) {
     return { error: 'error' };
   }
 
@@ -440,7 +444,7 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
     return { error: 'error' };
   }
   const authUserGlobal = data.users[authUserId].permission;
-  if (authUserGlobal !== 2 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
   }
 
