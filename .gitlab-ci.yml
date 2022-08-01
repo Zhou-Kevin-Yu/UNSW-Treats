@@ -18,11 +18,12 @@ tests with coverage:
     - sleep 3
     - npm run test src/**/*.ts || (cat $SERVER_LOG && exit 1)
     - kill -SIGINT %1
+    - sleep 2
     - cat $SERVER_LOG
   coverage: '/All files\s*\|\s*(\d+(?:\.\d+)?)/'
   artifacts:
     paths:
-      - coverage/lcov-report/
+      - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
 
