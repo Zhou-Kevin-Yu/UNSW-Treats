@@ -6,7 +6,7 @@ import os from 'os';
 import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.auth';
 import { channelsCreateV2SS } from '../wrapped.channels';
 import { channelMessagesV2SS, channelJoinV2SS, channelAddOwnerV1SS, channelRemoveOwnerV1SS, channelDetailsV2SS } from '../wrapped.channel';
-import { messageSendV1SS, messageEditV1SS } from '../wrapped.message';
+import { messageSendV1SS, messageEditV1SS, messageSendDmV1SS } from '../wrapped.message';
 import { dmCreateV1SS, dmMessagesV1SS } from '../wrapped.dm';
 
 // const OK = 200;
@@ -117,7 +117,7 @@ describe('Testing iteration 2 Errors', () => {
 
       const dm1 = dmCreateV1SS(user1.token, [user2.authUserId]);
 
-      const msg0 = messageSendV1SS(user1.token, dm1.dmId, 'message 0');
+      const msg0 = messageSendDmV1SS(user1.token, dm1.dmId, 'message 0');
       messageEditV1SS(user1.token, msg0.messageId, '');
       const chMsgs = dmMessagesV1SS(user1.token, dm1.dmId, 0);
 
