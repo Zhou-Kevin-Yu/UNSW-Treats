@@ -115,20 +115,31 @@ function handleCreate(nameFirst: string, nameLast: string): string {
   if (handle.length > 20) {
     handle = handle.slice(0, 20);
   }
+  const originalHandle = handle;
   let taken = true;
   let count = 0;
+  // while (taken) {
+  //   taken = false;
+  //   // Gary: Use .find()
+  //   for (const user of data.users) {
+  //     if (user.handleStr === handle) {
+  //       // when count > 0 string already has a number on the end
+  //       if (count !== 0) {
+  //         // this won't work for larger numbers
+  //         handle = handle.slice(0, -1);
+  //       }
+  //       handle = handle.concat('', count.toString());
+  //       count++;
+  //       taken = true;
+  //     }
+  //   }
+  // }
   while (taken) {
     taken = false;
-    for (const user of data.users) {
-      if (user.handleStr === handle) {
-        // when count > 0 string already has a number on the end
-        if (count !== 0) {
-          handle = handle.slice(0, -1);
-        }
-        handle = handle.concat('', count.toString());
-        count++;
-        taken = true;
-      }
+    if ((data.users.find(user => user.handleStr === handle)) !== undefined) {
+      taken = true;
+      handle = originalHandle.concat('', count.toString());
+      count++;
     }
   }
   return handle;
