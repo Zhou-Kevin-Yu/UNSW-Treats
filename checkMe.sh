@@ -25,10 +25,10 @@ fi
 
 
 SERVER_LOG=$(mktemp)
-npm start &> $SERVER_LOG & pid=$!
+npm run ts-node-coverage &> $SERVER_LOG & pid=$!
 sleep 10
 ps -o pid | egrep -q "^\s*${pid}$" || (cat $SERVER_LOG && exit 1)
-npm test
+npm run test src/**/*.ts 
 
 if [ $? -eq 0 ]
 then
@@ -51,8 +51,11 @@ then
   echo ""
   echo "Tests passed - good to go!"
   echo ""
-  echo "Push your branch, merge Master into your branch, and then push your branch to Git"
+  echo "Push your branch, checkout master, pull master, checkout your branch"
   echo ""
+  echo "merge Master into your branch, and then push your branch to Git"
+  echo ""
+  echo "Then create a merge request with this screenshot as the description"
   exit 0
 else
   echo "Tests failed"
