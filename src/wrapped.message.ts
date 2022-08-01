@@ -12,6 +12,21 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
+function messageEditV1SS(token: string, messageId: number, message: string) {
+  const res6 = request(
+      'PUT',
+      `${url}:${port}/message/edit/v1`,
+      {
+        json: {
+          token: token,
+          messageId: messageId,
+          message: message,
+        }
+      }
+    );
+    return JSON.parse(res6.getBody() as string);
+}
+
 function messageSendDmV1SS(token: string, dmId: number, message: string) {
   const res = request(
     'POST',
@@ -42,4 +57,4 @@ function messageSendV1SS(token: string, channelId: number, message: string) {
   return JSON.parse(res.body as string);
 }
 
-export { messageSendDmV1SS, messageSendV1SS };
+export { messageSendDmV1SS, messageSendV1SS, messageEditV1SS };

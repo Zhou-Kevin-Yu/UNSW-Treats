@@ -156,7 +156,6 @@ export function messageEditV1 (token: string, messageId: number, message: string
   }
 
   let counter = 0;
-
   // Auth user trying to edit a message sent in a channel
   // Loop through all existing channels
   for (const channel of data.channels) {
@@ -172,15 +171,13 @@ export function messageEditV1 (token: string, messageId: number, message: string
             existAuth = 1;
             // Access message string and update string with new message
             msg.message = message;
-
             // If the new message is an empty string, the message is deleted
             if (message.length === 0) {
-              for (let i = 0; i < messageId; i++) {
-                delete data.channels[counter].messages[i];
-              }
+              const msgToRemove = data.channels[counter].messages.indexOf(msg);
+              data.channels[counter].messages.splice(msgToRemove, 1);
             }
             setData(data);
-            return { };
+            return {};
           }
         }
       }
@@ -205,12 +202,16 @@ export function messageEditV1 (token: string, messageId: number, message: string
               existAuth = 1;
               // Access message string and update string with new message
               dmMsg.message = message;
+              // if (message !== '') {
+              // } else {
+              //   delete dmMsg.message;
+              // }
 
               // If the new message is an empty string, the message is deleted
               if (message.length === 0) {
-                for (let i = 0; i < messageId; i++) {
-                  delete data.dms[i].messages;
-                }
+                const dmIndex = data.dms.indexOf(dm);
+                const msgToRemove = data.dms[dmIndex].messages.indexOf(dmMsg);
+                data.dms[dmIndex].messages.splice(msgToRemove, 1);
               }
               setData(data);
               return { };
