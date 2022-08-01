@@ -71,7 +71,7 @@ describe('Testing iteration 2 Errors', () => {
     expect(chMsgs.end).toBe(-1);
   });
 
-  test.only('local - testRemovalByEdit (dms)', () => {
+  test('local - testRemovalByEdit (dms)', () => {
     const user1 = authRegisterV2ServerSide("bk@gmail.com", "thisPass68", "b", "k");
     const user2 = authRegisterV2ServerSide("et@gmail.com", "thisPass68", "e", "t");
 

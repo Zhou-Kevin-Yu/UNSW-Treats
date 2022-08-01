@@ -328,9 +328,11 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
           if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
             existAuth = 1;
             // Loop to find message and delete it from selected channel
-            for (let i = 0; i < messageId; i++) {
-              delete data.channels[counter].messages[i];
-            }
+            const msgToRemove = data.channels[counter].messages.indexOf(msg);
+            data.channels[counter].messages.splice(msgToRemove, 1);
+            // for (let i = 0; i < messageId; i++) {
+            //   delete data.channels[counter].messages[i];
+            // }
             setData(data);
             return { };
           }
@@ -357,9 +359,13 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
               existAuth = 1;
 
               // Loop to find message and delete it from selected DM
-              for (let i = 0; i < messageId; i++) {
-                delete data.dms[i].messages;
-              }
+              const dmIndex = data.dms.indexOf(dm);
+              const msgToRemove = data.dms[dmIndex].messages.indexOf(dmMsg);
+              data.dms[dmIndex].messages.splice(msgToRemove, 1);
+
+              // for (let i = 0; i < messageId; i++) {
+              //   delete data.dms[i].messages;
+              // }
 
               setData(data);
               return { };
