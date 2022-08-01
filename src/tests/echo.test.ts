@@ -1,9 +1,11 @@
+// import { echo } from './echo';
 import request from 'sync-request';
 import config from '../config.json';
 
 import os from 'os';
 
 const OK = 200;
+const INPUT_ERROR = 400;
 const port = config.port;
 let url = config.url;
 
@@ -16,7 +18,7 @@ if (os.platform() === 'darwin') {
 console.log(url);
 
 /*
-Iteration 2
+Iteration 3
 */
 // comment me out after u setup express
 describe('HTTP tests using Jest', () => {
@@ -45,8 +47,8 @@ describe('HTTP tests using Jest', () => {
             }
     );
     const bodyObj = JSON.parse(res.body as string);
-    expect(res.statusCode).toBe(OK);
-    expect(bodyObj).toEqual({ error: 'error' });
+    expect(res.statusCode).toBe(INPUT_ERROR);
+    expect(bodyObj.error).toStrictEqual({ message: 'Cannot echo "echo"' });
   });
 });
 
