@@ -49,6 +49,7 @@ app.get('/echo', (req, res, next) => {
 app.use(morgan('dev'));
 
 // for checking token validity
+// TODO: check for which route calls, rather than if token exists
 app.use((req: Request, res: Response, next) => {
   const fullToken = req.header('token');
   if (fullToken !== undefined && fullToken !== null) {
@@ -82,6 +83,16 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   res.json(authLogoutV1(token));
 });
+
+// app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+//   const { email } = req.body;
+//   res.json("do something with ${email}");
+// });
+
+// app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+//   const { resetCode, newPassword } = req.body;
+//   res.json("do something with ${resetCode} and ${newPassword}");
+// });
 
 /// /////////////////////////////////////////////////////////channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {

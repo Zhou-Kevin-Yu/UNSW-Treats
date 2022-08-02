@@ -257,7 +257,7 @@ describe('Testing /auth/logout/v2', () => {
             }
     );
     expect(res.statusCode).toBe(403);
-  })
+  });
 });
 
 describe('further testing combining login, logout and user', () => {
@@ -269,3 +269,22 @@ describe('further testing combining login, logout and user', () => {
     expect(user.user.email).toStrictEqual('ben.kerno4@gmail.com');
   });
 });
+
+// describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1', () => {
+//   test('Error Case - reset - resetCode is not valid', () => {
+//     const res = request(
+//       'POST',
+//             `${url}:${port}/auth/passwordreset/reset/v1`,
+//             {
+//               json: {
+//                 resetCode: 'invalid',
+//                 newPassword: 'ThisIsAPassword',
+//               }
+//             }
+//     );
+//     expect(res.statusCode).toBe(400);
+//   });
+//   test('Error Case - reset - newPassword is not valid', () => {
+//     const res = request
+//   });
+// });

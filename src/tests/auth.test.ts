@@ -7,8 +7,6 @@ beforeEach(() => {
   clearV1();
 });
 
-const errorReturn = { error: 'error' };
-
 describe('testing error cases', () => {
   test('Testing invalid email', () => {
     const returned = authRegisterV1('benkerno.com', 'cosmoIsTheBest', 'ben', 'kerno');
