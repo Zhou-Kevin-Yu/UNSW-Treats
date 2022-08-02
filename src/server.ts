@@ -222,6 +222,12 @@ app.post('message/unreact/v1', (req: Request, res: Response) => {
   res.json(messageUnreactV1(token, messageId, reactId));
 });
 
+app.post('message/pin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messagePinV1(token, messageId));
+});
+
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
