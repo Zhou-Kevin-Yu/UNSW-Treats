@@ -81,7 +81,16 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
-// Message Interfaces
+////// Message Interfaces //////
+// Iteration 3 Interfaces
+export interface MessageShareV1 {
+  sharedMessageId: number;
+}
+
+export interface MessageSendlaterV1 {
+  messageId: number;
+}
+// Iteration 2 Interfaces
 export interface MessageSendV1 {
   messageId?: number;
   error?: 'error';
