@@ -6,7 +6,7 @@ import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { authLoginV1, wrappedAuthRegister, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
@@ -43,14 +43,15 @@ app.get('/echo', (req, res, next) => {
   }
 });
 
-// handles errors nicely
-app.use(errorHandler());
+
 
 // for logging errors
 app.use(morgan('dev'));
 
 // for checking token validity
+// TODO: check for which route calls, rather than if token exists
 app.use((req: Request, res: Response, next) => {
+  // console.log("request: ", req.url);
   const fullToken = req.header('token');
   if (fullToken !== undefined && fullToken !== null) {
     if (!isTokenValid(fullToken)) {
@@ -64,21 +65,35 @@ app.use((req: Request, res: Response, next) => {
 });
 
 // All auth requests
-app.post('/auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const returned = authLoginV1(email, password);
+  if ('error' in returned) {
+    throw HTTPError(400, 'Invalid email or password');
+  }
   res.json(authLoginV1(email, password));
 });
 
-app.post('/auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v3', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
-  res.json(authRegisterV1(email, password, nameFirst, nameLast));
+  res.json(wrappedAuthRegister(email, password, nameFirst, nameLast));
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response) => {
+app.post('/auth/logout/v2', (req: Request, res: Response) => {
   // const { token } = req.body;
   const token = req.header('token');
   res.json(authLogoutV1(token));
 });
+
+// app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+//   const { email } = req.body;
+//   res.json("do something with ${email}");
+// });
+
+// app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+//   const { resetCode, newPassword } = req.body;
+//   res.json("do something with ${resetCode} and ${newPassword}");
+// });
 
 /// /////////////////////////////////////////////////////////channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {
@@ -255,6 +270,9 @@ const readData = persistantReadData();
 let data = getData();
 data = Object.assign(data, readData);
 setData(data);
+
+// handles errors nicely
+app.use(errorHandler());
 
 // start server
 const server = app.listen(PORT, HOST, () => {

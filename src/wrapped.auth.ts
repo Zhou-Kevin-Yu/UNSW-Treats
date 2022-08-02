@@ -17,7 +17,7 @@ if (os.platform() === 'darwin') {
 function authLoginV2ServerSide(email: string, password: string) : AuthLoginV1 {
   const res = request(
     'POST',
-        `${url}:${port}/auth/login/v2`,
+        `${url}:${port}/auth/login/v3`,
         {
           json: {
             email,
@@ -31,7 +31,7 @@ function authLoginV2ServerSide(email: string, password: string) : AuthLoginV1 {
 function authRegisterV2ServerSide(email: string, password: string, nameFirst: string, nameLast: string) : AuthLoginV1 {
   const res = request(
     'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email,
@@ -47,7 +47,7 @@ function authRegisterV2ServerSide(email: string, password: string, nameFirst: st
 function authLogoutV1ServerSide(token: string) {
   const res = request(
     'POST',
-        `${url}:${port}/auth/logout/v1`,
+        `${url}:${port}/auth/logout/v2`,
         {
           headers: {
             'token': token,

@@ -115,7 +115,7 @@ describe('HTTP tests using multiple message functions', () => {
     // Create a token from authRegisterV2
     const res1 = request(
       'POST',
-      `${url}:${port}/auth/register/v2`,
+      `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
@@ -233,7 +233,7 @@ describe('HTTP tests using multiple message functions', () => {
     // Create a token from authRegisterV2
     const res1 = request(
       'POST',
-      `${url}:${port}/auth/register/v2`,
+      `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
@@ -249,7 +249,7 @@ describe('HTTP tests using multiple message functions', () => {
     // Create a second user from authRegisterV2
     const res2 = request(
       'POST',
-      `${url}:${port}/auth/register/v2`,
+      `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'user@gmail.com',
@@ -373,7 +373,7 @@ describe('HTTP tests using multiple message functions', () => {
   //   // Create a token from authRegisterV2
   //   const res1 = request(
   //     'POST',
-  //     `${url}:${port}/auth/register/v2`,
+  //     `${url}:${port}/auth/register/v3`,
   //     {
   //       json: {
   //         email: 'kevinyu@email.com',
@@ -470,7 +470,7 @@ describe('HTTP tests using multiple message functions', () => {
   //   // Create a token from authRegisterV2
   //   const res1 = request(
   //     'POST',
-  //     `${url}:${port}/auth/register/v2`,
+  //     `${url}:${port}/auth/register/v3`,
   //     {
   //       json: {
   //         email: 'kevinyu@email.com',
@@ -486,7 +486,7 @@ describe('HTTP tests using multiple message functions', () => {
   //   // Create a second user from authRegisterV2
   //   const res2 = request(
   //     'POST',
-  //     `${url}:${port}/auth/register/v2`,
+  //     `${url}:${port}/auth/register/v3`,
   //     {
   //       json: {
   //         email: 'user@gmail.com',
@@ -594,7 +594,7 @@ describe('HTTP tests for message/send', () => {
       // Create a token from authRegisterV2
       let res = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -644,7 +644,7 @@ describe('HTTP tests for message/send', () => {
       // Create a token from authRegisterV2
       let res = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -717,7 +717,7 @@ describe('HTTP tests for message/send', () => {
         // Create a token from authRegisterV2
         let res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'bob@email.com',
@@ -751,7 +751,7 @@ describe('HTTP tests for message/send', () => {
         // Create a token from authRegisterV2
         let res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'gary.sun@student.unsw.edu.au',
@@ -786,7 +786,7 @@ describe('HTTP tests for message/send', () => {
         // Create a token from authRegisterV2
         let res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'kevinyu@email.com',
@@ -839,7 +839,7 @@ describe('HTTP tests for message/send', () => {
         // Create a token from authRegisterV2
         let res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'ben.kerno@gmail.com',
@@ -887,7 +887,7 @@ describe('HTTP tests for message/send', () => {
         // Create a token from authRegisterV2
         let res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'student.stu@student.unsw.edu.au',
@@ -937,7 +937,7 @@ describe('HTTP tests for message/send', () => {
       // Create a token (authorised user) from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'sen.smith@outlook.com',
@@ -952,7 +952,7 @@ describe('HTTP tests for message/send', () => {
       // Create a token (member user) from authRegisterV2
       const res2 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'user@gmail.com',
@@ -1007,7 +1007,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1072,7 +1072,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1168,7 +1168,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1184,7 +1184,7 @@ describe('HTTP tests for message/edit', () => {
       /// Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1249,7 +1249,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1265,7 +1265,7 @@ describe('HTTP tests for message/edit', () => {
       /// Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1367,7 +1367,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'student.stu@student.unsw.edu.au',
@@ -1432,7 +1432,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -1499,7 +1499,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token (first user) from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -1515,7 +1515,7 @@ describe('HTTP tests for message/edit', () => {
       // Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1582,7 +1582,7 @@ describe('HTTP tests for message/edit', () => {
       // const res1 = request(
       request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -1598,7 +1598,7 @@ describe('HTTP tests for message/edit', () => {
       // Create another token from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1614,7 +1614,7 @@ describe('HTTP tests for message/edit', () => {
       // Create third user from authRegisterV2
       const res5 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'wow@outlook.com',
@@ -1706,7 +1706,7 @@ describe('HTTP tests for message/edit', () => {
       // Create a token (first user) from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -1723,7 +1723,7 @@ describe('HTTP tests for message/edit', () => {
       // Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1809,7 +1809,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1872,7 +1872,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -1888,7 +1888,7 @@ describe('HTTP tests for message/remove', () => {
       /// Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -1952,7 +1952,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -2047,7 +2047,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -2063,7 +2063,7 @@ describe('HTTP tests for message/remove', () => {
       /// Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2164,7 +2164,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -2230,7 +2230,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token (first user) from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -2246,7 +2246,7 @@ describe('HTTP tests for message/remove', () => {
       // Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2312,7 +2312,7 @@ describe('HTTP tests for message/remove', () => {
       // const res1 = request(
       request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -2328,7 +2328,7 @@ describe('HTTP tests for message/remove', () => {
       // Create another token from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2344,7 +2344,7 @@ describe('HTTP tests for message/remove', () => {
       // Create third user from authRegisterV2
       const res5 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'wow@outlook.com',
@@ -2433,7 +2433,7 @@ describe('HTTP tests for message/remove', () => {
       // Create a token (first user) from authRegisterV2
       const res1 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'sen.smith@outlook.com',
@@ -2450,7 +2450,7 @@ describe('HTTP tests for message/remove', () => {
       // Create another token (second user) from authRegisterV2
       const res2 = request(
         'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2527,7 +2527,7 @@ describe('HTTP tests for message/senddm', () => {
       // Create a token (auth user) from authRegisterV2
       const res = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'kevinyu@email.com',
@@ -2543,7 +2543,7 @@ describe('HTTP tests for message/senddm', () => {
       // Create a token (member user) from authRegisterV2
       const res2 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'user@gmail.com',
@@ -2622,7 +2622,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create a token from authRegisterV2
         const res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'bob@email.com',
@@ -2657,7 +2657,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create a token from authRegisterV2
         const res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'bob@email.com',
@@ -2673,7 +2673,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create another token (second user) from authRegisterV2
         const res1 = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2727,7 +2727,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create a token from authRegisterV2
         const res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'ben.kerno@gmail.com',
@@ -2743,7 +2743,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create another token (second user) from authRegisterV2
         const res1 = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2792,7 +2792,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create a token from authRegisterV2
         const res = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'ben.kerno@gmail.com',
@@ -2808,7 +2808,7 @@ describe('HTTP tests for message/senddm', () => {
         // Create another token (second user) from authRegisterV2
         const res1 = request(
           'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email: 'user@gmail.com',
@@ -2859,7 +2859,7 @@ describe('HTTP tests for message/senddm', () => {
       // Create a token (authorised user) from authRegisterV2
       const res1 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'sen.smith@outlook.com',
@@ -2875,7 +2875,7 @@ describe('HTTP tests for message/senddm', () => {
       // Create a token (member user) from authRegisterV2
       const res2 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'user@gmail.com',
@@ -2891,7 +2891,7 @@ describe('HTTP tests for message/senddm', () => {
       // Create another token (another member user) from authRegisterV2
       const res3 = request(
         'POST',
-        `${url}:${port}/auth/register/v2`,
+        `${url}:${port}/auth/register/v3`,
         {
           json: {
             email: 'hi@gmail.com',

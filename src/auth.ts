@@ -4,6 +4,9 @@ import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 import crypto from 'crypto';
 
+import HTTPError from 'http-errors';
+
+
 const SECRET = 'DREAMTEAM'
 
 /**
@@ -48,21 +51,21 @@ function authLoginV1(email: string, password: string): AuthLoginV1 {
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): AuthRegisterV1 {
   const data = getData();
   if (!isEmail(email)) {
-    return { error: 'error' };
+    return { error: 'Email is invalid.' };
   }
   for (const user of data.users) {
     if (user.email === email) {
-      return { error: 'error' };
+      return { error: 'Email is taken.' };
     }
   }
   if (password.length < 6) {
-    return { error: 'error' };
+    return { error: 'Password too short.' };
   }
   if (nameFirst.length > 50 || nameFirst.length < 1) {
-    return { error: 'error' };
+    return { error: 'First name is not between 1 and 50 characters inclusive.' };
   }
   if (nameLast.length > 50 || nameLast.length < 1) {
-    return { error: 'error' };
+    return { error: 'Last name is not between 1 and 50 characters inclusive.' };
   }
   // all data should be valid at this point
 
@@ -149,6 +152,14 @@ function handleCreate(nameFirst: string, nameLast: string): string {
   return handle;
 }
 
+function wrappedAuthRegister(email: string, password: string, nameFirst: string, nameLast: string): AuthRegisterV1 {
+  const returned = authRegisterV1(email, password, nameFirst, nameLast);
+  if ('error' in returned) {
+    throw HTTPError(400, returned.error);
+  }
+  return returned;
+}
+
 /**
  * Given a active token, invalidates the token to log the user out
  *
@@ -173,4 +184,4 @@ function hashThis (unhashed: string): string {
 
 
 
-export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET };
+export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET, wrappedAuthRegister };

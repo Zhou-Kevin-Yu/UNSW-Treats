@@ -16,7 +16,7 @@ beforeEach(() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
   test('Leaving server with 2 members', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
@@ -26,7 +26,7 @@ describe('Testing basic functionality', () => {
         }
       });
     const kevin = JSON.parse(res.body as string);
-    res = request('POST', `${url}:${port}/auth/register/v2`,
+    res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'bob@email.com',
@@ -80,7 +80,7 @@ describe('Testing basic functionality', () => {
     expect(data.allMembers).toStrictEqual([kevinProfile.user]);
   });
   test('user was originally not in the channel', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
@@ -90,7 +90,7 @@ describe('Testing basic functionality', () => {
         }
       });
     const kevin = JSON.parse(res.body as string);
-    res = request('POST', `${url}:${port}/auth/register/v2`,
+    res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'bob@email.com',
