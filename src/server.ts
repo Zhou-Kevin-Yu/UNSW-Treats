@@ -207,8 +207,15 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
 app.post('message/share/v1', (req: Request, res: Response) => {
   const { ogMessageId, message, channelId, dmId } = req.body;
   const token = req.header('token');
-
+  res.json(messageShareV1(token, ogMessageId, message, channelId, dmId));
 });
+
+app.post('message/react/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageReactV1(token, messageId, reactId));
+});
+
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
