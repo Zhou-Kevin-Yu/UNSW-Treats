@@ -228,6 +228,18 @@ app.post('message/pin/v1', (req: Request, res: Response) => {
   res.json(messagePinV1(token, messageId));
 });
 
+app.post('message/unpin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnpinV1(token, messageId));
+});
+
+app.post('message/sendlater/v1', (req: Request, res: Response) => {
+  const { channelId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterV1(token, channelId, message, timeSent));
+});
+
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
