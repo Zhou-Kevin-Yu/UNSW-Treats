@@ -216,6 +216,12 @@ app.post('message/react/v1', (req: Request, res: Response) => {
   res.json(messageReactV1(token, messageId, reactId));
 });
 
+app.post('message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnreactV1(token, messageId, reactId));
+});
+
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
