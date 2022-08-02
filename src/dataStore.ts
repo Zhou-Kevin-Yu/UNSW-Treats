@@ -28,7 +28,7 @@ export interface AuthLoginV1 {
 export interface AuthRegisterV1 {
   token?: string;
   authUserId?: number;
-  error?: 'error';
+  error?: string;
 }
 
 export interface ChannelJoinV1 {

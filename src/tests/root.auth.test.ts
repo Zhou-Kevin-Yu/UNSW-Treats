@@ -31,7 +31,7 @@ beforeEach(() => {
 function authRegisterServerSide(email: string, password: string, nameFirst: string, nameLast: string) {
   const res = request(
     'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email,
@@ -101,11 +101,11 @@ describe('Testing /auth/login/v3', () => {
   });
 });
 
-describe('Testing /auth/register/v2', () => {
+describe('Testing /auth/register/v3', () => {
   test('Test unseccessfull register - email entered is not valid', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'benkerno.com',
@@ -115,15 +115,15 @@ describe('Testing /auth/register/v2', () => {
               }
             }
     );
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test unseccessfull register - email address already exists', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'testuser@gmail.com',
@@ -136,7 +136,7 @@ describe('Testing /auth/register/v2', () => {
     expect(res.statusCode).toBe(OK);
     const ress = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'testuser@gmail',
@@ -146,15 +146,15 @@ describe('Testing /auth/register/v2', () => {
               }
             }
     );
-    const data = JSON.parse(ress.getBody() as string);
-    expect(ress.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(ress.getBody() as string);
+    expect(ress.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test unsuccessfull registered - password len < 6', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'testttt@gmail.com',
@@ -164,15 +164,15 @@ describe('Testing /auth/register/v2', () => {
               }
             }
     );
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test unsuccessfull registered - nameFirst len > 50', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'testttt@gmail.com',
@@ -183,15 +183,15 @@ describe('Testing /auth/register/v2', () => {
             }
     );
     expect('qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm'.length).toBe(52);
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test unsuccessfull registered - nameLast len < 1 ', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'testttt@gmail.com',
@@ -201,15 +201,15 @@ describe('Testing /auth/register/v2', () => {
               }
             }
     );
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test successful registered', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/register/v2`,
+            `${url}:${port}/auth/register/v3`,
             {
               json: {
                 email: 'ben.kerno4@gmail.com',

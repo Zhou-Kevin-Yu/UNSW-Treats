@@ -6,7 +6,7 @@ import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { authLoginV1, wrappedAuthRegister, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
@@ -72,9 +72,9 @@ app.post('/auth/login/v3', (req: Request, res: Response) => {
   res.json(authLoginV1(email, password));
 });
 
-app.post('/auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v3', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
-  res.json(authRegisterV1(email, password, nameFirst, nameLast));
+  res.json(wrappedAuthRegister(email, password, nameFirst, nameLast));
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {

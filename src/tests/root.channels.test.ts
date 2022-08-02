@@ -17,7 +17,7 @@ beforeEach(() => {
 describe('HTTP tests channelsCreateV2', () => {
   /*
   test('error output - invalid token to create channel', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -40,7 +40,7 @@ describe('HTTP tests channelsCreateV2', () => {
   }); */
 
   test('Testing invalid name inputs - less than 1 character', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -64,7 +64,7 @@ describe('HTTP tests channelsCreateV2', () => {
   });
 
   test('Testing invalid name inputs - more than 20 characters', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -88,7 +88,7 @@ describe('HTTP tests channelsCreateV2', () => {
   });
 
   test('no error output', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -126,7 +126,7 @@ describe('HTTP tests channelsCreateV2', () => {
   });
 
   test('Testing private channels', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -164,7 +164,7 @@ describe('HTTP tests channels/listV2', () => {
   // No error output can be tested
 
   test('No error output - checking if there are no channels', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -188,7 +188,7 @@ describe('HTTP tests channels/listV2', () => {
   });
 
   test('No error output - checking if it will only return channel user has joined', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -199,7 +199,7 @@ describe('HTTP tests channels/listV2', () => {
 
     const authId = JSON.parse(res1.body as string);
 
-    const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res2 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'jeff.bezos@gmail.com',
         password: 'jesspassword',
@@ -260,7 +260,7 @@ describe('HTTP tests channels/listV2', () => {
   });
 
   test('No error output', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -303,7 +303,7 @@ describe('HTTP tests channels/listV2', () => {
   });
 
   test('List channels that have been joined and invited to', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -325,7 +325,7 @@ describe('HTTP tests channels/listV2', () => {
     const channel1 = JSON.parse(res2.body as string);
     expect(channel1.channelId).toStrictEqual(0);
 
-    const res3 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res3 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'jeff.bezos@gmail.com',
         password: 'jesspassword',
@@ -346,7 +346,7 @@ describe('HTTP tests channels/listV2', () => {
     const channel2 = JSON.parse(res4.body as string);
     expect(channel2.channelId).toStrictEqual(1);
 
-    const res5 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res5 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'randomy.guy@gmail.com',
         password: 'randompassword',
@@ -378,7 +378,7 @@ describe('HTTP tests channelsListAllV2', () => {
   // No error output can be tested as this function does not return errors
 
   test('Successful list', () => {
-    const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+    const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'gary.sun@gmail.com',
         password: 'password',
@@ -398,7 +398,7 @@ describe('HTTP tests channelsListAllV2', () => {
     });
     const channel = JSON.parse(res2.body as string);
 
-    res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+    res2 = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
         email: 'jeff.bezos@gmail.com',
         password: 'jesspassword',

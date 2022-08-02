@@ -16,7 +16,7 @@ beforeEach(() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
   test('single message in channel', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
@@ -69,7 +69,7 @@ describe('Testing basic functionality', () => {
     });
   });
   test('invalid channelId', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@email.com',
