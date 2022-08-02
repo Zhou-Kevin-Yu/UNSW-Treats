@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+var nodemailer = require('nodemailer');
 
 // modified function courtesy of:https://ourcodeworld.com/articles/read/264/how-to-send-an-email-gmail-outlook-and-zoho-using-nodemailer-in-node-js
 const transporter = nodemailer.createTransport({
