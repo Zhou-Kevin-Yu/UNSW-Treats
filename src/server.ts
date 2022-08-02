@@ -64,7 +64,7 @@ app.use((req: Request, res: Response, next) => {
 });
 
 // All auth requests
-app.post('/auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   res.json(authLoginV1(email, password));
 });

@@ -17,7 +17,7 @@ if (os.platform() === 'darwin') {
 function authLoginV2ServerSide(email: string, password: string) : AuthLoginV1 {
   const res = request(
     'POST',
-        `${url}:${port}/auth/login/v2`,
+        `${url}:${port}/auth/login/v3`,
         {
           json: {
             email,

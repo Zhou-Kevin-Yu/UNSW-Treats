@@ -44,11 +44,11 @@ function authRegisterServerSide(email: string, password: string, nameFirst: stri
   return JSON.parse(res.body as string);
 }
 
-describe('Testing /auth/login/v2', () => {
+describe('Testing /auth/login/v3', () => {
   test('Test unsuccessfull login - email not found', () => {
     const res = request(
       'POST',
-            `${url}:${port}/auth/login/v2`,
+            `${url}:${port}/auth/login/v3`,
             {
               json: {
                 email: 'fake@gmail.com',
@@ -65,7 +65,7 @@ describe('Testing /auth/login/v2', () => {
     authRegisterServerSide('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
     const res = request(
       'POST',
-            `${url}:${port}/auth/login/v2`,
+            `${url}:${port}/auth/login/v3`,
             {
               json: {
                 email: 'ben.kerno4@gmail.com',
@@ -84,7 +84,7 @@ describe('Testing /auth/login/v2', () => {
     // console.log(authed);
     const res = request(
       'POST',
-            `${url}:${port}/auth/login/v2`,
+            `${url}:${port}/auth/login/v3`,
             {
               json: {
                 email: 'ben.kerno4@gmail.com',
