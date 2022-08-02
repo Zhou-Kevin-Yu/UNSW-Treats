@@ -3,6 +3,7 @@ import { getData, setData } from './dataStore';
 import { UserDetailsV1 } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import isEmail from 'validator/lib/isEmail';
+import internal from 'stream';
 /**
  *
  * For a valid user, returns information about their userId,
@@ -160,4 +161,23 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   return {};
 }
 
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 };
+
+function userProfileUploadPhotoV1(imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
+
+
+
+  return {};
+}
+
+function userStatsV1() {
+
+  return {
+      channelsJoined: [{}],
+      dmsJoined: [{}],
+      messagesSent: [{}],
+      involvementRate: 0
+  };
+}
+
+
+export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userStatsV1, userProfileUploadPhotoV1 };

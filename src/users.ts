@@ -17,4 +17,16 @@ function usersAllV1(token: string): UserAllV1 {
   return { users: userArr };
 }
 
-export { usersAllV1 };
+
+function usersStatsV1() {
+
+  return {
+      channelsExist: [{}],
+      dmsExist: [{}],
+      messagesExist: [{}],
+      utilizationRate: 0
+  };
+}
+
+
+export { usersAllV1, usersStatsV1 };
