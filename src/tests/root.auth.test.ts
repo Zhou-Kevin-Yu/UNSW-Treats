@@ -238,7 +238,7 @@ describe('Testing /auth/logout/v1', () => {
             `${url}:${port}/auth/logout/v1`,
             {
               headers: {
-                'token': token,
+                token: token,
               }
             }
     );
