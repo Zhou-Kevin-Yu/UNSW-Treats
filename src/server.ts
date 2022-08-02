@@ -202,7 +202,15 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });
 
-// All message requests
+////////////////// All message requests //////////////////////
+// New message requests
+app.post('message/share/v1', (req: Request, res: Response) => {
+  const { ogMessageId, message, channelId, dmId } = req.body;
+  const token = req.header('token');
+
+});
+
+// Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, channelId, message));
@@ -225,7 +233,7 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-// All users requests
+////////////////// All users requests //////////////////
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
