@@ -240,7 +240,11 @@ app.post('/message/sendlater/v1', (req: Request, res: Response) => {
   res.json(messageSendlaterV1(token, channelId, message, timeSent));
 });
 
-
+app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
+  const { dmId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
+});
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
