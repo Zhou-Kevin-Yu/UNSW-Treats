@@ -204,41 +204,42 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
 
 ////////////////// All message requests //////////////////////
 // New message requests
-app.post('message/share/v1', (req: Request, res: Response) => {
+app.post('/message/share/v1', (req: Request, res: Response) => {
   const { ogMessageId, message, channelId, dmId } = req.body;
   const token = req.header('token');
   res.json(messageShareV1(token, ogMessageId, message, channelId, dmId));
 });
 
-app.post('message/react/v1', (req: Request, res: Response) => {
+app.post('/message/react/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = req.header('token');
   res.json(messageReactV1(token, messageId, reactId));
 });
 
-app.post('message/unreact/v1', (req: Request, res: Response) => {
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = req.header('token');
   res.json(messageUnreactV1(token, messageId, reactId));
 });
 
-app.post('message/pin/v1', (req: Request, res: Response) => {
+app.post('/message/pin/v1', (req: Request, res: Response) => {
   const { messageId } = req.body;
   const token = req.header('token');
   res.json(messagePinV1(token, messageId));
 });
 
-app.post('message/unpin/v1', (req: Request, res: Response) => {
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
   const { messageId } = req.body;
   const token = req.header('token');
   res.json(messageUnpinV1(token, messageId));
 });
 
-app.post('message/sendlater/v1', (req: Request, res: Response) => {
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
   const { channelId, message, timeSent } = req.body;
   const token = req.header('token');
   res.json(messageSendlaterV1(token, channelId, message, timeSent));
 });
+
 
 
 // Old message requests
