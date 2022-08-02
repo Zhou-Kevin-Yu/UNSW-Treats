@@ -51,6 +51,7 @@ app.use(morgan('dev'));
 // for checking token validity
 // TODO: check for which route calls, rather than if token exists
 app.use((req: Request, res: Response, next) => {
+  // console.log("request: ", req.url);
   const fullToken = req.header('token');
   if (fullToken !== undefined && fullToken !== null) {
     if (!isTokenValid(fullToken)) {
