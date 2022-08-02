@@ -2,6 +2,9 @@ import { getData, setData } from './dataStore';
 import isEmail from 'validator/lib/isEmail';
 import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
+import crypto from 'crypto';
+
+const SECRET = 'DREAMTEAM'
 
 /**
  * Given a registered user's email and password,
@@ -15,8 +18,9 @@ import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 */
 function authLoginV1(email: string, password: string): AuthLoginV1 {
   const data = getData();
+  const hashedPassword = hashThis(password+SECRET);
   for (const user in data.users) {
-    if (data.users[user].email === email && data.users[user].password === password) {
+    if (data.users[user].email === email && data.users[user].password === hashedPassword) {
       const token = generateToken(data.users[user].uId);
       data.users[user].tokens.push(token);
       setData(data);
@@ -83,7 +87,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     nameLast: nameLast,
     email: email,
     handleStr: handle,
-    password: password,
+    password: hashThis(password+SECRET),
     permission: perm,
     tokens: []
   };
@@ -163,4 +167,10 @@ function authLogoutV1 (token: string): { error?: 'error' } {
   return {};
 }
 
-export { authLoginV1, authRegisterV1, authLogoutV1 };
+function hashThis (unhashed: string): string {
+  return crypto.createHash('sha256').update(unhashed).digest('hex');
+}
+
+
+
+export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET };

@@ -49,8 +49,8 @@ function authLogoutV1ServerSide(token: string) {
     'POST',
         `${url}:${port}/auth/logout/v1`,
         {
-          json: {
-            token,
+          headers: {
+            'token': token,
           }
         }
   );
