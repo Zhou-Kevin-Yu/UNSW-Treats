@@ -47,7 +47,7 @@ function authRegisterV2ServerSide(email: string, password: string, nameFirst: st
 function authLogoutV1ServerSide(token: string) {
   const res = request(
     'POST',
-        `${url}:${port}/auth/logout/v1`,
+        `${url}:${port}/auth/logout/v2`,
         {
           headers: {
             'token': token,

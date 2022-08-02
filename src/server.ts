@@ -77,7 +77,7 @@ app.post('/auth/register/v3', (req: Request, res: Response) => {
   res.json(wrappedAuthRegister(email, password, nameFirst, nameLast));
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response) => {
+app.post('/auth/logout/v2', (req: Request, res: Response) => {
   // const { token } = req.body;
   const token = req.header('token');
   res.json(authLogoutV1(token));

@@ -230,13 +230,13 @@ describe('Testing /auth/register/v3', () => {
   });
 });
 
-describe('Testing /auth/logout/v1', () => {
+describe('Testing /auth/logout/v2', () => {
   test('Test successful logout', () => {
     const authed = authRegisterServerSide('ben.kerno4@gmail.com', 'dogIsCute', 'benjamined', 'kernohandomeessdfsdfrt');
     const token = authed.token;
     const res = request(
       'POST',
-            `${url}:${port}/auth/logout/v1`,
+            `${url}:${port}/auth/logout/v2`,
             {
               headers: {
                 token: token,
@@ -246,6 +246,18 @@ describe('Testing /auth/logout/v1', () => {
     expect(res.statusCode).toBe(OK);
     expect(isTokenValid(token)).toBe(false);
   });
+  test('Test unsuccessful logout - token is invalid', () => {
+    const res = request(
+      'POST',
+            `${url}:${port}/auth/logout/v2`,
+            {
+              headers: {
+                token: 'invalidtoken',
+              }
+            }
+    );
+    expect(res.statusCode).toBe(403);
+  })
 });
 
 describe('further testing combining login, logout and user', () => {
