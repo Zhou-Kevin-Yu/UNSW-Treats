@@ -4,6 +4,8 @@ import { UserDetailsV1 } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import isEmail from 'validator/lib/isEmail';
 import internal from 'stream';
+import { channelsListV1, channelsListallV1 } from './channels';
+import { dmListV1 } from './dm';
 /**
  *
  * For a valid user, returns information about their userId,
@@ -164,18 +166,56 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
 
 function userProfileUploadPhotoV1(imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
 
+    //errors to check for:
+  if (imgUrl.indexOf("https://") == 0) return { error: 'error' };
+  if (xEnd <= xStart || yEnd <= yStart) return { error: 'error' };
+    //imgUrl returns an HTTP status other than 200, or any other errors occur when attempting to retrieve the image
+    //any of xStart, yStart, xEnd, yEnd are not within the dimensions of the image at the URL
+    //image uploaded is not a JPG
 
 
   return {};
 }
 
-function userStatsV1() {
+function userStatsV1(token: string) {
 
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) return { error: 'error' };
+  
+  const userChannels = channelsListV1(authUserId);
+  const channelsAll = channelsListallV1(authUserId);
+  const userDms = dmListV1(token);
+  const channelsJoined = Object.keys(userChannels).length;
+  const dmsJoined = Object.keys(userDms).length;
+  const numChannelsAll = Object.keys(channelsAll).length;
+
+  let messagesSent = 0;
+  let numDmsAll = 0
+  let numMessagesAll = 0;
+
+  for (const dm of data.dms) {
+    for (const messages of dm.messages) {
+      if(messages.uId == authUserId) {
+        messagesSent++;
+      }
+      numMessagesAll++;
+    }
+    numDmsAll++;
+  }
+  let involvementRate = 0;
+  const numerator = channelsJoined + dmsJoined + messagesSent;
+  const denominator = numChannelsAll + numDmsAll + numMessagesAll;
+  
+  if(denominator != 0) involvementRate = numerator / denominator;
+  if(involvementRate > 1) involvementRate = 1;
+
+  const timeStamp = Math.floor((new Date()).getTime() / 1000);
   return {
-      channelsJoined: [{}],
-      dmsJoined: [{}],
-      messagesSent: [{}],
-      involvementRate: 0
+      channelsJoined: [{channelsJoined, timeStamp}],
+      dmsJoined: [{dmsJoined, timeStamp}],
+      messagesSent: [{messagesSent, timeStamp}],
+      involvementRate: involvementRate
   };
 }
 

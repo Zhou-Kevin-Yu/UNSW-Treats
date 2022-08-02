@@ -137,3 +137,19 @@ describe('Testing user setname', () => {
     });
   });
 });
+
+////////////////////////////////////////////////////////////////////////
+/*
+ddescribe('HTTP tests for user/profile/uploadPhoto/v1', () => {
+  describe('Testing Error Cases ', () => {
+    test('', () => { //////////////////////////idk 
+      
+    });
+      
+  });
+  describe('Testing correct output', () => {
+    
+  });
+})
+
+*/

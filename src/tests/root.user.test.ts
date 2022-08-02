@@ -176,3 +176,40 @@ describe('Testing /user/profile/sethandle/v1', () => {
     });
   });
 });
+
+
+////////////////////////////////////////////////////////////////////////
+/*
+describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
+  describe('Testing Error Cases ', () => {
+    test('HTTP Status not 200', () => {
+      
+    });
+    test('values not withim dimensions of url', () => {
+      
+    });
+    test('xEnd less than xStart', () => {
+      
+    });
+    test('image uploaded is not jpg', () => {
+      
+    });
+  });
+  describe('Testing correct output', () => {
+    
+  });
+})
+
+describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
+  describe('Testing Error Cases ', () => {
+    test('Invlaid token', () => { //////////////////////////idk 
+      
+    });
+      
+  });
+  describe('Testing correct output', () => {
+    
+  });
+})
+
+*/
