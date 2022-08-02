@@ -4,6 +4,8 @@ import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 import crypto from 'crypto';
 
+const SECRET = 'DREAMTEAM'
+
 /**
  * Given a registered user's email and password,
  * returns their `authUserId` value.
@@ -16,7 +18,7 @@ import crypto from 'crypto';
 */
 function authLoginV1(email: string, password: string): AuthLoginV1 {
   const data = getData();
-  const hashedPassword = hashThis(password);
+  const hashedPassword = hashThis(password+SECRET);
   for (const user in data.users) {
     if (data.users[user].email === email && data.users[user].password === hashedPassword) {
       const token = generateToken(data.users[user].uId);
@@ -85,7 +87,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     nameLast: nameLast,
     email: email,
     handleStr: handle,
-    password: hashThis(password),
+    password: hashThis(password+SECRET),
     permission: perm,
     tokens: []
   };
@@ -171,4 +173,4 @@ function hashThis (unhashed: string): string {
 
 
 
-export { authLoginV1, authRegisterV1, authLogoutV1 };
+export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET };

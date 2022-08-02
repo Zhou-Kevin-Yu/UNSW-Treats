@@ -1,4 +1,5 @@
 import { getData } from './dataStore';
+import { hashThis, SECRET } from './auth';
 
 /**
  *
@@ -11,9 +12,23 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   if (!tokenValid) {
     return null;
   }
+
+  let fullToken = { strToken: "0"};
+  try {
+    fullToken = JSON.parse(token);
+    // check if fullToken has correct keys
+    if (!fullToken.hasOwnProperty('strToken') || !fullToken.hasOwnProperty('hashToken')) {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+
+  const strToken = fullToken.strToken;
+
   // Check if token is a float
-  if (token.includes('.')) {
-    const testToken = token.replace('.', '');
+  if (strToken.includes('.')) {
+    const testToken = strToken.replace('.', '');
     // Check if remaining is a number
     if ((testToken.match(/^\d+$/)) === null) {
       return null;
@@ -21,14 +36,14 @@ function tokenToAuthUserId(token: string, tokenValid: boolean): number {
   } else {
     return null;
   }
-  if (isNaN(Number(token))) {
+  if (isNaN(Number(strToken))) {
     return null;
   }
-  if (token.indexOf('.') === -1 || token.indexOf('.') === 0) {
+  if (strToken.indexOf('.') === -1 || strToken.indexOf('.') === 0) {
     return null;
   }
 
-  const tokenSplit = token.split('.');
+  const tokenSplit = strToken.split('.');
   if (tokenSplit.length !== 2) {
     return null;
   }
@@ -53,7 +68,10 @@ function generateToken(authUserId: number): string {
     strToken = token.toString();
   }
 
-  return strToken;
+  return JSON.stringify({
+    strToken: strToken,
+    hashToken: hashThis(strToken + SECRET),
+  });
 }
 
 /**
