@@ -9,7 +9,8 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, wrappedAuthRegister, authLogoutV1 } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
+   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
@@ -235,7 +236,51 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });
 
-// All message requests
+////////////////// All message requests //////////////////////
+// New message requests
+app.post('/message/share/v1', (req: Request, res: Response) => {
+  const { ogMessageId, message, channelId, dmId } = req.body;
+  const token = req.header('token');
+  res.json(messageShareV1(token, ogMessageId, message, channelId, dmId));
+});
+
+app.post('/message/react/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageReactV1(token, messageId, reactId));
+});
+
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnreactV1(token, messageId, reactId));
+});
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnpinV1(token, messageId));
+});
+
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
+  const { channelId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterV1(token, channelId, message, timeSent));
+});
+
+app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
+  const { dmId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
+});
+
+// Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, channelId, message));
@@ -258,7 +303,7 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-// All users requests
+////////////////// All users requests //////////////////
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();

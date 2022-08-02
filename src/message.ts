@@ -1,8 +1,41 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { MessagesObj } from './dataStore';
-import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1 } from './dataStore';
+import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
 
+///////////// ITERATION 3 UNIQUE FUNCTIONS //////////////
+export function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number): MessageShareV1 {
+  return { sharedMessageId: -1 };
+}
+
+export function messageReactV1(token: string, messageId: number, reactId: string) {
+  return {};
+}
+
+export function messageUnreactV1(token: string, messageId: number, reactId: string) {
+  return {};
+}
+
+export function messagePinV1(token: string, messageId: number) {
+  return {};
+}
+
+export function messageUnpinV1(token: string, messageId: number) {
+  return {};
+}
+
+export function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number): MessageSendlaterV1 {
+  return { messageId: -1 };
+}
+
+export function messageSendlaterDmV1(token: string, dmId: number, message: string, timeSent: number): MessageSendlaterV1 {
+  return { messageId: -1 };
+}
+
+
+
+
+///////////// ITERATION 2,1 UNIQUE FUNCTIONS //////////////
 /**
  * Send a message from the authorised user to the channel specified by channelId
  *
