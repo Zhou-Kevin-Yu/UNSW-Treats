@@ -16,7 +16,7 @@ function dmMessagesV1SS(token: string, dmId: number, start: number) {
   const res = request('GET', `${url}:${port}/dm/messages/v1`, {
     qs: {
       token: token,
-      dmId: dmId, // no Dm has been created so any number here should fail
+      dmId: dmId, 
       start: start,
     }
   });
@@ -29,8 +29,8 @@ function dmCreateV1SS(token: string, uIds: number[]) {
     `${url}:${port}/dm/create/v1`,
     {
       json: {
-        token,
-        uIds,
+        token: token,
+        uIds: uIds,
       }
     }
   );

@@ -1,6 +1,11 @@
 import request from 'sync-request';
 import config from '../config.json';
 import os from 'os';
+import { authRegisterV2ServerSide } from '../wrapped.auth';
+import { channelsCreateV2SS } from '../wrapped.channels';
+import { channelMessagesV2SS, channelJoinV2SS } from '../wrapped.channel';
+import { messageSendV1SS, messageEditV1SS, messageSendDmV1SS, messageRemoveV1SS } from '../wrapped.message';
+import { dmCreateV1SS, dmMessagesV1SS } from '../wrapped.dm';
 
 const errorReturn = { error: 'error' };
 const aboveMaxLengthMessage = 'HkFmF9IW0tFB7V0Gs08ZpEUbqOtsWUvLdxRmCSqLlsnm2J4SXlcc7aMJ8Mbxk2q24EjdHX6hTyT9FueMIHnJOIwQxBR5v73lePT7I9za4MZrFUNjVmS1V2FuLk2I3gIhVzKMPA1UQ3WEy5Lom3j3y52PA3iXpZNANMAcpBAeHzI7YxACN9cWvC1BktQyVXs6R6EpWKxhHUq3t8CSE7w3TnYBdUvbHO6j7FZt4KosdQrhux8yPxj2MPf5qilJ9ogUIzpO5axsdRwnWnHaT5taMmvZtsJR1abWwnEtrbZhIGXrY3Omt0RvQRGMmqmxAgtDU8YhzZjRJalcNmCbxkUl9PcvUuLrKkAZebQyunxjM9Szw0RAwB7bNMDSIRhBfgpCApue9oRxIJGo0h50eXTDYDl0Kjr1oMDqantYKsji0Ph0wGB0wc1TDr8l41b6Ys2n6Imveo6pFsd8Z55K3ZtRPie8VisqngbmWwRKka6Ca7GZSYqhjzEHUopbmzmC9uJC7PwYszEv5rwkUm9gFw1S5Nx9pnGaU0JiTc7XPZ2F6YJD0Cz7rCXcxR5L1N4T9krZzFYfAqzqq9PDNrKo0awQJReFNDz3qEVxiyIw3DH4GNQaNpTiCtX1qSTidZ1oBLH0XkGtcNiXrPrP44vmQAcCamGJsp0oUaB6uhP0yzrPvenVe3gzQWijnFwpD8vdUzXwmC8FZcixAQ45ek2iziFBtweZ3Qrt9J6E8KRZUmz3rkwvbUIndo0oJXfPyN1toHgqswAAoFimBKZUYJgGb1JwBH4K51hzQebzotV6emZ8T0pXpdAjWC19bE8wAg9IvZgeZRUVG6zP0O9TrigkHCDDAH8cUw02041aJaJOv3qH8Ulc90q9FU5UCZNM8w084Rq199Tlo3jYCcjB2NhORWcf4ldCN29JzC9KGLkBnHMDrrOYl1AtQmM7ARG5fO7rmH91WHN79aSf1HNf000DSdQ8l7wBxrZhvcEFwTTuz5Kk1';
@@ -23,6 +28,84 @@ function clearV1ServerSide() {
 
 beforeEach(() => {
   clearV1ServerSide();
+});
+
+describe('Testing iteration 2 Errors', () => {
+  describe('message/edit', () => {
+    test('local - testOGPosterCanEditMessage (channels)', () => {
+      authRegisterV2ServerSide('admin@gmail.com', 'thisPass68', 'admin', 'user');
+      const user1 = authRegisterV2ServerSide('bk@gmail.com', 'thisPass68', 'b', 'k');
+      // const user2 = authRegisterV2ServerSide("et@gmail.com", "thisPass68", "e", "t");
+      const channel1 = channelsCreateV2SS(user1.token, 'Channel1', true);
+
+      const msg0 = messageSendV1SS(user1.token, channel1.channelId, 'message 0');
+      let chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+      expect(chMsgs.messages[0].message).toStrictEqual('message 0');
+      messageEditV1SS(user1.token, msg0.messageId, 'hi');
+      chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+
+      expect(chMsgs.messages[0].message).toStrictEqual('hi');
+      expect(chMsgs.start).toBe(0);
+      expect(chMsgs.end).toBe(-1);
+    });
+
+    test('local - testOGPosterCanEditMessage (dms)', () => {
+      const user1 = authRegisterV2ServerSide('bk@gmail.com', 'thisPass68', 'b', 'k');
+      const user2 = authRegisterV2ServerSide('et@gmail.com', 'thisPass68', 'e', 't');
+
+      const dm1 = dmCreateV1SS(user1.token, [user2.authUserId]);
+
+      const msg0 = messageSendDmV1SS(user1.token, dm1.dmId, 'message 0');
+
+      let chMsgs = dmMessagesV1SS(user1.token, dm1.dmId, 0);
+
+      expect(chMsgs.messages[0].message).toStrictEqual('message 0');
+      messageEditV1SS(user1.token, msg0.messageId, 'hi');
+
+      chMsgs = dmMessagesV1SS(user2.token, dm1.dmId, 0);
+
+      expect(chMsgs.messages[0].message).toStrictEqual('hi');
+      expect(chMsgs.start).toBe(0);
+      expect(chMsgs.end).toBe(-1);
+    });
+    describe('message/remove', () => {
+      test('local - testOriginalPosterCanRemoveMessage (channels)', () => {
+        authRegisterV2ServerSide('admin@gmail.com', 'thisPass68', 'admin', 'user');
+        const user1 = authRegisterV2ServerSide('bk@gmail.com', 'thisPass68', 'b', 'k');
+        // const user2 = authRegisterV2ServerSide("et@gmail.com", "thisPass68", "e", "t");
+        const channel1 = channelsCreateV2SS(user1.token, 'Channel1', true);
+
+        const msg0 = messageSendV1SS(user1.token, channel1.channelId, 'message 0');
+        let chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+        expect(chMsgs.messages[0].message).toStrictEqual('message 0');
+        messageRemoveV1SS(user1.token, msg0.messageId);
+        chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+
+        expect(chMsgs.messages).toStrictEqual([]);
+        expect(chMsgs.start).toBe(0);
+        expect(chMsgs.end).toBe(-1);
+      });
+
+      test('local - testCannotRemoveMessage (channels)', () => {
+        authRegisterV2ServerSide('admin@gmail.com', 'thisPass68', 'admin', 'user');
+        const user1 = authRegisterV2ServerSide('bk@gmail.com', 'thisPass68', 'b', 'k');
+        const user2 = authRegisterV2ServerSide('et@gmail.com', 'thisPass68', 'e', 't');
+        const channel1 = channelsCreateV2SS(user1.token, 'Channel1', true);
+        channelJoinV2SS(user2.token, channel1.channelId);
+
+        const msg0 = messageSendV1SS(user1.token, channel1.channelId, 'message 0');
+        let chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+        expect(chMsgs.messages[0].message).toStrictEqual('message 0');
+
+        expect(messageRemoveV1SS(user2.token, msg0.messageId)).toStrictEqual({ error: 'error' });
+        chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
+
+        expect(chMsgs.messages[0].message).toStrictEqual('message 0');
+        expect(chMsgs.start).toBe(0);
+        expect(chMsgs.end).toBe(-1);
+      });
+    });
+  });
 });
 
 // HTTP testing for a combination of message functions being used

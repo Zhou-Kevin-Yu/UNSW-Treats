@@ -12,6 +12,16 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
+function messageRemoveV1SS(token: string, messageId: number) {
+  const res = request('DELETE', `${url}:${port}/message/remove/v1`, {
+    qs: {
+      token: token,
+      messageId: messageId
+    }
+  });
+  return JSON.parse(res.body as string);
+}
+
 function messageEditV1SS(token: string, messageId: number, message: string) {
   const res6 = request(
       'PUT',
@@ -57,4 +67,4 @@ function messageSendV1SS(token: string, channelId: number, message: string) {
   return JSON.parse(res.body as string);
 }
 
-export { messageSendDmV1SS, messageSendV1SS, messageEditV1SS };
+export { messageSendDmV1SS, messageSendV1SS, messageEditV1SS, messageRemoveV1SS };
