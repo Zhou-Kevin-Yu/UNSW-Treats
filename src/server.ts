@@ -20,6 +20,9 @@ import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
+import { isPrivateIdentifier } from 'typescript';
+// import createHttpError from 'http-errors';
+import HTTPError from 'http-errors';
 
 // Set up web app, use JSON
 const app = express();
@@ -46,6 +49,20 @@ app.use(errorHandler());
 // for logging errors
 app.use(morgan('dev'));
 
+// for checking token validity
+app.use((req: Request, res: Response, next) => {
+  const fullToken = req.header('token');
+  if (fullToken !== undefined && fullToken !== null) {
+    if (!isTokenValid(fullToken)) {
+      throw HTTPError(403, "Access Denied: Token is invalid");
+    } else if (tokenToAuthUserId(fullToken, true) === null || 
+              tokenToAuthUserId(fullToken, true) === undefined) {
+      throw HTTPError(403, "Access Denied: Token is invalid");
+    }
+  }
+  next();
+});
+
 // All auth requests
 app.post('/auth/login/v2', (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -58,7 +75,8 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
-  const { token } = req.body;
+  // const { token } = req.body;
+  const token = req.header('token');
   res.json(authLogoutV1(token));
 });
 

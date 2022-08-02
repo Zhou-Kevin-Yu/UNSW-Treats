@@ -11,14 +11,15 @@ describe('tests basic string converstion and stripping', () => {
     expect(tokenToAuthUserId('randomString', false)).toBe(null);
   });
 
+  // this won't work anymore due to hashing
   test('test validToken', () => {
     const token = String(Math.random() + 1);
-    expect(tokenToAuthUserId(token, true)).toBe(1);
+    expect(tokenToAuthUserId(token, true)).toBe(null);
   });
 
   test('test validToken with a larger number as authUserId', () => {
     const token = String(Math.random() + 20);
-    expect(tokenToAuthUserId(token, true)).toBe(20);
+    expect(tokenToAuthUserId(token, true)).toBe(null);
   });
 });
 
@@ -28,9 +29,6 @@ describe('tests token generation', () => {
     authRegisterV1('test1@gmail.com', 'passwordd', 'ffirst', 'llast');
     const token = generateToken(0);
     expect(typeof token).toBe('string');
-    const tokenSplit = token.split('.');
-    expect(tokenSplit.length).toBe(2);
-    expect(tokenSplit[0]).toBe(String(0));
     const tokenTwo = generateToken(1);
     expect(tokenTwo).not.toBe(token);
   });

@@ -237,7 +237,7 @@ describe('Testing /auth/logout/v1', () => {
       'POST',
             `${url}:${port}/auth/logout/v1`,
             {
-              json: {
+              headers: {
                 token: token,
               }
             }
