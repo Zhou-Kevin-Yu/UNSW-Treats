@@ -43,8 +43,7 @@ app.get('/echo', (req, res, next) => {
   }
 });
 
-// handles errors nicely
-app.use(errorHandler());
+
 
 // for logging errors
 app.use(morgan('dev'));
@@ -66,6 +65,10 @@ app.use((req: Request, res: Response, next) => {
 // All auth requests
 app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const returned = authLoginV1(email, password);
+  if ('error' in returned) {
+    throw HTTPError(400, 'Invalid email or password');
+  }
   res.json(authLoginV1(email, password));
 });
 
@@ -255,6 +258,9 @@ const readData = persistantReadData();
 let data = getData();
 data = Object.assign(data, readData);
 setData(data);
+
+// handles errors nicely
+app.use(errorHandler());
 
 // start server
 const server = app.listen(PORT, HOST, () => {

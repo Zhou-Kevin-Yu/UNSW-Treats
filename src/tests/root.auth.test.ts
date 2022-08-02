@@ -56,9 +56,10 @@ describe('Testing /auth/login/v3', () => {
               }
             }
     );
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    // console.log(data);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test unsuccessfull login - password incorrect', () => {
@@ -73,9 +74,9 @@ describe('Testing /auth/login/v3', () => {
               }
             }
     );
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual({ error: 'error' });
+    // const data = JSON.parse(res.getBody() as string);
+    expect(res.statusCode).toBe(400);
+    // expect(data).toEqual({ error: 'error' });
   });
 
   test('Test successful login', () => {

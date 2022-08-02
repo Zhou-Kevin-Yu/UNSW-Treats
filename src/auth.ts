@@ -4,6 +4,9 @@ import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 import crypto from 'crypto';
 
+// import HTTPError from 'http-errors';
+
+
 const SECRET = 'DREAMTEAM'
 
 /**
