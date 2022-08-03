@@ -7,7 +7,7 @@ import { channelMessagesV2SS, channelJoinV2SS } from '../wrapped.channel';
 import { messageSendV1SS, messageEditV1SS, messageSendDmV1SS, messageRemoveV1SS } from '../wrapped.message';
 import { dmCreateV1SS, dmMessagesV1SS } from '../wrapped.dm';
 
-const errorReturn = { error: 'error' };
+// const errorReturn = { error: 'error' };
 const aboveMaxLengthMessage = 'HkFmF9IW0tFB7V0Gs08ZpEUbqOtsWUvLdxRmCSqLlsnm2J4SXlcc7aMJ8Mbxk2q24EjdHX6hTyT9FueMIHnJOIwQxBR5v73lePT7I9za4MZrFUNjVmS1V2FuLk2I3gIhVzKMPA1UQ3WEy5Lom3j3y52PA3iXpZNANMAcpBAeHzI7YxACN9cWvC1BktQyVXs6R6EpWKxhHUq3t8CSE7w3TnYBdUvbHO6j7FZt4KosdQrhux8yPxj2MPf5qilJ9ogUIzpO5axsdRwnWnHaT5taMmvZtsJR1abWwnEtrbZhIGXrY3Omt0RvQRGMmqmxAgtDU8YhzZjRJalcNmCbxkUl9PcvUuLrKkAZebQyunxjM9Szw0RAwB7bNMDSIRhBfgpCApue9oRxIJGo0h50eXTDYDl0Kjr1oMDqantYKsji0Ph0wGB0wc1TDr8l41b6Ys2n6Imveo6pFsd8Z55K3ZtRPie8VisqngbmWwRKka6Ca7GZSYqhjzEHUopbmzmC9uJC7PwYszEv5rwkUm9gFw1S5Nx9pnGaU0JiTc7XPZ2F6YJD0Cz7rCXcxR5L1N4T9krZzFYfAqzqq9PDNrKo0awQJReFNDz3qEVxiyIw3DH4GNQaNpTiCtX1qSTidZ1oBLH0XkGtcNiXrPrP44vmQAcCamGJsp0oUaB6uhP0yzrPvenVe3gzQWijnFwpD8vdUzXwmC8FZcixAQ45ek2iziFBtweZ3Qrt9J6E8KRZUmz3rkwvbUIndo0oJXfPyN1toHgqswAAoFimBKZUYJgGb1JwBH4K51hzQebzotV6emZ8T0pXpdAjWC19bE8wAg9IvZgeZRUVG6zP0O9TrigkHCDDAH8cUw02041aJaJOv3qH8Ulc90q9FU5UCZNM8w084Rq199Tlo3jYCcjB2NhORWcf4ldCN29JzC9KGLkBnHMDrrOYl1AtQmM7ARG5fO7rmH91WHN79aSf1HNf000DSdQ8l7wBxrZhvcEFwTTuz5Kk1';
 const OK = 200;
 const port = config.port;
@@ -100,7 +100,8 @@ describe('Testing iteration 2 Errors', () => {
         let chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
         expect(chMsgs.messages[0].message).toStrictEqual('message 0');
 
-        expect(messageRemoveV1SS(user2.token, msg0.messageId)).toStrictEqual({ error: 'error' });
+        // expect(messageRemoveV1SS(user2.token, msg0.messageId)).toStrictEqual({ error: 'error' });
+        expect(JSON.stringify(messageRemoveV1SS(user2.token, msg0.messageId))).toStrictEqual('{"error":{"message":"message was not sent by the authorised user making this edit request"}}');
         chMsgs = channelMessagesV2SS(user1.token, channel1.channelId, 0);
 
         expect(chMsgs.messages[0].message).toStrictEqual('message 0');
@@ -744,10 +745,10 @@ describe('HTTP tests for message/send', () => {
             }
           }
         );
-        const data = JSON.parse(res.getBody() as string);
-        expect(res.statusCode).toBe(OK);
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       test('Test null channelId', () => {
@@ -778,10 +779,10 @@ describe('HTTP tests for message/send', () => {
             }
           }
         );
-        const data = JSON.parse(res.getBody() as string);
-        expect(res.statusCode).toBe(OK);
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       // If channelId is invalid
@@ -827,10 +828,10 @@ describe('HTTP tests for message/send', () => {
             }
           }
         );
-        const data = JSON.parse(res.getBody() as string);
-        expect(res.statusCode).toBe(OK);
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       // Add more invalid channelId error cases later
@@ -880,10 +881,10 @@ describe('HTTP tests for message/send', () => {
             }
           }
         );
-        const data = JSON.parse(res.getBody() as string);
-        expect(res.statusCode).toBe(OK);
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       test('Test if length of message is more than 1000 characters', () => {
@@ -928,10 +929,10 @@ describe('HTTP tests for message/send', () => {
             }
           }
         );
-        const data = JSON.parse(res.getBody() as string);
-        expect(res.statusCode).toBe(OK);
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
     });
 
@@ -994,10 +995,10 @@ describe('HTTP tests for message/send', () => {
           }
         }
       );
-      const data = JSON.parse(res.getBody() as string);
-      expect(res.statusCode).toBe(OK);
+      // const data = JSON.parse(res.getBody() as string);
+      expect(res.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
   });
 });
@@ -1423,10 +1424,10 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      const data = JSON.parse(res.getBody() as string);
-      expect(res.statusCode).toBe(OK);
+      // const data = JSON.parse(res.getBody() as string);
+      expect(res.statusCode).toBe(400);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If messageId does not refer to a valid message within a channel
@@ -1490,10 +1491,10 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(400);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If messageId does not refer to a valid message within DM
@@ -1572,10 +1573,10 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(400);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in channel was not sent by the authorised user making the request
@@ -1698,10 +1699,10 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in DM was not sent by the authorised user making the request
@@ -1781,10 +1782,10 @@ describe('HTTP tests for message/edit', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // // If the authorised user does not have owner permissions in the channel
@@ -2221,10 +2222,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(400);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If messageId does not refer to a valid message within DM
@@ -2302,10 +2303,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(400);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in channel was not sent by the authorised user making the request
@@ -2425,10 +2426,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // If the message in DM was not sent by the authorised user making the request
@@ -2506,10 +2507,10 @@ describe('HTTP tests for message/remove', () => {
           }
         }
       );
-      const data = JSON.parse(res6.getBody() as string);
-      expect(res6.statusCode).toBe(OK);
+      // const data = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
 
     // // If the authorised user does not have owner permissions in the channel
@@ -2650,10 +2651,10 @@ describe('HTTP tests for message/senddm', () => {
             }
           }
         );
-        const data = JSON.parse(res2.getBody() as string);
-        expect(res2.statusCode).toBe(OK);
+        // const data = JSON.parse(res2.getBody() as string);
+        expect(res2.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       test('Test invalid dmId', () => {
@@ -2715,10 +2716,10 @@ describe('HTTP tests for message/senddm', () => {
             }
           }
         );
-        const data = JSON.parse(res3.getBody() as string);
-        expect(res3.statusCode).toBe(OK);
+        // const data = JSON.parse(res3.getBody() as string);
+        expect(res3.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       // Add more invalid dmId error cases later
@@ -2785,10 +2786,10 @@ describe('HTTP tests for message/senddm', () => {
             }
           }
         );
-        const data = JSON.parse(res3.getBody() as string);
-        expect(res3.statusCode).toBe(OK);
+        // const data = JSON.parse(res3.getBody() as string);
+        expect(res3.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
 
       test('Test if length of message is more than 1000 characters', () => {
@@ -2850,10 +2851,10 @@ describe('HTTP tests for message/senddm', () => {
             }
           }
         );
-        const data = JSON.parse(res3.getBody() as string);
-        expect(res3.statusCode).toBe(OK);
+        // const data = JSON.parse(res3.getBody() as string);
+        expect(res3.statusCode).toBe(400);
         // Expect to return error
-        expect(data).toStrictEqual(errorReturn);
+        // expect(data).toStrictEqual(errorReturn);
       });
     });
 
@@ -2934,10 +2935,10 @@ describe('HTTP tests for message/senddm', () => {
           }
         }
       );
-      const data = JSON.parse(res4.getBody() as string);
-      expect(res4.statusCode).toBe(OK);
+      // const data = JSON.parse(res4.getBody() as string);
+      expect(res4.statusCode).toBe(403);
       // Expect to return error
-      expect(data).toStrictEqual(errorReturn);
+      // expect(data).toStrictEqual(errorReturn);
     });
   });
 });
