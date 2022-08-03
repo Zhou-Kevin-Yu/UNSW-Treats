@@ -8,11 +8,11 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
   return { sharedMessageId: -1 };
 }
 
-export function messageReactV1(token: string, messageId: number, reactId: string) {
+export function messageReactV1(token: string, messageId: number, reactId: number) {
   return {};
 }
 
-export function messageUnreactV1(token: string, messageId: number, reactId: string) {
+export function messageUnreactV1(token: string, messageId: number, reactId: number) {
   return {};
 }
 
