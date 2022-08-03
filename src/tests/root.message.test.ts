@@ -64,7 +64,7 @@ describe('Iteration 3 Function Testing', () => {
         const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, dm0.dmId);
         expect(res.statusCode).toBe(400);
       });
-      test("UserSharesMessage he doesnt have access to - (channel)", () => {
+      test("UserSharesMessage they don't have access to - (channel)", () => {
         const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
@@ -95,6 +95,19 @@ describe('Iteration 3 Function Testing', () => {
 
         // user0 shares a message of length 1001 to dm0 from channel0
         const res = messageShareV1SS(user1.token, message0.messageId, str, -1, dm0.dmId);
+        expect(res.statusCode).toBe(400);
+      });
+      test("UserSharesMessage to channel they dont have access to - (channel)", () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+
+        const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        // user0 shares message0, which is in channel0, to channel1, a channel they arent part of
+        const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, -1);
         expect(res.statusCode).toBe(400);
       });
     });
