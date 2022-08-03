@@ -42,7 +42,7 @@ function usersStatsV1() {
   for (const user of data.users) {
     const userChannels = channelsListV1(user.uId);
     const userDms = dmListHelperFunction(user.uId);
-    if (Object.keys(userChannels).length != 0 || Object.keys(userDms).length != 0) {
+    if (userChannels.channels.length !== 0 || userDms.dms.length !== 0) {
       numActiveUsers++;
     }
     numUsers++;
@@ -51,9 +51,9 @@ function usersStatsV1() {
   const utilizationRate = numActiveUsers / numUsers;
   const timeStamp = Math.floor((new Date()).getTime() / 1000);
   return {
-      channelsExist: [{numChannels, timeStamp}],
-      dmsExist: [{numDms, timeStamp}],
-      messagesExist: [{numMessages, timeStamp}],
+      channelsExist: [{numChannelsExist:numChannels, timeStamp: timeStamp}],
+      dmsExist: [{numDmsExist: numDms, timeStamp: timeStamp}],
+      messagesExist: [{numMessagesExist: numDms, timeStamp: timeStamp}],
       utilizationRate: utilizationRate
   };
 }

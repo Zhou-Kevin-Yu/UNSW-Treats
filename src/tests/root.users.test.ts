@@ -1,10 +1,9 @@
 import request from 'sync-request';
 import config from '../config.json';
-import { userProfileUploadPhotoV1SS, userStatsV1SS, usersStatsV1SS, userProfileV2ServerSide } from '../wrapped.user';
+import { usersStatsV1SS } from '../wrapped.user';
 import { channelsCreateV2SS } from '../wrapped.channels';
 import { dmCreateV1SS } from '../wrapped.dm';
-import { messageSendV1SS } from '../wrapped.message';
-
+import { messageSendDmV1SS } from '../wrapped.message';
 
 import os from 'os';
 // import { register } from 'ts-node';
@@ -143,52 +142,44 @@ describe('Testing user setname', () => {
   });
 });
 
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 
 describe('HTTP tests for users/stats/v1', () => {
   describe('Testing Error Cases ', () => {
-    test('Correct output1', () => { 
-
+    test('Correct output1', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
       const reg2 = authRegisterSS('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
       const channel1 = channelsCreateV2SS(reg1.token, 'COMP1531', true);
-      const channel2 = channelsCreateV2SS(reg2.token, 'COMP2521', false);
-      dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId])
-      messageSendV1SS(reg1.token, channel1.channelId, 'Hi, how are you?')
+      channelsCreateV2SS(reg2.token, 'COMP2521', false);
+      const dm1 = dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId]);
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'Hi, how are you?');
 
       const object = usersStatsV1SS(reg1.token);
 
       expect(object).toStrictEqual({
-        channelsExist: [{numChannelsExist: 2, timeStamp: expect.anything}],
-        dmsExist: [{numDmsExist: 1, timeStamp: expect.anything}],
-        messagesExist: [{messagesExist: 1, timeStamp: expect.anything}],
-        utilizationRate: expect.anything
-      })
-
+        channelsExist: [{ numChannelsExist: 2, timeStamp: expect.any(Number) }],
+        dmsExist: [{ numDmsExist: 1, timeStamp: expect.any(Number) }],
+        messagesExist: [{ numMessagesExist: 1, timeStamp: expect.any(Number)}],
+        utilizationRate: expect.any(Number)
+      });
     });
 
-    test('Correct output2', () => { 
-
+    test('Correct output2', () => {
       const reg1 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
       const reg2 = authRegisterSS('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
       const channel1 = channelsCreateV2SS(reg1.token, 'COMP1531', true);
-      dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId])
-      messageSendV1SS(reg1.token, channel1.channelId, 'Hi, how are you?')
-      messageSendV1SS(reg2.token, channel1.channelId, 'Im good, how are you?')
+      const dm1 = dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId]);
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'Hi, how are you?');
+      messageSendDmV1SS(reg2.token, dm1.dmId, 'Im good, how are you?');
 
       const object = usersStatsV1SS(reg1.token);
 
       expect(object).toStrictEqual({
-        channelsExist: [{numChannelsExist: 1, timeStamp: expect.anything}],
-        dmsExist: [{numDmsExist: 1, timeStamp: expect.anything}],
-        messagesExist: [{messagesExist: 2, timeStamp: expect.anything}],
-        utilizationRate: expect.anything
-      })
-
+        channelsExist: [{ numChannelsExist: 1, timeStamp: expect.any(Number) }],
+        dmsExist: [{ numDmsExist: 1, timeStamp: expect.any(Number) }],
+        messagesExist: [{ numMessagesExist: 2, timeStamp: expect.any(Number) }],
+        utilizationRate: expect.any(Number)
+      });
     });
-      
   });
-
-})
-
-
+});

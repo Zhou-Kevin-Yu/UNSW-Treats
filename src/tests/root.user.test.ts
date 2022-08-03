@@ -6,12 +6,12 @@ import os from 'os';
 const port = config.port;
 let url = config.url;
 
-import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide,  userProfileUploadPhotoV1SS, userStatsV1SS, usersStatsV1SS } from '../wrapped.user';
+import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide, userProfileUploadPhotoV1SS, userStatsV1SS } from '../wrapped.user';
 import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.auth';
 
 import { channelsCreateV2SS } from '../wrapped.channels';
 import { dmCreateV1SS } from '../wrapped.dm';
-import { messageSendV1SS } from '../wrapped.message';
+import { messageSendDmV1SS } from '../wrapped.message';
 
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
@@ -181,57 +181,51 @@ describe('Testing /user/profile/sethandle/v1', () => {
   });
 });
 
-
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 /*
 describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
   describe('Testing Error Cases ', () => {
     test('HTTP Status not 200', () => {
-      
+
     });
     test('values not withim dimensions of url', () => {
-      
+
     });
     test('xEnd less than xStart', () => {
-      
+
     });
     test('image uploaded is not jpg', () => {
-      
+
     });
   });
   describe('Testing correct output', () => {
-    
+
   });
-})*/
+}) */
 
 describe('HTTP tests for user/stats/v1', () => {
   describe('Testing Error Cases ', () => {
-    test('Invlaid token', () => { //////////////////////////idk 
-      
+    test('Invlaid token', () => { /// ///////////////////////idk
+
     });
-      
   });
   describe('Testing correct output', () => {
-    test('Correct output1', () => { 
-
+    test('Correct output1', () => {
       const reg1 = authRegisterV2ServerSide('bk@gmail.com', 'validPass98', 'b', 'k');
       const reg2 = authRegisterV2ServerSide('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
       const channel1 = channelsCreateV2SS(reg1.token, 'COMP1531', true);
-      const channel2 = channelsCreateV2SS(reg1.token, 'COMP2521', false);
-      dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId])
-      messageSendV1SS(reg1.token, channel1.channelId, 'Hi, how are you?')
-
+      channelsCreateV2SS(reg1.token, 'COMP2521', false);
+      const dm1 = dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId]);
+      messageSendDmV1SS(reg1.token, dm1.dmId, 'Hi, how are you?');
+      
       const object = userStatsV1SS(reg1.token);
 
       expect(object).toStrictEqual({
-        channelsJoined: [{numChannelsJoined: 2, timeStamp: expect.anything}],
-        dmsJoined: [{numDmsJoined: 1, timeStamp: expect.anything}],
-        messagesSent: [{numMessagesSent: 1, timeStamp: expect.anything}],
-        utilizationRate: expect.anything
-      })
-    
+        channelsJoined: [{ numChannelsJoined: 2, timeStamp: expect.any(Number) }],
+        dmsJoined: [{ numDmsJoined: 1, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 1, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      });
+    });
   });
-})
-
 });
-

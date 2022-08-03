@@ -166,7 +166,7 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
 }
 
 
-function userProfileUploadPhotoV1(imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
+function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
 
   //xEnd is less than or equal to xStart or yEnd is less than or equal to yStart
   if (xEnd <= xStart || yEnd <= yStart) return { error: 'error' };
@@ -206,9 +206,9 @@ function userStatsV1(token: string) {
   const userChannels = channelsListV1(authUserId);
   const channelsAll = channelsListallV1(authUserId);
   const userDms = dmListV1(token);
-  const channelsJoined = Object.keys(userChannels).length;
-  const dmsJoined = Object.keys(userDms).length;
-  const numChannelsAll = Object.keys(channelsAll).length;
+  const channelsJoined = userChannels.channels.length;
+  const dmsJoined = userDms.dms.length;
+  const numChannelsAll = channelsAll.channels.length;
 
   let messagesSent = 0;
   let numDmsAll = 0
@@ -216,7 +216,7 @@ function userStatsV1(token: string) {
 
   for (const dm of data.dms) {
     for (const messages of dm.messages) {
-      if(messages.uId == authUserId) {
+      if(messages.uId === authUserId) {
         messagesSent++;
       }
       numMessagesAll++;
@@ -232,9 +232,9 @@ function userStatsV1(token: string) {
 
   const timeStamp = Math.floor((new Date()).getTime() / 1000);
   return {
-      channelsJoined: [{channelsJoined, timeStamp}],
-      dmsJoined: [{dmsJoined, timeStamp}],
-      messagesSent: [{messagesSent, timeStamp}],
+      channelsJoined: [{numChannelsJoined: channelsJoined, timeStamp: timeStamp}],
+      dmsJoined: [{numDmsJoined: dmsJoined, timeStamp: timeStamp}],
+      messagesSent: [{numMessagesSent: messagesSent, timeStamp: timeStamp}],
       involvementRate: involvementRate
   };
 }
