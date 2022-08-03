@@ -2,6 +2,7 @@ import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { MessagesObj } from './dataStore';
 import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
+import HTTPError from 'http-errors';
 
 ///////////// ITERATION 3 UNIQUE FUNCTIONS //////////////
 export function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number): MessageShareV1 {
@@ -48,33 +49,40 @@ export function messageSendlaterDmV1(token: string, dmId: number, message: strin
  */
 export function messageSendV1 (token: string, channelId: number, message: string): MessageSendV1 {
   const data = getData();
-  let existChannel = 0;
-  let existAuth = 0;
   let messageIdCopy = 0;
 
   // If token is invalid
   if (!isTokenValid(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, "token passed in is invalid");
   }
 
   // If length of message is less than 1 or over 1000 characters
   if (message.length < 1 || message.length > 1000) {
-    return { error: 'error' };
+    throw HTTPError(400, "length of message is less than 1 or over 1000 characters");
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const existChannel = data.channels.find(element => element.channelId === channelId);
+  const channelIndex = data.channels.findIndex(element => element.channelId === channelId);
+  // If the channel Id does not exist or is invalid
+  if (existChannel === undefined) {
+    throw HTTPError(400, "channelId does not refer to a valid channel");
+  }
+
+  const existAuth = data.channels[channelIndex].allMembers.find(member => member.uId === authUserId);
+  // If channelId is valid and the authorised user is not a member of the channel
+  if (existAuth === undefined) {
+    throw HTTPError(403, "channelId is valid and the authorised user is not a member of the channel");
+  }
 
   // To loop through all the existing channels
   for (const channel of data.channels) {
-    // If the channel Id exists
+    // Find the channel Id 
     if (channelId === channel.channelId) {
-      existChannel = 1;
       // To loop through all the members in selected channel
       for (const member of channel.allMembers) {
         // If the auth user is a member
         if (authUserId === member.uId) {
-          existAuth = 1;
-
           messageIdCopy = data.systemInfo.messageTotal;
           data.systemInfo.messageTotal++;
           const newChannelMessage: MessagesObj = {
@@ -89,16 +97,6 @@ export function messageSendV1 (token: string, channelId: number, message: string
         }
       }
     }
-  }
-
-  // If the channel Id does not exist or is invalid
-  if (existChannel === 0) {
-    return { error: 'error' };
-  }
-
-  // If channelId is valid and the authorised user is not a member of the channel
-  if (existAuth === 0) {
-    return { error: 'error' };
   }
 }
 
@@ -115,28 +113,47 @@ export function messageSendV1 (token: string, channelId: number, message: string
  */
 export function messageEditV1 (token: string, messageId: number, message: string): MessageEditV1 {
   const data = getData();
-  let existMessage = 0;
-  let existAuth = 0;
+  let existMessage = false;
+  let existAuth = false;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, "token passed in is invalid");
   }
 
+  // If messageId is invalid
   if (messageId === null || messageId === undefined) {
-    return { error: 'error' };
+    throw HTTPError(400, "messageId is null or undefined");
   }
 
   // If length of message is over 1000 characters
   if (message.length > 1000) {
-    return { error: 'error' };
+    throw HTTPError(400, "length of message is over 1000 characters");
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   let isGlobalOwner = false;
   let isChannelOwner = false;
   let isDmOwner = false;
-
+  
+  // let existMessage = undefined;
+  // for (let i = 0; i < data.channels.length; i++) {
+  //   const existMessage = data.channels[i].messages.find(element => element.messageId === messageId);
+  //   if (existMessage !== undefined) {
+  //     break
+  //   }
+  // }
+  // const existMessage = data.channels[i].messages.find(element => element.messageId === messageId);
+  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
+  // if (existMessage === undefined) {
+  //   return { error: 'error' };
+  // }
+  
   // If the auth user is a global owner of Treat
+  // if (data.users.find(element => element.uId === authUserId) !== undefined) {
+  //   if () { 
+  //     isGlobalOwner = true;
+  //   }
+  // }
   for (const user of data.users) {
     if (authUserId === user.uId) {
       // If auth user has owner permissions
@@ -154,7 +171,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
       if (msg !== undefined || msg !== null) {
         // If messageId exists
         if (msg.messageId === messageId) {
-          existMessage = 1;
+          existMessage = true;
           // Loop through all members in ownerMembers
           for (const ownerMember of channel.ownerMembers) {
             // If auth user is in ownerMembers
@@ -177,7 +194,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
         if (dmMsg !== undefined || dmMsg !== null) {
           // If message Id exists
           if (dmMsg.messageId === messageId) {
-            existMessage = 1;
+            existMessage = true;
             // If auth user is the creator of the DM
             if (authUserId === dm.creator) {
               isDmOwner = true;
@@ -198,10 +215,10 @@ export function messageEditV1 (token: string, messageId: number, message: string
       if (msg !== undefined || msg !== null) {
         // If messageId exists
         if (msg.messageId === messageId) {
-          existMessage = 1;
+          existMessage = true;
           // If message was sent by the auth user making this edit request or is a global/channel owner
           if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
-            existAuth = 1;
+            existAuth = true;
             // Access message string and update string with new message
             msg.message = message;
             // If the new message is an empty string, the message is deleted
@@ -229,16 +246,12 @@ export function messageEditV1 (token: string, messageId: number, message: string
         if (dmMsg !== undefined || dmMsg !== null) {
           // If messageId exists
           if (dmMsg.messageId === messageId) {
-            existMessage = 1;
+            existMessage = true;
             // If message was sent by the auth user making this edit request or is a DM owner
             if (dmMsg.uId === authUserId || isDmOwner === true) {
-              existAuth = 1;
+              existAuth = true;
               // Access message string and update string with new message
               dmMsg.message = message;
-              // if (message !== '') {
-              // } else {
-              //   delete dmMsg.message;
-              // }
 
               // If the new message is an empty string, the message is deleted
               if (message.length === 0) {
@@ -254,15 +267,15 @@ export function messageEditV1 (token: string, messageId: number, message: string
       }
     }
   }
-
-  // If message was not sent by the authorised user making this edit request
-  if (existAuth === 0) {
-    return { error: 'error' };
+  
+  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
+  if (existMessage === false) {
+    throw HTTPError(400, "messageId does not refer to a valid message within a channel/DM that the authorised user has joined");
   }
 
-  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
-  if (existMessage === 0) {
-    return { error: 'error' };
+  // If message was not sent by the authorised user making this edit request
+  if (existAuth === false) {
+    throw HTTPError(403, "message was not sent by the authorised user making this edit request");
   }
 }
 
@@ -278,15 +291,15 @@ export function messageEditV1 (token: string, messageId: number, message: string
  */
 export function messageRemoveV1 (token: string, messageId: number): MessageRemoveV1 {
   const data = getData();
-  let existMessage = 0;
-  let existAuth = 0;
+  let existMessage = false;
+  let existAuth = false;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, "token passed in is invalid");
   }
 
   if (messageId === null || messageId === undefined) {
-    return { error: 'error' };
+    throw HTTPError(400, "messageId is null or undefined");
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -312,7 +325,7 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
       if (msg !== undefined || msg !== null) {
         // If messageId exists
         if (msg.messageId === messageId) {
-          existMessage = 1;
+          existMessage = true;
           // Loop through all members in ownerMembers
           for (const ownerMember of channel.ownerMembers) {
             // If auth user is in ownerMembers
@@ -335,7 +348,7 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
         if (dmMsg !== undefined || dmMsg !== null) {
           // If message Id exists
           if (dmMsg.messageId === messageId) {
-            existMessage = 1;
+            existMessage = true;
             // If auth user is the creator of the DM
             if (authUserId === dm.creator) {
               isDmOwner = true;
@@ -356,16 +369,13 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
       if (msg !== undefined || msg !== null) {
         // If messageId exists
         if (msg.messageId === messageId) {
-          existMessage = 1;
+          existMessage = true;
           // If message was sent by the auth user making this remove request or is a global/channel owner
           if (msg.uId === authUserId || isGlobalOwner === true || isChannelOwner === true) {
-            existAuth = 1;
-            // Loop to find message and delete it from selected channel
+            existAuth = true;
+            // Find message and delete it from selected channel
             const msgToRemove = data.channels[counter].messages.indexOf(msg);
             data.channels[counter].messages.splice(msgToRemove, 1);
-            // for (let i = 0; i < messageId; i++) {
-            //   delete data.channels[counter].messages[i];
-            // }
             setData(data);
             return { };
           }
@@ -386,19 +396,15 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
         if (dmMsg !== undefined || dmMsg !== null) {
           // If messageId exists
           if (dmMsg.messageId === messageId) {
-            existMessage = 1;
+            existMessage = true;
             // If message was sent by the auth user making this edit request or is a DM owner
             if (dmMsg.uId === authUserId || isDmOwner === true) {
-              existAuth = 1;
+              existAuth = true;
 
-              // Loop to find message and delete it from selected DM
+              // Find message and delete it from selected DM
               const dmIndex = data.dms.indexOf(dm);
               const msgToRemove = data.dms[dmIndex].messages.indexOf(dmMsg);
               data.dms[dmIndex].messages.splice(msgToRemove, 1);
-
-              // for (let i = 0; i < messageId; i++) {
-              //   delete data.dms[i].messages;
-              // }
 
               setData(data);
               return { };
@@ -409,14 +415,14 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
     }
   }
 
-  // If message was not sent by the authorised user making this edit request
-  if (existAuth === 0) {
-    return { error: 'error' };
+  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
+  if (existMessage === false) {
+    throw HTTPError(400, "messageId does not refer to a valid message within a channel/DM that the authorised user has joined");
   }
 
-  // If messageId does not refer to a valid message within a channel/DM that the authorised user has joined
-  if (existMessage === 0) {
-    return { error: 'error' };
+  // If message was not sent by the authorised user making this edit request
+  if (existAuth === false) {
+    throw HTTPError(403, "message was not sent by the authorised user making this edit request");
   }
 }
 
@@ -432,35 +438,41 @@ export function messageRemoveV1 (token: string, messageId: number): MessageRemov
 */
 export function messageSendDmV1 (token: string, dmId: number, message: string): MessageSendDmV1 {
   const data = getData();
-  let existDm = 0;
-  let existAuth = 0;
   let messageIdCopy = 0;
   // If token is invalid
   if (!isTokenValid(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, "token passed in is invalid");
   }
 
   // If length of message is less than 1 or over 1000 characters
   if (message.length < 1 || message.length > 1000) {
-    return { error: 'error' };
+    throw HTTPError(400, "length of message is less than 1 or over 1000 characters");
   }
 
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const existDm = data.dms.find(element => element.dmId === dmId);
+  const dmIndex = data.dms.findIndex(element => element.dmId === dmId);
+  // If the dmId does not exist or is invalid
+  if (existDm === undefined) {
+    throw HTTPError(400, "dmId does not refer to a valid DM");
+  }
+  
+  const existAuth = data.dms[dmIndex].members.find(member => member === authUserId);
+  // If dmId is valid and the authorised user is not a member of the DM
+  if (existAuth === undefined) {
+    throw HTTPError(403, "dmId is valid and the authorised user is not a member of the DM");
+  }
 
   // To loop through all the existing DMs
   for (const dm of data.dms) {
     // Check that the DM is not undefined or null
     if (dm !== undefined || dm !== null) {
-      // If the dmId exists
+      // Find the DM
       if (dmId === dm.dmId) {
-        existDm = 1;
         // To loop through all the members in selected DM
-        // for (const member of dm.members) {
         for (let i = 0; i < dm.members.length; i++) {
           // If the auth user is a member of DM
           if (dm.members[i] === authUserId) {
-            existAuth = 1;
-
             messageIdCopy = data.systemInfo.messageTotal;
             data.systemInfo.messageTotal++;
 
@@ -476,16 +488,6 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
         }
       }
     }
-  }
-
-  // If the dmId does not exist or is invalid
-  if (existDm === 0) {
-    return { error: 'error' };
-  }
-
-  // If dmId is valid and the authorised user is not a member of the DM
-  if (existAuth === 0) {
-    return { error: 'error' };
   }
 
   return { messageId: messageIdCopy };
