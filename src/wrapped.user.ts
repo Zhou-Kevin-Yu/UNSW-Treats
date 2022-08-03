@@ -79,4 +79,49 @@ function userSethandleV1ServerSide(token: string, handleStr: string) : { error?:
   return JSON.parse(data);
 }
 
-export { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide };
+////////////////////////////////////////////////////////////////////////////////
+function userStatsV1SS(token: string) : { error?: 'error' } {
+  const res = request(
+    'GET',
+        `${url}:${port}/user/stats/v1`,
+        {
+          headers: {token: token}
+        }
+  );
+  const data = res.body.toString();
+  return JSON.parse(data);
+}
+
+function usersStatsV1SS(token: string) : { error?: 'error' } {
+  const res = request(
+    'GET',
+        `${url}:${port}/users/stats/v1`,
+        {
+          headers: {token: token}
+        }
+  );
+  const data = res.body.toString();
+  return JSON.parse(data);
+}
+
+function userProfileUploadPhotoV1SS(token: string, imgUrl: string, xStart: number, xEnd: number, yStart: number, yEnd: number) : { error?: 'error' } {
+  const res = request(
+    'POST',
+        `${url}:${port}/user/profile/uploadphoto/v1`,
+        {
+          headers: {token: token},
+          json: {
+            imgUrl: imgUrl,
+            xStart: xStart,
+            xEnd: xEnd,
+            yStart: yStart,
+            yEnd: yEnd
+          }
+        }
+  );
+  const data = res.body.toString();
+  return JSON.parse(data);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+export { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, 
+  userSethandleV1ServerSide, userProfileUploadPhotoV1SS, userStatsV1SS, usersStatsV1SS };

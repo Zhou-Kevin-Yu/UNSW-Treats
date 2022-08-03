@@ -11,11 +11,11 @@ import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels'
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
-import { usersAllV1 } from './users';
+import { usersAllV1, usersStatsV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
-import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userProfileUploadPhotoV1, userStatsV1 } from './user';
 
 // const errorOutput = { error: 'error' };
 
@@ -157,6 +157,23 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSethandleV1(token, handleStr));
 });
+////////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
+  const { imgUrl, xStart, xEnd, yStart, yEnd } = req.body;
+  const token = req.header('token');
+  res.json(userProfileUploadPhotoV1(token, imgUrl, xStart, xEnd, yStart, yEnd));
+});
+
+app.get('/user/stats/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(userStatsV1(token));
+});
+
+app.get('/users/stats/v1', (req: Request, res: Response) => {
+  res.json(usersStatsV1());
+});
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
