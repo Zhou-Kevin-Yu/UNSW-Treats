@@ -7,8 +7,6 @@ import { tokenToAuthUserId, isTokenValid } from '../token';
 import { authLoginV2ServerSide, authRegisterV2ServerSide } from '../wrapped.auth';
 import { userProfileV2ServerSide } from '../wrapped.user';
 
-import { generateResetCode } from '../auth';
-
 const OK = 200;
 const port = config.port;
 let url = config.url;
@@ -46,7 +44,7 @@ function authRegisterServerSide(email: string, password: string, nameFirst: stri
   return JSON.parse(res.body as string);
 }
 
-function generateResetCodeServerSide(email: string){
+function generateResetCodeServerSide(email: string) {
   const res = request(
     'POST',
       `${url}:${port}/test/genToken`,
