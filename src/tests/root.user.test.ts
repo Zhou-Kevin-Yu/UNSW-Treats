@@ -11,10 +11,26 @@ import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.aut
 
 import { channelsCreateV2SS } from '../wrapped.channels';
 import { dmCreateV1SS } from '../wrapped.dm';
-import { messageSendDmV1SS } from '../wrapped.message';
+import { messageSendDmV2SS } from '../wrapped.message';
 
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
+}
+
+function authRegisterSS(email: string, password: string, nameFirst: string, nameLast: string) {
+  const res = request(
+    'POST',
+          `${url}:${port}/auth/register/v3`,
+          {
+            json: {
+              email,
+              password,
+              nameFirst,
+              nameLast,
+            }
+          }
+  );
+  return JSON.parse(res.body as string);
 }
 
 function clearV1ServerSide() {
@@ -186,20 +202,37 @@ describe('Testing /user/profile/sethandle/v1', () => {
 describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
   describe('Testing Error Cases ', () => {
     test('HTTP Status not 200', () => {
-
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const url = 'invalid url'
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 500, 0, 500 );
+      expect(object).toStrictEqual({ error: 'error'});
     });
     test('values not withim dimensions of url', () => {
 
     });
     test('xEnd less than xStart', () => {
 
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 500, 0, 500, 0 );
+      expect(object).toStrictEqual({ error: 'error'});
     });
     test('image uploaded is not jpg', () => {
 
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const url = 'https://www.nicepng.com/png/detail/5-52286_download-laughing-iphone-emoji-jpg-emoji-happy-png.png'
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 500, 0, 500 );
+      expect(object).toStrictEqual({ error: 'error'});
     });
+
   });
   describe('Testing correct output', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'
+    
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 500, 0, 500 );
 
+      expect(object).toStrictEqual({});
   });
 }) */
 
@@ -211,14 +244,14 @@ describe('HTTP tests for user/stats/v1', () => {
   });
   describe('Testing correct output', () => {
     test('Correct output1', () => {
-      const reg1 = authRegisterV2ServerSide('bk@gmail.com', 'validPass98', 'b', 'k');
-      const reg2 = authRegisterV2ServerSide('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
-      const channel1 = channelsCreateV2SS(reg1.token, 'COMP1531', true);
-      channelsCreateV2SS(reg1.token, 'COMP2521', false);
-      const dm1 = dmCreateV1SS(reg1.token, [reg1.authUserId, reg2.authUserId]);
-      messageSendDmV1SS(reg1.token, dm1.dmId, 'Hi, how are you?');
-      
-      const object = userStatsV1SS(reg1.token);
+      const reg12 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const reg23 = authRegisterSS('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
+      const channel1 = channelsCreateV2SS(reg12.token, 'COMP1531', true);
+      channelsCreateV2SS(reg12.token, 'COMP2521', false);
+      const dm1 = dmCreateV1SS(reg12.token, [reg23.authUserId]);
+      messageSendDmV2SS(reg12.token, dm1.dmId, 'Hi, how are you?');
+
+      const object = userStatsV1SS(reg12.token);
 
       expect(object).toStrictEqual({
         channelsJoined: [{ numChannelsJoined: 2, timeStamp: expect.any(Number) }],

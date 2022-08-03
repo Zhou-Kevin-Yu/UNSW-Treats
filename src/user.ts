@@ -210,9 +210,15 @@ function userStatsV1(token: string) {
   const dmsJoined = userDms.dms.length;
   const numChannelsAll = channelsAll.channels.length;
 
-  let messagesSent = 0;
-  let numDmsAll = 0
-  let numMessagesAll = 0;
+  let messagesSent = 0, numDmsAll = 0, numMessagesAll = 0;
+  
+  for(const channel of data.channels) {
+      for (const message of channel.messages) {
+        if(message.uId === authUserId) {
+          messagesSent++;
+        }
+      }
+  }
 
   for (const dm of data.dms) {
     for (const messages of dm.messages) {

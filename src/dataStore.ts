@@ -163,6 +163,7 @@ interface UserObj {
   permission: number;
   tokens: string[];
   resetCodes: string[],
+  profileImgUrl: string
 }
 
 interface ChannelObj {
