@@ -198,6 +198,52 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
 });
 // TODO add dm/messages/v1
 
+////////////////// All channel requests //////////////////////
+// Old message requests - with updated routes
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  res.json(channelAddOwnerV1(token, channelId, uId));
+});
+
+app.get('/channel/details/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const cId = parseInt(req.query.channelId as string);
+  res.json(channelDetailsV2(token, cId));
+});
+
+app.post('/channel/invite/v3', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  res.json(channelInviteV2(token, channelId, uId));
+});
+
+app.post('/channel/join/v3', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = req.header('token');
+  res.json(channelJoinV2(token, channelId));
+});
+
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = req.header('token');
+  res.json(channelLeaveV1(token, channelId));
+});
+
+app.get('/channel/messages/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(channelMessagesV2(token, channelId, start));
+});
+
+app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV1(token, channelId, uId));
+});
+
+// Old message requests
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelAddOwnerV1(token, channelId, uId));
