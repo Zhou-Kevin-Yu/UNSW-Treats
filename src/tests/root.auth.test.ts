@@ -318,8 +318,6 @@ describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1'
   test('Success Case', () => {
     authRegisterV2ServerSide('comp1531dreamteam22t2@outlook.com', 'dogIsCute', 'benjamin', 'kernohandome');
     const resetCode = generateResetCodeServerSide('comp1531dreamteam22t2@outlook.com');
-    console.log('reset code getting added is', resetCode);
-    console.log('this is of type', typeof resetCode);
     const res = request(
       'POST',
       `${url}:${port}/auth/passwordreset/reset/v1`,
