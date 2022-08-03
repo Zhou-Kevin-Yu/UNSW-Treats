@@ -2,6 +2,7 @@ import { getData, setData } from './dataStore';
 import isEmail from 'validator/lib/isEmail';
 import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
+import { sendMail } from './mail';
 import crypto from 'crypto';
 
 import HTTPError from 'http-errors';
@@ -92,7 +93,8 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     handleStr: handle,
     password: hashThis(password+SECRET),
     permission: perm,
-    tokens: []
+    tokens: [],
+    resetCodes: [],
   };
   setData(data);
   const token = generateToken(authUserId);
@@ -183,5 +185,94 @@ function hashThis (unhashed: string): string {
 }
 
 
+// Generates a reset Code and makes it active
+function generateResetCode (email: string): string {
+  const data = getData();
+  console.log('data is', data);
+  const user = data.users.find(user => user.email === email);
+  if (user === undefined || user === null) {
+    throw  HTTPError(400, 'Not for you to access, only testing purposes');
+  }
+  console.log(user);
+  const resetCodes = user.resetCodes;
 
-export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET, wrappedAuthRegister };
+  let resetObj = {
+    cur: user.uId,
+    code: hashThis((Math.random()).toString()+SECRET+(Date.now()).toString()),
+  }
+
+  let resetCode = JSON.stringify(resetObj);
+
+  while(resetCode in resetCodes) {
+    let resetObj = {
+      cur: user.uId,
+      code: hashThis((Math.random()).toString()+SECRET+(Date.now()).toString()),
+    }
+  
+    let resetCode = JSON.stringify(resetObj);
+  }
+
+  console.log('resetCode is', resetCode);
+  console.log('this is of type', typeof resetCode);
+  data.users[user.uId].resetCodes.push(resetCode);
+
+  setData(data);
+
+  return resetCode;
+}
+
+function authPasswordResetResetV1 (resetCode: string, newPassword: string) {
+  console.log('in here with password', newPassword);
+  console.log('in here with resetCode', resetCode);
+  if (newPassword.length < 6) {
+    throw HTTPError(400, 'New password too short.');
+  }
+
+  const data = getData();
+  let fullResetCode = { cur: 0, code: '' };
+  try {
+    fullResetCode = JSON.parse(resetCode);
+    if (!fullResetCode.hasOwnProperty('cur') || !fullResetCode.hasOwnProperty('code')) {
+      throw new Error('Invalid reset code.');
+    }
+  } catch (error) {
+    throw HTTPError(400, 'Invalid reset code.');
+  }
+  console.log("past the try catch");
+
+  const resetObj = fullResetCode;
+  console.log('resetObj', resetObj)
+  const user = data.users[resetObj.cur];
+  if (user === undefined || user === null) {
+    throw HTTPError(400, 'Invalid reset code.');
+  }
+
+  console.log("AFTER HERE");
+
+  const resetCodes = user.resetCodes;
+
+  console.log(resetCodes)
+
+  if (!(resetCodes.includes(resetCode))) {
+    throw HTTPError(400, 'Invalid reset code.');
+  }
+  data.users[user.uId].password = hashThis(newPassword+SECRET);
+
+  setData(data);
+
+  return {};
+}
+
+function authPasswordResetRequestV1 (email: string) {
+  const data = getData();
+  if (data.users.find(user => user.email === email) === undefined) {
+    return {}; 
+  }
+  const resetCode = generateResetCode(email);
+
+  sendMail(email, resetCode);
+
+  return {};
+}
+
+export { authLoginV1, authRegisterV1, authLogoutV1, hashThis, SECRET, wrappedAuthRegister, generateResetCode, authPasswordResetResetV1, authPasswordResetRequestV1 };

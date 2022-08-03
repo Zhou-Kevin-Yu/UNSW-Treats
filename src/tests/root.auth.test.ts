@@ -4,8 +4,10 @@ import os from 'os';
 
 import { tokenToAuthUserId, isTokenValid } from '../token';
 
-import { authLoginV2ServerSide } from '../wrapped.auth';
+import { authLoginV2ServerSide, authRegisterV2ServerSide } from '../wrapped.auth';
 import { userProfileV2ServerSide } from '../wrapped.user';
+
+import { generateResetCode } from '../auth';
 
 const OK = 200;
 const port = config.port;
@@ -42,6 +44,20 @@ function authRegisterServerSide(email: string, password: string, nameFirst: stri
           }
   );
   return JSON.parse(res.body as string);
+}
+
+function generateResetCodeServerSide(email: string){
+  const res = request(
+    'POST',
+      `${url}:${port}/test/genToken`,
+      {
+        json: {
+          email,
+        }
+      }
+  );
+  const obj = JSON.parse(res.body as string);
+  return obj;
 }
 
 describe('Testing /auth/login/v3', () => {
@@ -270,21 +286,61 @@ describe('further testing combining login, logout and user', () => {
   });
 });
 
-// describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1', () => {
-//   test('Error Case - reset - resetCode is not valid', () => {
-//     const res = request(
-//       'POST',
-//             `${url}:${port}/auth/passwordreset/reset/v1`,
-//             {
-//               json: {
-//                 resetCode: 'invalid',
-//                 newPassword: 'ThisIsAPassword',
-//               }
-//             }
-//     );
-//     expect(res.statusCode).toBe(400);
-//   });
-//   test('Error Case - reset - newPassword is not valid', () => {
-//     const res = request
-//   });
-// });
+describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1', () => {
+  test('Error Case - reset - resetCode is not valid', () => {
+    const res = request(
+      'POST',
+            `${url}:${port}/auth/passwordreset/reset/v1`,
+            {
+              json: {
+                resetCode: 'invalid',
+                newPassword: 'ThisIsAPassword',
+              }
+            }
+    );
+    expect(res.statusCode).toBe(400);
+  });
+  test('Error Case - reset - newPassword is not valid', () => {
+    authRegisterV2ServerSide('gazza@gmail.com', 'dogIsCute', 'benjamin', 'kernohandome');
+    const resetCode = generateResetCodeServerSide('gazza@gmail.com');
+    const res = request(
+      'POST',
+      `${url}:${port}/auth/passwordreset/reset/v1`,
+      {
+        json: {
+          resetCode: resetCode,
+          newPassword: 'no',
+        }
+      }
+    );
+    expect(res.statusCode).toBe(400);
+  });
+  test('Success Case', () => {
+    authRegisterV2ServerSide('test@gmail.com', 'dogIsCute', 'benjamin', 'kernohandome');
+    const resetCode = generateResetCodeServerSide('test@gmail.com');
+    console.log('reset code getting added is', resetCode);
+    console.log('this is of type', typeof resetCode);
+    const res = request(
+      'POST',
+      `${url}:${port}/auth/passwordreset/reset/v1`,
+      {
+        json: {
+          resetCode: resetCode,
+          newPassword: 'MyNewPassword',
+        }
+      }
+    );
+    expect(res.statusCode).toBe(OK);
+    const resTwo = request(
+      'POST',
+      `${url}:${port}/auth/login/v3`,
+      {
+        json: {
+          email: 'test@gmail.com',
+          password: 'MyNewPassword',
+        }
+      }
+    );
+    expect(resTwo.statusCode).toBe(OK);
+  });
+});
