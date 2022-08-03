@@ -275,7 +275,8 @@ function authPasswordResetRequestV1 (email: string) {
   const resetCode = generateResetCode(email);
 
   // TODO check if front end ads / with JSON 
-  sendMail(email, resetCode);
+  const formattedResetCode = resetCode.replace(/"/gm, '\\"');
+  sendMail(email, resetCode, formattedResetCode);
 
   return {};
 }
