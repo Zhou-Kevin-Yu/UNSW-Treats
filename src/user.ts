@@ -6,6 +6,8 @@ import isEmail from 'validator/lib/isEmail';
 import internal from 'stream';
 import { channelsListV1, channelsListallV1 } from './channels';
 import { dmListV1 } from './dm';
+import request from 'sync-request';
+import fs from 'fs';
 /**
  *
  * For a valid user, returns information about their userId,
@@ -166,13 +168,31 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
 
 function userProfileUploadPhotoV1(imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
 
-    //errors to check for:
-  if (imgUrl.indexOf("https://") == 0) return { error: 'error' };
+  //xEnd is less than or equal to xStart or yEnd is less than or equal to yStart
   if (xEnd <= xStart || yEnd <= yStart) return { error: 'error' };
-    //imgUrl returns an HTTP status other than 200, or any other errors occur when attempting to retrieve the image
-    //any of xStart, yStart, xEnd, yEnd are not within the dimensions of the image at the URL
-    //image uploaded is not a JPG
 
+  const width = xEnd - xStart;
+  const height = yEnd - yStart;
+
+  //Check if image is jpg
+  if (!/\.(jpg)$/.test(imgUrl))return { error: 'error' };
+
+  const res = request(
+      'GET',
+      imgUrl
+  );
+
+  //Check status code of HTTP request
+  if (res.statusCode !== 200) return { error: 'error' };
+
+  const body = res.getBody();
+
+  //Check dimensions of url....
+  //crop image
+  //save properly
+  //app.use('/photos', express.static('photos'));
+  //filename
+  fs.writeFileSync('photos/test.jpg', body, { flag: 'w' });
 
   return {};
 }
