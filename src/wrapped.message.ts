@@ -49,6 +49,23 @@ export function messageReactV1SS(token: string, messageId: number, reactId: numb
   return JSON.parse(res.body as string);
 }
 
+export function messageUnreactV1SS(token: string, messageId: number, reactId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/unreact/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            messageId,
+            reactId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
 //////////// Old message wrapped requests - updated routes and token in header ////////////
 function messageRemoveV2SS(token: string, messageId: number) {
   const res = request('DELETE', `${url}:${port}/message/remove/v2`, {

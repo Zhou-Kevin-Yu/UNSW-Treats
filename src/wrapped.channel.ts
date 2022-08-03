@@ -26,6 +26,19 @@ export function channelMessagesV3SS(token: string, channelId: number, start: num
   return JSON.parse(res.body as string);
 }
 
+export function channelLeaveV2SS(token: string, channelId: number) {
+  const res = request('POST', `${url}:${port}/channel/leave/v2`,
+      {
+        headers:  {
+          token: token,
+        },
+        json: {
+          channelId: channelId
+        }
+      });
+  return JSON.parse(res.body as string);
+}
+
 /////////// Iteration 2 Wrap requests ////////////
 export function channelMessagesV2SS(token: string, channelId: number, start: number) {
   const res = request('GET', `${url}:${port}/channel/messages/v2`,
