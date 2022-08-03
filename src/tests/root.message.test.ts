@@ -38,9 +38,20 @@ test('', () => {
 describe('Iteration 3 Function Testing', () => {
   describe('Testing /message/share/v1', () => {
     describe('Testing Success Cases', () => {
-      test('', () => {
+      test("ChannelToDmShare", () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
 
+        const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        // user0 shares message0, which is in channel0, to dm0, a dm they are part of
+        const res = messageShareV1SS(user0.token, message0.messageId, '', -1, dm0.dmId);
+        expect(res.sharedMessageId).toBe(message0.messageId + 1);
       });
+
     });
     describe('Testing Error Cases', () => {
       test('channelId AND dmId Invalid - (channel)', () => {
@@ -88,10 +99,11 @@ describe('Iteration 3 Function Testing', () => {
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
         let str = "";
-        for (let i = 0; i < 1001; i ++) {
+        // 1001-10 because original message is 8 + 2 newline characters
+        for (let i = 0; i < 1001-10; i ++) {
           str = str + "a";
         }
-        expect(str.length).toBe(1001);
+        expect(str.length).toBe(991);
 
         // user0 shares a message of length 1001 to dm0 from channel0
         const res = messageShareV1SS(user1.token, message0.messageId, str, -1, dm0.dmId);
@@ -104,7 +116,7 @@ describe('Iteration 3 Function Testing', () => {
         const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
 
         const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
-        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+        // const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
         // user0 shares message0, which is in channel0, to channel1, a channel they arent part of
         const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, -1);
