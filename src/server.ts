@@ -280,6 +280,32 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
 });
 
+// Old message requests - updated routes
+app.post('message/send/v2', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageSendV1(token, channelId, message));
+});
+
+app.put('/message/edit/v2', (req: Request, res: Response) => {
+  const { messageId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = req.query.messageId as string;
+  const newMessageId = parseInt(messageId);
+  res.json(messageRemoveV1(token, newMessageId));
+});
+
+app.post('/message/senddm/v2', (req: Request, res: Response) => {
+  const { dmId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageSendDmV1(token, dmId, message));
+});
+
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
