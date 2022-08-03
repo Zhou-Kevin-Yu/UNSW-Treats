@@ -12,6 +12,26 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
+//////////// Iteration 3 wrapped requests - updated routes and token in header ////////////
+export function messageShareV1SS(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/share/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            ogMessageId,
+            message,
+            channelId,
+            dmId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
 //////////// Old message wrapped requests - updated routes and token in header ////////////
 function messageRemoveV2SS(token: string, messageId: number) {
   const res = request('DELETE', `${url}:${port}/message/remove/v2`, {
