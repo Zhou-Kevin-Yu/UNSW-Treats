@@ -162,6 +162,7 @@ interface UserObj {
   password: string;
   permission: number;
   tokens: string[];
+  resetCodes: string[],
 }
 
 interface ChannelObj {
