@@ -316,8 +316,8 @@ describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1'
     expect(res.statusCode).toBe(400);
   });
   test('Success Case', () => {
-    authRegisterV2ServerSide('test@gmail.com', 'dogIsCute', 'benjamin', 'kernohandome');
-    const resetCode = generateResetCodeServerSide('test@gmail.com');
+    authRegisterV2ServerSide('comp1531dreamteam22t2@outlook.com', 'dogIsCute', 'benjamin', 'kernohandome');
+    const resetCode = generateResetCodeServerSide('comp1531dreamteam22t2@outlook.com');
     console.log('reset code getting added is', resetCode);
     console.log('this is of type', typeof resetCode);
     const res = request(
@@ -336,7 +336,7 @@ describe('testing /auth/passwordreset/request/v1 & /auth/passwordreset/reset/v1'
       `${url}:${port}/auth/login/v3`,
       {
         json: {
-          email: 'test@gmail.com',
+          email: 'comp1531dreamteam22t2@outlook.com',
           password: 'MyNewPassword',
         }
       }

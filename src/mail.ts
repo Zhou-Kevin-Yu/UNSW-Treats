@@ -1,9 +1,8 @@
-import { AnyAaaaRecord } from 'dns';
 import nodemailer from 'nodemailer';
 
 // modified function courtesy of:https://ourcodeworld.com/articles/read/264/how-to-send-an-email-gmail-outlook-and-zoho-using-nodemailer-in-node-js
 const transporter = nodemailer.createTransport({
-    Host: "smtp-mail.outlook.com",
+    host: "smtp-mail.outlook.com",
     secureConnection: false,
     port: 587, 
     tls: {
@@ -23,7 +22,7 @@ export function sendMail(email: string, resetCode: string) {
         from: '"UNSW Treats - DREAM Edition" <comp1531dreamteam22t2@outlook.com>',
         to: email,
         subject: 'Locked Out? - DREAM has your back.',
-        text: `Use our state of the art reset code to get back into your account: ${resetCode} \n\n Enter code in at: auth/passwordreset/reset/v1 \n\n If you did not request this reset, please ignore this email.`,
+        text: `Use our state of the art reset code to get back into your account: ${resetCode} \n\nEnter code in at: auth/passwordreset/reset/v1 \n\n If you did not request this reset, please ignore this email.`,
     };
     
     transporter.sendMail(mailCongfig, function(error, info){
@@ -35,3 +34,4 @@ export function sendMail(email: string, resetCode: string) {
     });
 }
 
+// sendMail('comp1531dreamteam22t2@outlook.com', '0');

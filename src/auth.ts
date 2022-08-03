@@ -233,9 +233,11 @@ function authPasswordResetResetV1 (resetCode: string, newPassword: string) {
   try {
     fullResetCode = JSON.parse(resetCode);
     if (!fullResetCode.hasOwnProperty('cur') || !fullResetCode.hasOwnProperty('code')) {
+      console.log("HEREEE")
       throw new Error('Invalid reset code.');
     }
   } catch (error) {
+    console.log("We have an error");
     throw HTTPError(400, 'Invalid reset code.');
   }
   console.log("past the try catch");
@@ -256,6 +258,8 @@ function authPasswordResetResetV1 (resetCode: string, newPassword: string) {
   if (!(resetCodes.includes(resetCode))) {
     throw HTTPError(400, 'Invalid reset code.');
   }
+  // TODO: remove used reset code
+  data.users[user.uId].resetCodes = resetCodes.filter(code => code !== resetCode);
   data.users[user.uId].password = hashThis(newPassword+SECRET);
 
   setData(data);
@@ -270,6 +274,7 @@ function authPasswordResetRequestV1 (email: string) {
   }
   const resetCode = generateResetCode(email);
 
+  // TODO check if front end ads / with JSON 
   sendMail(email, resetCode);
 
   return {};
