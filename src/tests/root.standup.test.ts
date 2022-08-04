@@ -2,12 +2,12 @@ import request from 'sync-request';
 import config from '../config.json';
 import os from 'os';
 
+
 import { wrappedStandupStartServerSide, wrappedStandupActiveServerSide, wrappedStandupSendServerSide } from '../wrapped.standup';
 
-import { authLoginV2ServerSide, authRegisterV2ServerSide } from '../wrapped.auth';
+import { authRegisterV2ServerSide } from '../wrapped.auth';
 
 import { channelsCreateV3ServerSide } from '../wrapped.channels';
-import { time } from 'console';
 
 const OK = 200;
 const port = config.port;
@@ -16,6 +16,17 @@ let url = config.url;
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
+
+function clearV1ServerSide() {
+  request(
+    'DELETE',
+            `${url}:${port}/clear/v1`
+  );
+}
+
+beforeEach(() => {
+  clearV1ServerSide();
+});
 
 describe('/standup/start/v1', () => {
     test('403 error case - invalid token', () => {
