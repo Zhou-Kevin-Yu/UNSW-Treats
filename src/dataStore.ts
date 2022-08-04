@@ -182,19 +182,20 @@ interface ChannelObj {
   messages: MessagesObj[];
 }
 
-interface standupMsgObj {
+export interface standupMsgObj {
   stdMsgId: number;
   handleStr: string;
   message: string;
 }
 
-interface standupObj {
+export interface standupObj {
   standupId: number;
   channelId: number;
   timeStart: number;
   timeFinish: number;
   timeLength: number;
   standupMsgs: standupMsgObj[];
+  startingUserId: number;
 }
 
 interface SystemInfo {

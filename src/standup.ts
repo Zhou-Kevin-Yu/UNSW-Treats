@@ -1,5 +1,6 @@
 import { isTokenValid, tokenToAuthUserId } from './token';
 import { getData, setData } from './dataStore';
+import { standupObj, standupMsgObj } from './dataStore';
 import HTTPError from 'http-errors';
 
 
@@ -27,26 +28,111 @@ function standupStartV1 (token: string, channelId: number, length: number): numb
         throw HTTPError(403, "User isn't part of channel");
     }
 
-
-    const standups = data.standups;
     // Check if there is already a standup for this channel
     if (standupActiveV1(token, channelId).isActive) {
         throw HTTPError(400, "There is already a standup for this channel");
     }
 
-    return 0;
+    const newStandupObj: standupObj = {
+        standupId: data.standups.length,
+        channelId: channelId,
+        timeStart: Math.floor((new Date()).getTime() / 1000),
+        timeFinish: Math.floor((new Date()).getTime() / 1000) + length,
+        timeLength: length,
+        standupMsgs: [],
+        startingUserId: authUserId,
+    }
+    data.standups.push(newStandupObj);
+    setData(data);
+
+    setTimeout(() => {
+        // This is code that runs after standup is finished
+        const newData = getData();
+        const prevStandupObj = newData.standups.find(standup => standup.standupId === newStandupObj.standupId);
+        if (prevStandupObj === undefined) {
+            throw HTTPError(400, "Standup no longer exists");
+        }
+        let standUpMsg = "";
+        let standUpMsgArr = [];
+        for (const standupMsg of prevStandupObj.standupMsgs) {
+            standUpMsgArr.push(standupMsg.handleStr);
+            standUpMsgArr.push(': ');
+            standUpMsgArr.push(standupMsg.message);
+            standUpMsgArr.push('\n');
+        }
+        standUpMsg = standUpMsgArr.join('');
+        // TODO - send the actual message
+    }, length*1000);
+
+    return newStandupObj.timeFinish;
 }
 
 function standupActiveV1 (token: string, channelId: number){
+    if (!isTokenValid(token)) {
+        throw HTTPError(403, "Access Denied: Token is invalid");
+    }
+    const data = getData();
 
+    // Check if channelId is valid
+    if (!(channelId in data.channels)) {
+        throw HTTPError(400, "Channel does not exist");
+    }
+    const channel = data.channels[channelId];
+    const authUserId = tokenToAuthUserId(token, true);
+    // Check if channelId is valid but authorised user is not part of channel
+    if (!(channel.allMembers.some(member => member.uId === authUserId))) {
+        throw HTTPError(403, "User isn't part of channel");
+    }
+
+    const standupObj = data.standups.find(standup => standup.channelId === channelId);
+
+    const isActiveValue = standupObj !== undefined;
+    const timeLeftValue = isActiveValue ? standupObj.timeFinish : null;
     return {
-        isActive: false,
-        timeFinish: 0,
+        isActive: isActiveValue,
+        timeFinish: timeLeftValue,
     };
 };
 
 function standupSendV1 (token: string, channelId: number, message: string) {
+    if (!isTokenValid(token)) {
+        throw HTTPError(403, "Access Denied: Token is invalid");
+    }
 
+    const data = getData();
+    // Check if channelId is valid
+    if (!(channelId in data.channels)) {
+        throw HTTPError(400, "Channel does not exist");
+    }
+    const channel = data.channels[channelId];
+    const authUserId = tokenToAuthUserId(token, true);
+    // Check if channelId is valid but authorised user is not part of channel
+    if (!(channel.allMembers.some(member => member.uId === authUserId))) {
+        throw HTTPError(403, "User isn't part of channel");
+    }
+
+    // Check if there is a standup for this channel
+    if (!(standupActiveV1(token, channelId).isActive)) {
+        throw HTTPError(400, "There is no standup for this channel");
+    }
+    // Check that the message length does not exceed 1000
+    if (message.length > 1000) {
+        throw HTTPError(400, "Message is too long");
+    }
+
+    const standupObj = data.standups.find(standup => standup.channelId === channelId);
+    if (standupObj === undefined) {
+        throw HTTPError(400, "Standup no longer exists");
+    }
+
+    const newStandupMsg: standupMsgObj = {
+        stdMsgId: standupObj.standupMsgs.length,
+        handleStr: data.users[authUserId].handleStr,
+        message: message,
+    }
+    data.standups[standupObj.standupId].standupMsgs.push(newStandupMsg);
+    setData(data);
+    
     return {};
 }
 
