@@ -28,7 +28,7 @@ export interface AuthLoginV1 {
 export interface AuthRegisterV1 {
   token?: string;
   authUserId?: number;
-  error?: 'error';
+  error?: string;
 }
 
 export interface ChannelJoinV1 {
@@ -52,6 +52,14 @@ export interface MessagesObj {
   uId: number;
   message: string;
   timeSent: number;
+  reacts: ReactObj[];
+  isPinned: boolean;
+}
+
+interface ReactObj {
+  reactId: number;
+  uIds: number[];
+  isThisUserReacted: boolean;
 }
 
 export interface ChannelMessagesV1 {
@@ -81,7 +89,16 @@ export interface ChannelsListV1 {
   error?: 'error';
 }
 
-// Message Interfaces
+////// Message Interfaces //////
+// Iteration 3 Interfaces
+export interface MessageShareV1 {
+  sharedMessageId: number;
+}
+
+export interface MessageSendlaterV1 {
+  messageId: number;
+}
+// Iteration 2 Interfaces
 export interface MessageSendV1 {
   messageId?: number;
   error?: 'error';
@@ -153,6 +170,7 @@ interface UserObj {
   password: string;
   permission: number;
   tokens: string[];
+  resetCodes: string[],
 }
 
 interface ChannelObj {

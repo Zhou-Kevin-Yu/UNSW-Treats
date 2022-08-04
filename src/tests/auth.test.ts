@@ -7,24 +7,22 @@ beforeEach(() => {
   clearV1();
 });
 
-const errorReturn = { error: 'error' };
-
 describe('testing error cases', () => {
   test('Testing invalid email', () => {
     const returned = authRegisterV1('benkerno.com', 'cosmoIsTheBest', 'ben', 'kerno');
-    expect(returned).toStrictEqual(errorReturn);
+    expect(returned).toHaveProperty('error');
   });
 
   test('Testing registering an account with an existing email', () => {
     authRegisterV1('ben.kerno@gmail.com', 'peanutButter', 'ben', 'kerno');
     const returned = authRegisterV1('ben.kerno@gmail.com', 'dogIsCute', 'benjamin', 'kernohan');
-    expect(returned).toStrictEqual(errorReturn);
+    expect(returned).toHaveProperty('error');
   });
 
   describe('Testing password cases', () => {
     test('Testing invalid password (password < 6 characters)', () => {
       const returned = authRegisterV1('ben.kerno@gmail.com', 'cosmo', 'benjamin', 'kernohan');
-      expect(returned).toStrictEqual(errorReturn);
+      expect(returned).toHaveProperty('error');
     });
 
     test('Testing valid password (password === 6 characters)', () => {
@@ -37,26 +35,26 @@ describe('testing error cases', () => {
   describe('Testing valid names', () => {
     test('Testing when nameFirst === ""', () => {
       const returned = authRegisterV1('ben.kerno@gmail.com', 'dogIsCute', '', 'kernohan');
-      expect(returned).toStrictEqual(errorReturn);
+      expect(returned).toHaveProperty('error');
     });
 
     test('Testing when nameFirst exceeds 50 characters', () => {
       const name = 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm';
       expect(name.length).toBe(52);
       const returned = authRegisterV1('ben.kerno@gmail.com', 'dogIsCute', name, 'kernohan');
-      expect(returned).toStrictEqual(errorReturn);
+      expect(returned).toHaveProperty('error');
     });
 
     test('Testing when nameLast === ""', () => {
       const returned = authRegisterV1('ben.kerno@gmail.com', 'dogIsCute', 'ben', '');
-      expect(returned).toStrictEqual(errorReturn);
+      expect(returned).toHaveProperty('error');
     });
 
     test('Testing when nameLast exceeds 50 characters', () => {
       const name = 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm';
       expect(name.length).toBe(52);
       const returned = authRegisterV1('ben.kerno@gmail.com', 'dogIsCute', 'benjamin', name);
-      expect(returned).toStrictEqual(errorReturn);
+      expect(returned).toHaveProperty('error');
     });
   });
 });

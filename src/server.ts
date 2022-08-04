@@ -6,10 +6,11 @@ import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
+import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1 } from './message';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
+   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
@@ -21,7 +22,9 @@ import { adminChangeUserPermissionV1, adminUserRemoveV1 } from './admin';
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
-import { request } from 'http';
+import { isPrivateIdentifier } from 'typescript';
+// import createHttpError from 'http-errors';
+import HTTPError from 'http-errors';
 
 // Set up web app, use JSON
 const app = express();
@@ -42,26 +45,57 @@ app.get('/echo', (req, res, next) => {
   }
 });
 
-// handles errors nicely
-app.use(errorHandler());
+
 
 // for logging errors
 app.use(morgan('dev'));
 
+// for checking token validity
+// TODO: check for which route calls, rather than if token exists
+app.use((req: Request, res: Response, next) => {
+  // console.log("request: ", req.url);
+  const fullToken = req.header('token');
+  // console.log("I HAVE THE TOKEN", fullToken);
+  if (fullToken !== undefined && fullToken !== null) {
+    if (!isTokenValid(fullToken)) {
+      throw HTTPError(403, "Access Denied: Token is invalid");
+    } else if (tokenToAuthUserId(fullToken, true) === null || 
+              tokenToAuthUserId(fullToken, true) === undefined) {
+      throw HTTPError(403, "Access Denied: Token is invalid");
+    }
+  }
+  next();
+});
+
 // All auth requests
-app.post('/auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const returned = authLoginV1(email, password);
+  if ('error' in returned) {
+    throw HTTPError(400, 'Invalid email or password');
+  }
   res.json(authLoginV1(email, password));
 });
 
-app.post('/auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v3', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
-  res.json(authRegisterV1(email, password, nameFirst, nameLast));
+  res.json(wrappedAuthRegister(email, password, nameFirst, nameLast));
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response) => {
-  const { token } = req.body;
+app.post('/auth/logout/v2', (req: Request, res: Response) => {
+  // const { token } = req.body;
+  const token = req.header('token');
   res.json(authLogoutV1(token));
+});
+
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const { email } = req.body;
+  res.json(authPasswordResetRequestV1(email));
+});
+
+app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+  const { resetCode, newPassword } = req.body;
+  res.json(authPasswordResetResetV1(resetCode, newPassword));
 });
 
 /// /////////////////////////////////////////////////////////channels functions
@@ -166,6 +200,52 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
 });
 // TODO add dm/messages/v1
 
+////////////////// All channel requests //////////////////////
+// Old message requests - with updated routes
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  res.json(channelAddOwnerV1(token, channelId, uId));
+});
+
+app.get('/channel/details/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const cId = parseInt(req.query.channelId as string);
+  res.json(channelDetailsV2(token, cId));
+});
+
+app.post('/channel/invite/v3', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  res.json(channelInviteV2(token, channelId, uId));
+});
+
+app.post('/channel/join/v3', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = req.header('token');
+  res.json(channelJoinV2(token, channelId));
+});
+
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = req.header('token');
+  res.json(channelLeaveV1(token, channelId));
+});
+
+app.get('/channel/messages/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(channelMessagesV2(token, channelId, start));
+});
+
+app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV1(token, channelId, uId));
+});
+
+// Old message requests
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelAddOwnerV1(token, channelId, uId));
@@ -204,7 +284,77 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });
 
-// All message requests
+////////////////// All message requests //////////////////////
+// New message requests
+app.post('/message/share/v1', (req: Request, res: Response) => {
+  const { ogMessageId, message, channelId, dmId } = req.body;
+  const token = req.header('token');
+  res.json(messageShareV1(token, ogMessageId, message, channelId, dmId));
+});
+
+app.post('/message/react/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageReactV1(token, messageId, reactId));
+});
+
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnreactV1(token, messageId, reactId));
+});
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = req.header('token');
+  res.json(messageUnpinV1(token, messageId));
+});
+
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
+  const { channelId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterV1(token, channelId, message, timeSent));
+});
+
+app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
+  const { dmId, message, timeSent } = req.body;
+  const token = req.header('token');
+  res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
+});
+
+// Old message requests - updated routes
+app.post('/message/send/v2', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageSendV1(token, channelId, message));
+});
+
+app.put('/message/edit/v2', (req: Request, res: Response) => {
+  const { messageId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = req.query.messageId as string;
+  const newMessageId = parseInt(messageId);
+  res.json(messageRemoveV1(token, newMessageId));
+});
+
+app.post('/message/senddm/v2', (req: Request, res: Response) => {
+  const { dmId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageSendDmV1(token, dmId, message));
+});
+
+// Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, channelId, message));
@@ -227,7 +377,7 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-// All users requests
+////////////////// All users requests //////////////////
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
@@ -245,6 +395,12 @@ app.post('admin/userpermission/change/v1', (req: Request, res: Response) => {
   const uId = parseInt(req.query.uId as string);
   const permissionId = parseInt(req.query.permissionId as string);
   res.json(adminChangeUserPermissionV1(req.header('token'), uId, permissionId));
+});
+
+/// All routes for testing purposes
+app.post('/test/genToken', (req: Request, res: Response) => {
+  const { email } = req.body;
+  res.json(generateResetCode(email));
 })
 
 // get Data before spinning up server
@@ -252,6 +408,9 @@ const readData = persistantReadData();
 let data = getData();
 data = Object.assign(data, readData);
 setData(data);
+
+// handles errors nicely
+app.use(errorHandler());
 
 // start server
 const server = app.listen(PORT, HOST, () => {

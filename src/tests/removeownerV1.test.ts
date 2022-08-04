@@ -18,7 +18,7 @@ beforeEach(() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
   test('Joining server with 1 owner member', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@unsw.com',
@@ -29,7 +29,7 @@ describe('Testing basic functionality', () => {
       });
     const kevin = JSON.parse(res.body as string);
     console.log(kevin);
-    res = request('POST', `${url}:${port}/auth/register/v2`,
+    res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'bob@unsw.com',
@@ -89,7 +89,7 @@ describe('Testing basic functionality', () => {
     expect(res.statusCode).toBe(OK);
   });
   test('case where owner to be removed isn\'t an owner', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`,
+    let res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'kevinyu@unsw.com',
@@ -100,7 +100,7 @@ describe('Testing basic functionality', () => {
       });
     const kevin = JSON.parse(res.body as string);
     console.log(kevin);
-    res = request('POST', `${url}:${port}/auth/register/v2`,
+    res = request('POST', `${url}:${port}/auth/register/v3`,
       {
         json: {
           email: 'bob@unsw.com',

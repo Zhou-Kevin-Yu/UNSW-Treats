@@ -13,7 +13,8 @@ test('Test successful user clear', () => {
     handleStr: 'Gazza',
     password: 'bird27',
     permission: 1,
-    tokens: ['token']
+    tokens: ['token'],
+    resetCodes: ['code'],
   };
   // const dataInit = data;
   setData(data);

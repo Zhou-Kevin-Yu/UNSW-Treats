@@ -19,7 +19,7 @@ if (os.platform() === 'darwin') {
 function authRegisterSS(email: string, password: string, nameFirst: string, nameLast: string) {
   const res = request(
     'POST',
-          `${url}:${port}/auth/register/v2`,
+          `${url}:${port}/auth/register/v3`,
           {
             json: {
               email,
@@ -68,7 +68,7 @@ describe('HTTP tests for dm/create', () => {
   // TODO test creating a dm with a userId one higher than max uId (edge case)
   describe('Testing Error Cases for dm/create', () => {
     test('Invalid uId', () => {
-      let res = request('POST', `${url}:${port}/auth/register/v2`, {
+      let res = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno@gmail.com',
           password: 'validPass23',
@@ -91,7 +91,7 @@ describe('HTTP tests for dm/create', () => {
 
     test('duplicate uIds invalid uId', () => {
       // create a valid register request
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno@gmail.com',
           password: 'validPass23',
@@ -103,7 +103,7 @@ describe('HTTP tests for dm/create', () => {
       const token1 = res1Obj.token;
 
       // create a second valid register request
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res2 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno1@gmail.com',
           password: 'validPass23',
@@ -127,7 +127,7 @@ describe('HTTP tests for dm/create', () => {
 
     test('Creator is also in the uId Array', () => {
       // create a valid register request
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno@gmail.com',
           password: 'validPass23',
@@ -140,7 +140,7 @@ describe('HTTP tests for dm/create', () => {
       const uId1 = res1Obj.authUserId;
 
       // create a second valid register request
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res2 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno1@gmail.com',
           password: 'validPass23',
@@ -166,7 +166,7 @@ describe('HTTP tests for dm/create', () => {
   describe('Testing Success Cases of dm/create', () => {
     test('creation of one dm with one other user', () => {
       // create a valid register request
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno@gmail.com',
           password: 'validPass23',
@@ -178,7 +178,7 @@ describe('HTTP tests for dm/create', () => {
       const token1 = res1Obj.token;
 
       // create a second valid register request
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res2 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno1@gmail.com',
           password: 'validPass23',
@@ -202,7 +202,7 @@ describe('HTTP tests for dm/create', () => {
 
     test('creation of one dm', () => {
       // create first user that creates the DM
-      const res1 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res1 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno@gmail.com',
           password: 'validPass23',
@@ -213,7 +213,7 @@ describe('HTTP tests for dm/create', () => {
       const res1Obj = JSON.parse(res1.body as string);
       const token1 = res1Obj.token;
       // create second user
-      const res2 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res2 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno1@gmail.com',
           password: 'validPass23',
@@ -224,7 +224,7 @@ describe('HTTP tests for dm/create', () => {
       const res2Obj = JSON.parse(res2.body as string);
       const uId2 = res2Obj.authUserId;
       // create third user
-      const res3 = request('POST', `${url}:${port}/auth/register/v2`, {
+      const res3 = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
           email: 'benkerno2@gmail.com',
           password: 'validPass23',
