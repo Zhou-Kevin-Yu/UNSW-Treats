@@ -66,6 +66,74 @@ export function messageUnreactV1SS(token: string, messageId: number, reactId: nu
   return JSON.parse(res.body as string);
 }
 
+export function messagePinV1SS(token: string, messageId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/pin/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            messageId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageUnpinV1SS(token: string, messageId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/unpin/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            messageId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageSendlaterV1SS(token: string, channelId: number, message: string, timeSent: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/sendlater/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            channelId,
+            message,
+            timeSent,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageSendlaterDmV1SS(token: string, channelId: number, message: string, timeSent: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/sendlaterdm/v1`,
+        {
+          headers: {
+            token: token,
+          },
+          json: {
+            channelId,
+            message,
+            timeSent,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
 //////////// Old message wrapped requests - updated routes and token in header ////////////
 function messageRemoveV2SS(token: string, messageId: number) {
   const res = request('DELETE', `${url}:${port}/message/remove/v2`, {
