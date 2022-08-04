@@ -6,7 +6,7 @@ import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { authLoginV1, wrappedAuthRegister, authLogoutV1 } from './auth';
+import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
@@ -86,15 +86,15 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
   res.json(authLogoutV1(token));
 });
 
-// app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
-//   const { email } = req.body;
-//   res.json("do something with ${email}");
-// });
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const { email } = req.body;
+  res.json(authPasswordResetRequestV1(email));
+});
 
-// app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
-//   const { resetCode, newPassword } = req.body;
-//   res.json("do something with ${resetCode} and ${newPassword}");
-// });
+app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+  const { resetCode, newPassword } = req.body;
+  res.json(authPasswordResetResetV1(resetCode, newPassword));
+});
 
 /// /////////////////////////////////////////////////////////channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {
@@ -335,6 +335,12 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
 });
+
+/// All routes for testing purposes
+app.post('/test/genToken', (req: Request, res: Response) => {
+  const { email } = req.body;
+  res.json(generateResetCode(email));
+})
 
 // get Data before spinning up server
 const readData = persistantReadData();
