@@ -1,10 +1,97 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { MessagesObj } from './dataStore';
+import { MessagesObj, User } from './dataStore';
 import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
+import { userProfileV2 } from './user';
+
+import HTTPError from 'http-errors';
 
 ///////////// ITERATION 3 UNIQUE FUNCTIONS //////////////
+function messageSearch(messageId: number) {
+  let data = getData();
+  let msgRtrn: MessagesObj;
+  let channelIndex = -1;
+  let dmIndex = -1;
+  for (const channel of data.channels) {
+    for (const message of channel.messages) {
+      if (message.messageId === messageId) {
+        msgRtrn = message;
+        channelIndex = channel.channelId;
+        break;
+      }
+    }
+  }
+  for (const dm of data.dms) {
+    for (const message of dm.messages) {
+      if (message.messageId === messageId) {
+        msgRtrn = message;
+        dmIndex = dm.dmId;
+        break;
+      }
+    }
+  }
+  return {
+    message: msgRtrn,
+    channelIndex: channelIndex,
+    dmIndex: dmIndex,
+  };
+}
+
 export function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number): MessageShareV1 {
+  let data = getData();
+
+  if (!isTokenValid(token)) {
+    throw HTTPError(400, 'Invalid Token');
+  }
+
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token) );
+  const authUser: User = userProfileV2(token, authUserId).user;
+
+  if (!(channelId in data.channels) && !(dmId in data.dms)) {
+    throw HTTPError(400, 'both channelId and dmId are invalid'); 
+  }
+  if (channelId !== -1 && dmId !== -1) {
+    throw HTTPError(400, 'neither channelId nor dmId are -1'); 
+  }
+
+  let messageInfo = messageSearch(ogMessageId);
+
+  if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
+    throw HTTPError(400, 'message of messageId: ogMessageId does not exist in data');
+  }
+
+  //check if user is in channel
+  if (messageInfo.channelIndex !== -1) {
+    if (!(data.channels[messageInfo.channelIndex].allMembers.includes(authUser))) {
+      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    }
+  }
+  //check if user is in dm
+  if (messageInfo.dmIndex !== -1) {
+    if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
+      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    }
+  }
+
+  const newMsg = messageInfo.message.message.concat('\n\n', message)
+
+  if (newMsg.length > 1000) {
+    throw HTTPError(403, 'message Length > 1000');
+  }
+
+  if (channelId !== -1 && dmId === -1) {
+    messageSendV1(token, channelId, newMsg);
+  } else {
+    throw HTTPError(400, 'something went wrong, this error should not be thrown');
+  }
+
+  if (dmId !== -1 && channelId === -1) {
+    messageSendDmV1(token, dmId, newMsg);
+  } else {
+    throw HTTPError(400, 'something went wrong, this error should not be thrown');
+  }
+
+
   return { sharedMessageId: -1 };
 }
 
