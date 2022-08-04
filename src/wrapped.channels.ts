@@ -24,7 +24,7 @@ export function channelsCreateV2SS(token: string, name: string, isPublic: boolea
   return JSON.parse(res.body as string);
 }
 
-export function channelsCreateV3SeverSide(token: string, name: string, isPublic: boolean) {
+export function channelsCreateV3ServerSide(token: string, name: string, isPublic: boolean) {
   const res = request('POST', `${url}:${port}/channels/create/v3`,
         {
           json: {
