@@ -1,10 +1,10 @@
 
-function standupStartV1 (channelId: number, length: number): number{
+function standupStartV1 (token: string, channelId: number, length: number): number{
 
     return 0;
 }
 
-function standupActiveV1 (channelId: number){
+function standupActiveV1 (token: string, channelId: number){
 
     return {
         isActive: false,
@@ -12,7 +12,9 @@ function standupActiveV1 (channelId: number){
     };
 };
 
-function standupSendV1 (channelId: number, message: string) {
+function standupSendV1 (token: string, channelId: number, message: string) {
 
     return {};
 }
+
+export { standupStartV1, standupActiveV1, standupSendV1 };

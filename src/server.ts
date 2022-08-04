@@ -17,6 +17,8 @@ import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './chann
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
 
+import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
+
 // const errorOutput = { error: 'error' };
 
 import { getData, setData } from './dataStore';
@@ -334,6 +336,25 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
+});
+
+// Standup routes 
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, length } = req.body;
+  res.json(standupStartV1(token, channelId, length));
+});
+
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  res.json(standupActiveV1(token, channelId));
+});
+
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, message } = req.body;
+  res.json(standupSendV1(token, channelId, message));
 });
 
 /// All routes for testing purposes
