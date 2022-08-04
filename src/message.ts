@@ -199,6 +199,8 @@ export function messageSendV1 (token: string, channelId: number, message: string
             uId: authUserId,
             message: message,
             timeSent: Math.floor((new Date()).getTime() / 1000),
+            reacts: [],
+            isPinned: false,
           };
           channel.messages.push(newChannelMessage);
           setData(data);
@@ -586,6 +588,8 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
               uId: authUserId,
               message: message,
               timeSent: Math.floor((new Date()).getTime() / 1000),
+              reacts: [],
+              isPinned: false,
             };
             dm.messages.push(newDmMessage);
             setData(data);

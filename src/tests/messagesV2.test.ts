@@ -61,7 +61,9 @@ describe('Testing basic functionality', () => {
           messageId: messageId,
           uId: kevin.authUserId,
           message: 'Hello World!',
-          timeSent: timeSent
+          timeSent: timeSent,
+          reacts: [],
+          isPinned: false,
         }
       ],
       start: 0,

@@ -263,12 +263,13 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
       endM = start + 50;
       break;
     }
-    const messageCurr = {
-      messageId: message.messageId,
-      uId: message.uId,
-      message: message.message,
-      timeSent: message.timeSent
-    };
+    // const messageCurr = {
+    //   messageId: message.messageId,
+    //   uId: message.uId,
+    //   message: message.message,
+    //   timeSent: message.timeSent
+    // };
+    const messageCurr = message;
     messagesReturn.push(messageCurr);
     counter++;
   }

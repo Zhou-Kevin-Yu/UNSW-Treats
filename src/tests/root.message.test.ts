@@ -452,7 +452,7 @@ describe('Iteration 3 Function Testing', () => {
 });
 
 /// //////// ITERATION 2 TESTING ///////////
-/*
+
 describe('Testing iteration 2 Errors', () => {
   describe('message/edit', () => {
     test('local - testOGPosterCanEditMessage (channels)', () => {
@@ -530,6 +530,7 @@ describe('Testing iteration 2 Errors', () => {
     });
   });
 });
+
 
 // HTTP testing for a combination of message functions being used
 describe('IITERATION 1 and 2 TESTING', () => {
@@ -3363,4 +3364,3 @@ describe('IITERATION 1 and 2 TESTING', () => {
     });
   });
 });
-*/
