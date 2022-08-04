@@ -54,6 +54,7 @@ app.use(morgan('dev'));
 app.use((req: Request, res: Response, next) => {
   // console.log("request: ", req.url);
   const fullToken = req.header('token');
+  // console.log("I HAVE THE TOKEN", fullToken);
   if (fullToken !== undefined && fullToken !== null) {
     if (!isTokenValid(fullToken)) {
       throw HTTPError(403, "Access Denied: Token is invalid");
@@ -327,7 +328,7 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
 });
 
 // Old message requests - updated routes
-app.post('message/send/v2', (req: Request, res: Response) => {
+app.post('/message/send/v2', (req: Request, res: Response) => {
   const { channelId, message } = req.body;
   const token = req.header('token');
   res.json(messageSendV1(token, channelId, message));

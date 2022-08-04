@@ -45,12 +45,13 @@ describe('Iteration 3 Function Testing', () => {
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
-
+        // console.log("heLJDALFJHASFLJKH", message0);
         const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
         // user0 shares message0, which is in channel0, to dm0, a dm they are part of
-        const res = messageShareV1SS(user0.token, message0.messageId, '', -1, dm0.dmId);
+        const res = JSON.parse(messageShareV1SS(user0.token, message0.messageId, '', -1, dm0.dmId).body as string);
+        // console.log("ALSJDHLSAJDH", res);
         expect(res.sharedMessageId).toBe(message0.messageId + 1);
       });
     });
@@ -59,7 +60,7 @@ describe('Iteration 3 Function Testing', () => {
         const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelsCreateV2SS(user0.token, 'channel1', true);
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
         // 3 and 2 refer to invaid channels and dms
         const res = messageShareV1SS(user0.token, message0.messageId, '', 3, 2);
         expect(res.statusCode).toBe(400);
@@ -71,7 +72,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel1 = channelsCreateV2SS(user0.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
         // dmId and channelId are valid (0 and 0)
         const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, dm0.dmId);
         expect(res.statusCode).toBe(400);
@@ -80,7 +81,7 @@ describe('Iteration 3 Function Testing', () => {
         const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
@@ -94,7 +95,7 @@ describe('Iteration 3 Function Testing', () => {
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
@@ -114,7 +115,7 @@ describe('Iteration 3 Function Testing', () => {
         const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
 
@@ -133,7 +134,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts to user0's message in channel0
         const res = messageReactV1SS(user1.token, message0.messageId, 1);
@@ -152,7 +153,7 @@ describe('Iteration 3 Function Testing', () => {
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1  tries to react to message0, a message in channel0, which they arent part of
         const res = messageReactV1SS(user1.token, message0.messageId, 1);
@@ -165,7 +166,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts 2, an invalid react
         const res = messageReactV1SS(user1.token, message0.messageId, 2);
@@ -178,7 +179,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts to user0's message in channel0
         let res = messageReactV1SS(user1.token, message0.messageId, 1);
@@ -205,7 +206,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts to user0's message in channel0
         let res = messageReactV1SS(user1.token, message0.messageId, 1);
@@ -234,7 +235,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts to user0's message in channel0
         messageReactV1SS(user1.token, message0.messageId, 1);
@@ -251,7 +252,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 reacts to user0's message in channel0
         messageReactV1SS(user1.token, message0.messageId, 1);
@@ -266,7 +267,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // No react has taken place
         const res = messageUnreactV1SS(user1.token, message0.messageId, 2);
@@ -283,7 +284,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 pins user0's message in channel0
         const res = messagePinV1SS(user0.token, message0.messageId);
@@ -301,7 +302,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         // channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
 
         // user0 pins user1's message in channel0, but user1 has not joined channel 0 (should fail)
         const res = messagePinV1SS(user0.token, message0.messageId);
@@ -314,7 +315,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user0 pins user0's message in channel0
         let res = messagePinV1SS(user0.token, message0.messageId);
@@ -334,7 +335,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user1 does not have owner permissions in channel0
         const res = messagePinV1SS(user1.token, message0.messageId);
@@ -351,7 +352,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
@@ -376,7 +377,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         // channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
@@ -395,7 +396,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
 
         // user0 tries to unpin message message that isn't already pinned
         let res = messageUnpinV1SS(user0.token, message0.messageId);
@@ -407,7 +408,7 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         channelJoinV2SS(user1.token, channel0.channelId);
 
-        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
@@ -451,7 +452,7 @@ describe('Iteration 3 Function Testing', () => {
 });
 
 /// //////// ITERATION 2 TESTING ///////////
-
+/*
 describe('Testing iteration 2 Errors', () => {
   describe('message/edit', () => {
     test('local - testOGPosterCanEditMessage (channels)', () => {
@@ -3362,3 +3363,4 @@ describe('IITERATION 1 and 2 TESTING', () => {
     });
   });
 });
+*/

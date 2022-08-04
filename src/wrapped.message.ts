@@ -19,7 +19,7 @@ export function messageShareV1SS(token: string, ogMessageId: number, message: st
         `${url}:${port}/message/share/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             ogMessageId,
@@ -29,7 +29,8 @@ export function messageShareV1SS(token: string, ogMessageId: number, message: st
           }
         }
   );
-  return JSON.parse(res.body as string);
+  ;
+  return res;
 }
 
 export function messageReactV1SS(token: string, messageId: number, reactId: number) {
@@ -38,7 +39,7 @@ export function messageReactV1SS(token: string, messageId: number, reactId: numb
         `${url}:${port}/message/react/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             messageId,
@@ -55,7 +56,7 @@ export function messageUnreactV1SS(token: string, messageId: number, reactId: nu
         `${url}:${port}/message/unreact/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             messageId,
@@ -72,7 +73,7 @@ export function messagePinV1SS(token: string, messageId: number) {
         `${url}:${port}/message/pin/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             messageId,
@@ -88,7 +89,7 @@ export function messageUnpinV1SS(token: string, messageId: number) {
         `${url}:${port}/message/unpin/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             messageId,
@@ -104,7 +105,7 @@ export function messageSendlaterV1SS(token: string, channelId: number, message: 
         `${url}:${port}/message/sendlater/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             channelId,
@@ -122,7 +123,7 @@ export function messageSendlaterDmV1SS(token: string, channelId: number, message
         `${url}:${port}/message/sendlaterdm/v1`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
             channelId,
@@ -138,7 +139,7 @@ export function messageSendlaterDmV1SS(token: string, channelId: number, message
 function messageRemoveV2SS(token: string, messageId: number) {
   const res = request('DELETE', `${url}:${port}/message/remove/v2`, {
     headers: {
-      token: token,
+      'token': token,
     },
     qs: {
       messageId: messageId
@@ -153,10 +154,9 @@ function messageEditV2SS(token: string, messageId: number, message: string) {
       `${url}:${port}/message/edit/v2`,
       {
         headers: {
-          token: token,
+          'token': token,
         },
         json: {
-          token: token,
           messageId: messageId,
           message: message,
         }
@@ -171,10 +171,9 @@ function messageSendDmV2SS(token: string, dmId: number, message: string) {
         `${url}:${port}/message/senddm/v2`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
-            token,
             dmId,
             message,
           }
@@ -189,10 +188,9 @@ function messageSendV2SS(token: string, channelId: number, message: string) {
         `${url}:${port}/message/send/v2`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
-            token,
             channelId,
             message,
           }

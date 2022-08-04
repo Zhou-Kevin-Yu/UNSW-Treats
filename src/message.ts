@@ -60,16 +60,47 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
     throw HTTPError(400, 'message of messageId: ogMessageId does not exist in data');
   }
 
-  //check if user is in channel
+  //check if user is in channel where message exists
+
   if (messageInfo.channelIndex !== -1) {
-    if (!(data.channels[messageInfo.channelIndex].allMembers.includes(authUser))) {
+    let channelFound = false;
+    for (const user of data.channels[messageInfo.channelIndex].allMembers) {
+      if (user.uId === authUserId) {
+        channelFound = true;
+        break;
+      }
+    }
+    if (!channelFound) {
       throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
     }
+    // if (!(data.channels[messageInfo.channelIndex].allMembers.includes(authUser))) {
+    //   console.log("====================");
+    //   throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    // }
   }
   //check if user is in dm
   if (messageInfo.dmIndex !== -1) {
     if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
       throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    }
+  }
+
+  if (channelId !== -1) {
+    let channelFound = false;
+    for (const user of data.channels[channelId].allMembers) {
+      if (user.uId === authUserId) {
+        channelFound = true;
+        break;
+      }
+    }
+    if (!channelFound) {
+      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the channel or DM they are trying to share the message to');
+    }
+  }
+
+  if (dmId !== -1) {
+    if (!(data.dms[dmId].members.includes(authUserId))) {
+      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the channel or DM they are trying to share the message to');
     }
   }
 
@@ -79,20 +110,19 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
     throw HTTPError(403, 'message Length > 1000');
   }
 
+  let newMsgId = -1;
+
   if (channelId !== -1 && dmId === -1) {
-    messageSendV1(token, channelId, newMsg);
-  } else {
-    throw HTTPError(400, 'something went wrong, this error should not be thrown');
+    newMsgId = messageSendV1(token, channelId, newMsg).messageId;
   }
 
   if (dmId !== -1 && channelId === -1) {
-    messageSendDmV1(token, dmId, newMsg);
-  } else {
-    throw HTTPError(400, 'something went wrong, this error should not be thrown');
+    newMsgId = messageSendDmV1(token, dmId, newMsg).messageId;
   }
 
+  setData(data);
 
-  return { sharedMessageId: -1 };
+  return { sharedMessageId: newMsgId };
 }
 
 export function messageReactV1(token: string, messageId: number, reactId: number) {
