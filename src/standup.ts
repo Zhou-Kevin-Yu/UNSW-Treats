@@ -1,11 +1,13 @@
 import { isTokenValid, tokenToAuthUserId } from './token';
 import { getData, setData } from './dataStore';
 import { standupObj, standupMsgObj } from './dataStore';
+import { messageSendInsideStandup } from './message';
 import HTTPError from 'http-errors';
 
 
 
-function standupStartV1 (token: string, channelId: number, length: number): number{
+function standupStartV1 (token: string, channelId: number, length: number) {
+    console.log("token i've got: " + token);
     if (!isTokenValid(token)) {
         throw HTTPError(403, "Access Denied: Token is invalid");
     }
@@ -45,12 +47,22 @@ function standupStartV1 (token: string, channelId: number, length: number): numb
     data.standups.push(newStandupObj);
     setData(data);
 
-    setTimeout(() => {
+    const pid = setTimeout(() => {
+        console.log("token im seeing inside settimeout: " + token);
+
         // This is code that runs after standup is finished
         const newData = getData();
         const prevStandupObj = newData.standups.find(standup => standup.standupId === newStandupObj.standupId);
         if (prevStandupObj === undefined) {
-            throw HTTPError(400, "Standup no longer exists");
+            // throw HTTPError(400, "Standup no longer exists");
+            // TODO - FIX ME 
+            // return {
+            //     timeFinish: newStandupObj.timeFinish
+            // };
+            return {};
+            console.log("Standup no longer exists");
+            clearInterval(pid);
+            console.log("OR DOES IT??");
         }
         let standUpMsg = "";
         let standUpMsgArr = [];
@@ -62,9 +74,20 @@ function standupStartV1 (token: string, channelId: number, length: number): numb
         }
         standUpMsg = standUpMsgArr.join('');
         // TODO - send the actual message
+        console.log("token im sending: " + token);
+        const msgSender = messageSendInsideStandup(token, channelId, standUpMsg);
+        if(msgSender.hasOwnProperty('error')) {
+            return {};
+            clearInterval(pid);
+        }
+        // Delete the standup
+        newData.standups.splice(prevStandupObj.standupId, 1);
+        setData(newData);
     }, length*1000);
 
-    return newStandupObj.timeFinish;
+    return {
+        timeFinish: newStandupObj.timeFinish
+    };
 }
 
 function standupActiveV1 (token: string, channelId: number){
@@ -132,7 +155,7 @@ function standupSendV1 (token: string, channelId: number, message: string) {
     }
     data.standups[standupObj.standupId].standupMsgs.push(newStandupMsg);
     setData(data);
-    
+
     return {};
 }
 
