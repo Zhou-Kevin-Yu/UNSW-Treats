@@ -345,13 +345,80 @@ describe('Iteration 3 Function Testing', () => {
 
   describe('Testing /message/unpin/v1', () => {
     describe('Testing Success Cases', () => {
-      test('', () => {
+      test('successful unpin - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
 
+        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(false);
       });
     });
     describe('Testing Error Cases', () => {
-      test('', () => {
+      test('message exists in channel user is not part of', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        // channelJoinV2SS(user1.token, channel0.channelId);
 
+        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user0.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user1.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('message not already pinned', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 tries to unpin message message that isn't already pinned
+        let res = messageUnpinV1SS(user0.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('user does not have perms to unpin - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV2SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user1.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(403);
       });
     });
   });
