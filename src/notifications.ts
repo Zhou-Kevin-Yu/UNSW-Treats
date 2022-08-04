@@ -14,12 +14,20 @@ import HTTPError from 'http-errors';
 
 /**
  * Return the user's most recent 20 notifications, ordered from most recent to least recent.
+ * @param token
  * @returns 
  */
 export function notificationsGetV1 (token: string) {
 
-  // const data = getData();
+  const data = getData();
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "token passed in is invalid");
+  }
 
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // 
 
   // use for loops and if statements
   // to locate if occured in channel id yes or not

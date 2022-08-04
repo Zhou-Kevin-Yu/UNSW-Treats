@@ -396,6 +396,13 @@ app.get('/notifications/get/v1', (req: Request, res: Response) => {
   res.json(notificationsGetV1(token));
 });
 
+////////////////// All search requests /////////////////
+app.get('/search/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { queryStr } = req.body;
+  res.json(searchV1(token, queryStr));
+});
+
 // get Data before spinning up server
 const readData = persistantReadData();
 let data = getData();
