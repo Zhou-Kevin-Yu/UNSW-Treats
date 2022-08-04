@@ -15,11 +15,13 @@ import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+import { adminChangeUserPermissionV1, adminUserRemoveV1 } from './admin';
 
 // const errorOutput = { error: 'error' };
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
+import { request } from 'http';
 
 // Set up web app, use JSON
 const app = express();
@@ -231,6 +233,18 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
 });
+
+//Admin requests
+
+app.delete('admin/user/remove/v1', (req: Request, res: Response) => {
+  const uId = parseInt(req.query.uId as string);
+  res.json(adminUserRemoveV1(uId));
+});
+
+app.post('admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const { uId, permissionId } = req.body;
+  res.json(adminChangeUserPermissionV1(uId, permissionId));
+})
 
 // get Data before spinning up server
 const readData = persistantReadData();
