@@ -12,11 +12,134 @@ if (os.platform() === 'darwin') {
   url = 'http://localhost';
 }
 
+//////////// Iteration 3 wrapped requests - updated routes and token in header ////////////
+export function messageShareV1SS(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/share/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            ogMessageId,
+            message,
+            channelId,
+            dmId,
+          }
+        }
+  );
+  ;
+  return res;
+}
+
+export function messageReactV1SS(token: string, messageId: number, reactId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/react/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            messageId,
+            reactId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageUnreactV1SS(token: string, messageId: number, reactId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/unreact/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            messageId,
+            reactId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messagePinV1SS(token: string, messageId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/pin/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            messageId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageUnpinV1SS(token: string, messageId: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/unpin/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            messageId,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageSendlaterV1SS(token: string, channelId: number, message: string, timeSent: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/sendlater/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            channelId,
+            message,
+            timeSent,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
+export function messageSendlaterDmV1SS(token: string, channelId: number, message: string, timeSent: number) {
+  const res = request(
+    'POST',
+        `${url}:${port}/message/sendlaterdm/v1`,
+        {
+          headers: {
+            'token': token,
+          },
+          json: {
+            channelId,
+            message,
+            timeSent,
+          }
+        }
+  );
+  return JSON.parse(res.body as string);
+}
+
 //////////// Old message wrapped requests - updated routes and token in header ////////////
 function messageRemoveV2SS(token: string, messageId: number) {
   const res = request('DELETE', `${url}:${port}/message/remove/v2`, {
     headers: {
-      token: token,
+      'token': token,
     },
     qs: {
       messageId: messageId
@@ -31,10 +154,9 @@ function messageEditV2SS(token: string, messageId: number, message: string) {
       `${url}:${port}/message/edit/v2`,
       {
         headers: {
-          token: token,
+          'token': token,
         },
         json: {
-          token: token,
           messageId: messageId,
           message: message,
         }
@@ -49,10 +171,9 @@ function messageSendDmV2SS(token: string, dmId: number, message: string) {
         `${url}:${port}/message/senddm/v2`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
-            token,
             dmId,
             message,
           }
@@ -67,10 +188,9 @@ function messageSendV2SS(token: string, channelId: number, message: string) {
         `${url}:${port}/message/send/v2`,
         {
           headers: {
-            token: token,
+            'token': token,
           },
           json: {
-            token,
             channelId,
             message,
           }

@@ -52,6 +52,14 @@ export interface MessagesObj {
   uId: number;
   message: string;
   timeSent: number;
+  reacts: ReactObj[];
+  isPinned: boolean;
+}
+
+interface ReactObj {
+  reactId: number;
+  uIds: number[];
+  isThisUserReacted: boolean;
 }
 
 export interface ChannelMessagesV1 {
