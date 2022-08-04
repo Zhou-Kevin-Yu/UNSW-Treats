@@ -3,6 +3,9 @@ import { userProfileV1 } from './user';
 import { ChannelsCreateV1, ChannelsListAllV1, ChannelsListV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
 
+import HTTPError from 'http-errors';
+
+
 /** Creates a new channel with the given name that is either a public or private channel.
 *The user who created it automatically joins the channel.
 *@param {number} authUserId - ID of the user creating the channel
@@ -99,4 +102,34 @@ function channelsListV1(authUserId: number): ChannelsListV1 {
   return { channels: channelArr };
 }
 
-export { channelsCreateV1, channelsListallV1, channelsListV1 };
+function channelsCreateV3(authUserId: number, name: string, isPublic: boolean): ChannelsCreateV1 {
+  // Checking for a valid channel name
+  if (name.length < 1 || name.length > 20) {
+    throw HTTPError(400, 'Invalid channel name');
+  }
+  // Storing user object
+  const authUser = userProfileV1(authUserId, authUserId).user;
+  const data = getData();
+
+  // Checking for valid authUserId
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, "Access Denied: Token is invalid");
+  }
+  const msgArray: MessagesObj[] = [];
+  const newChannel = {
+    /* ChannelIds are incremented starting from 0, therefore the channelId
+        will be set to the length of the array of channels */
+    channelId: data.channels.length,
+    name: name,
+    isPublic: isPublic,
+    ownerMembers: [authUser],
+    allMembers: [authUser],
+    messages: msgArray,
+  };
+    // Add new channel to dataStore
+  data.channels.push(newChannel);
+  setData(data);
+  return { channelId: newChannel.channelId };
+}
+
+export { channelsCreateV1, channelsListallV1, channelsListV1, channelsCreateV3 };
