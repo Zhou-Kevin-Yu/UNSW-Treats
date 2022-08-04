@@ -174,6 +174,21 @@ interface ChannelObj {
   messages: MessagesObj[];
 }
 
+interface standupMsgObj {
+  stdMsgId: number;
+  handleStr: string;
+  message: string;
+}
+
+interface standupObj {
+  standupId: number;
+  channelId: number;
+  timeStart: number;
+  timeFinish: number;
+  timeLength: number;
+  standupMsgs: standupMsgObj[];
+}
+
 interface SystemInfo {
   messageTotal: number;
 }
@@ -183,6 +198,7 @@ export interface Data {
   channels: ChannelObj[];
   dms: DmObj[];
   systemInfo: SystemInfo;
+  standups: standupObj[];
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
@@ -192,7 +208,8 @@ let data: Data = {
   dms: [],
   systemInfo: {
     messageTotal: 0,
-  }
+  },
+  standups: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
