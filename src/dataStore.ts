@@ -56,7 +56,7 @@ export interface MessagesObj {
   isPinned: boolean;
 }
 
-interface ReactObj {
+export interface ReactObj {
   reactId: number;
   uIds: number[];
   isThisUserReacted: boolean;

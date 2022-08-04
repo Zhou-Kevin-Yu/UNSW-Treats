@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { MessagesObj, User } from './dataStore';
+import { MessagesObj, User, ReactObj } from './dataStore';
 import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
 import { userProfileV2 } from './user';
 
@@ -160,17 +160,35 @@ export function messageReactV1(token: string, messageId: number, reactId: number
 
   const reactsExist = messageInfo.message.reacts.map((n) => n.reactId);
   const reactIndex = reactsExist.indexOf(reactId);
-  if (reactsExist.includes(reactId) && messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
+  console.log("====",reactIndex);
+  if (reactIndex !== -1 && reactsExist.includes(reactId) && messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
     throw HTTPError(400, 'the message already contains a react with ID reactId from the authorised user');
   }
-
-  // update the reacts array inside message
-  if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
-    data.channels[messageInfo.channelIndex].messages[msgIndex].reacts[reactIndex].uIds.push(authUserId);
-  } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
-    data.dms[messageInfo.dmIndex].messages[msgIndex].reacts[reactIndex].uIds.push(authUserId);
+  
+  // If reactIndex = -1, then it is the first react on the message
+  if (reactIndex === -1) {
+    console.log("=====NEW REACT!!!!")
+    const newReact: ReactObj = {
+      reactId: reactId,
+      uIds: [authUserId],
+      isThisUserReacted: false,
+    };
+    if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
+      data.channels[messageInfo.channelIndex].messages[msgIndex].reacts.push(newReact);
+    } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
+      data.dms[messageInfo.dmIndex].messages[msgIndex].reacts.push(newReact);
+    } else {
+      throw HTTPError(400, 'SHOULD NOT BE HERE');
+    }
   } else {
-    throw HTTPError(400, 'THIS SHOULD BE CAUGHT EARLIER');
+    // update the reacts array inside message
+    if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
+      data.channels[messageInfo.channelIndex].messages[msgIndex].reacts[reactIndex].uIds.push(authUserId);
+    } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
+      data.dms[messageInfo.dmIndex].messages[msgIndex].reacts[reactIndex].uIds.push(authUserId);
+    } else {
+      throw HTTPError(400, 'THIS SHOULD BE CAUGHT EARLIER');
+    }
   }
 
   setData(data);

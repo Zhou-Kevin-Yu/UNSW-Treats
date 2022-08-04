@@ -48,7 +48,7 @@ export function messageReactV1SS(token: string, messageId: number, reactId: numb
   );
   return {
     body: JSON.parse(res.body as string),
-    statusCode: res,
+    statusCode: res.statusCode,
   }
 }
 
