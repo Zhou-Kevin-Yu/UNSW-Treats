@@ -29,7 +29,6 @@ export function messageShareV1SS(token: string, ogMessageId: number, message: st
           }
         }
   );
-  ;
   return res;
 }
 
@@ -47,7 +46,10 @@ export function messageReactV1SS(token: string, messageId: number, reactId: numb
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res,
+  }
 }
 
 export function messageUnreactV1SS(token: string, messageId: number, reactId: number) {
