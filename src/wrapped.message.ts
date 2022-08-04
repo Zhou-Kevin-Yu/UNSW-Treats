@@ -66,7 +66,10 @@ export function messageUnreactV1SS(token: string, messageId: number, reactId: nu
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messagePinV1SS(token: string, messageId: number) {

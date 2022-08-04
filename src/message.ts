@@ -160,14 +160,12 @@ export function messageReactV1(token: string, messageId: number, reactId: number
 
   const reactsExist = messageInfo.message.reacts.map((n) => n.reactId);
   const reactIndex = reactsExist.indexOf(reactId);
-  console.log("====",reactIndex);
   if (reactIndex !== -1 && reactsExist.includes(reactId) && messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
     throw HTTPError(400, 'the message already contains a react with ID reactId from the authorised user');
   }
   
   // If reactIndex = -1, then it is the first react on the message
   if (reactIndex === -1) {
-    console.log("=====NEW REACT!!!!")
     const newReact: ReactObj = {
       reactId: reactId,
       uIds: [authUserId],
@@ -197,6 +195,62 @@ export function messageReactV1(token: string, messageId: number, reactId: number
 }
 
 export function messageUnreactV1(token: string, messageId: number, reactId: number) {
+  let data =  getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(400, 'Invalid Token');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  
+  let messageInfo = messageSearch(messageId);
+  const msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message)
+
+  if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
+    throw HTTPError(400, 'message of messageId: MessageId does not exist in data');
+  }
+
+  //check if user is in channel where message exists
+  if (messageInfo.channelIndex !== -1) {
+    let channelFound = false;
+    for (const user of data.channels[messageInfo.channelIndex].allMembers) {
+      if (user.uId === authUserId) {
+        channelFound = true;
+        break;
+      }
+    }
+    if (!channelFound) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    }
+  }
+  //check if user is in dm
+  if (messageInfo.dmIndex !== -1) {
+    if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+    }
+  }
+
+  if (reactId !== 1) {
+    throw HTTPError(400, 'reactId is not a valid react ID');
+  }
+
+  const reactsExist = messageInfo.message.reacts.map((n) => n.reactId);
+  const reactIndex = reactsExist.indexOf(reactId);
+  // console.log("AAAAAAAAAAAAAAAAAAAA", reactIndex, reactsExist, reactId, messageInfo.message.reacts[reactIndex].uIds);
+  // console.log((reactIndex !== -1),(!reactsExist.includes(reactId)),(!messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)));
+  if (reactIndex === -1 || !reactsExist.includes(reactId) || !messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
+    throw HTTPError(400, 'the message does not contain a react with ID reactId from the authorised user');
+  }
+
+  let indexOfAuthUser = -1;
+  if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
+    indexOfAuthUser = data.channels[messageInfo.channelIndex].messages[msgIndex].reacts[reactIndex].uIds.indexOf(authUserId);
+    data.channels[messageInfo.channelIndex].messages[msgIndex].reacts[reactIndex].uIds.splice(indexOfAuthUser, 1);
+  } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
+    const indexOfAuthUser = data.dms[messageInfo.dmIndex].messages[msgIndex].reacts[reactIndex].uIds.indexOf(authUserId);
+    data.dms[messageInfo.dmIndex].messages[msgIndex].reacts[reactIndex].uIds.splice(indexOfAuthUser, 1);
+  } else {
+    throw HTTPError(400, 'THIS SHOULD BE CAUGHT EARLIER');
+  }
+
   return {};
 }
 
