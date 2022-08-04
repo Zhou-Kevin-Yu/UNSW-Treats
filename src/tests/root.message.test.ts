@@ -6,9 +6,9 @@ import { channelsCreateV2SS } from '../wrapped.channels';
 import { channelMessagesV2SS, channelJoinV2SS } from '../wrapped.channel';
 import { messageSendV1SS, messageEditV1SS, messageSendDmV1SS, messageRemoveV1SS } from '../wrapped.message';
 import { dmCreateV1SS, dmMessagesV1SS } from '../wrapped.dm';
-import { messageSendDmV2SS, messageSendV2SS, messageEditV2SS, messageRemoveV2SS } from '../wrapped.message';
-import { messageShareV1SS, messageReactV1SS, messageUnreactV1SS, messagePinV1SS, messageUnpinV1SS, messageSendlaterV1SS, messageSendlaterDmV1SS } from '../wrapped.message';
-import { channelMessagesV3SS, channelLeaveV2SS } from '../wrapped.channel';
+import { messageSendV2SS/*, messageSendDmV2SS ,messageEditV2SS, messageRemoveV2SS */ } from '../wrapped.message';
+import { messageShareV1SS/*, messageReactV1SS, messageUnreactV1SS, messagePinV1SS, messageUnpinV1SS, messageSendlaterV1SS, messageSendlaterDmV1SS */ } from '../wrapped.message';
+// import { channelMessagesV3SS, channelLeaveV2SS } from '../wrapped.channel';
 
 const errorReturn = { error: 'error' };
 const aboveMaxLengthMessage = 'HkFmF9IW0tFB7V0Gs08ZpEUbqOtsWUvLdxRmCSqLlsnm2J4SXlcc7aMJ8Mbxk2q24EjdHX6hTyT9FueMIHnJOIwQxBR5v73lePT7I9za4MZrFUNjVmS1V2FuLk2I3gIhVzKMPA1UQ3WEy5Lom3j3y52PA3iXpZNANMAcpBAeHzI7YxACN9cWvC1BktQyVXs6R6EpWKxhHUq3t8CSE7w3TnYBdUvbHO6j7FZt4KosdQrhux8yPxj2MPf5qilJ9ogUIzpO5axsdRwnWnHaT5taMmvZtsJR1abWwnEtrbZhIGXrY3Omt0RvQRGMmqmxAgtDU8YhzZjRJalcNmCbxkUl9PcvUuLrKkAZebQyunxjM9Szw0RAwB7bNMDSIRhBfgpCApue9oRxIJGo0h50eXTDYDl0Kjr1oMDqantYKsji0Ph0wGB0wc1TDr8l41b6Ys2n6Imveo6pFsd8Z55K3ZtRPie8VisqngbmWwRKka6Ca7GZSYqhjzEHUopbmzmC9uJC7PwYszEv5rwkUm9gFw1S5Nx9pnGaU0JiTc7XPZ2F6YJD0Cz7rCXcxR5L1N4T9krZzFYfAqzqq9PDNrKo0awQJReFNDz3qEVxiyIw3DH4GNQaNpTiCtX1qSTidZ1oBLH0XkGtcNiXrPrP44vmQAcCamGJsp0oUaB6uhP0yzrPvenVe3gzQWijnFwpD8vdUzXwmC8FZcixAQ45ek2iziFBtweZ3Qrt9J6E8KRZUmz3rkwvbUIndo0oJXfPyN1toHgqswAAoFimBKZUYJgGb1JwBH4K51hzQebzotV6emZ8T0pXpdAjWC19bE8wAg9IvZgeZRUVG6zP0O9TrigkHCDDAH8cUw02041aJaJOv3qH8Ulc90q9FU5UCZNM8w084Rq199Tlo3jYCcjB2NhORWcf4ldCN29JzC9KGLkBnHMDrrOYl1AtQmM7ARG5fO7rmH91WHN79aSf1HNf000DSdQ8l7wBxrZhvcEFwTTuz5Kk1';
@@ -45,13 +45,10 @@ describe('Iteration 3 Function Testing', () => {
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
-        // console.log("heLJDALFJHASFLJKH", message0);
-        const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
         // user0 shares message0, which is in channel0, to dm0, a dm they are part of
         const res = JSON.parse(messageShareV1SS(user0.token, message0.messageId, '', -1, dm0.dmId).body as string);
-        // console.log("ALSJDHLSAJDH", res);
         expect(res.sharedMessageId).toBe(message0.messageId + 1);
       });
     });
@@ -83,7 +80,6 @@ describe('Iteration 3 Function Testing', () => {
         const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
         const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
 
-        const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
         const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
 
         // user1 shares message0, which is in channel0, a channel user1 isnt part of
@@ -126,6 +122,7 @@ describe('Iteration 3 Function Testing', () => {
     });
   });
 
+/*
   describe('Testing /message/react/v1', () => {
     describe('Testing Success Cases', () => {
       test('User1 reacts to User0 message  - (channel)', () => {
@@ -308,7 +305,7 @@ describe('Iteration 3 Function Testing', () => {
         const res = messagePinV1SS(user0.token, message0.messageId);
         expect(res.statusCode).toStrictEqual(400);
       });
-      
+
       test('already pinned - (channel)', () => {
         const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
         const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
@@ -449,6 +446,7 @@ describe('Iteration 3 Function Testing', () => {
       });
     });
   });
+*/
 });
 
 /// //////// ITERATION 2 TESTING ///////////
@@ -530,7 +528,6 @@ describe('Testing iteration 2 Errors', () => {
     });
   });
 });
-
 
 // HTTP testing for a combination of message functions being used
 describe('IITERATION 1 and 2 TESTING', () => {
