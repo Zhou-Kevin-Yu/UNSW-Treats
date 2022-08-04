@@ -238,12 +238,13 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 
 app.delete('admin/user/remove/v1', (req: Request, res: Response) => {
   const uId = parseInt(req.query.uId as string);
-  res.json(adminUserRemoveV1(uId));
+  res.json(adminUserRemoveV1(req.header('token'), uId));
 });
 
 app.post('admin/userpermission/change/v1', (req: Request, res: Response) => {
-  const { uId, permissionId } = req.body;
-  res.json(adminChangeUserPermissionV1(uId, permissionId));
+  const uId = parseInt(req.query.uId as string);
+  const permissionId = parseInt(req.query.permissionId as string);
+  res.json(adminChangeUserPermissionV1(req.header('token'), uId, permissionId));
 })
 
 // get Data before spinning up server

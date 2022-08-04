@@ -16,9 +16,12 @@ if (os.platform() === 'darwin') {
 
 beforeEach(() => request('DELETE', `${url}:${port}/clear/v1`));
 
+const ownerPermission = 1;
+const memberPermission = 2;
+
 describe('Testing basic functionality', () => {
   test('Setting to new permission', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v2`, {
+    let res = request('POST', `${url}:${port}/auth/register/v3`, {
         json: {
             email: 'kevinyu@unsw.com',
             password: 'KevinsPassword0',
@@ -27,7 +30,7 @@ describe('Testing basic functionality', () => {
         }
     });
     const owner = JSON.parse(res.body.toString());
-    res = request('POST', `${url}:${port}/auth/register/v2`, {
+    res = request('POST', `${url}:${port}/auth/register/v3`, {
       json: {
           email: 'Bob@email.com',
           password: 'Bobspassword0',
@@ -38,16 +41,16 @@ describe('Testing basic functionality', () => {
     const user = JSON.parse(res.body.toString());
     res = request('POST', `${url}:${port}/admin/userpermission/change/v1`, {
       json: {
-            uId: user.authUserId,
-            permissionId: 1
+            uId: user.uId,
+            permissionId: ownerPermission
         }
     });
     res = request('GET', `${url}:${port}/user/profile/v3`, {
         qs: {
-          uId: user
+          uId: user.uId
         }
     });
     const userProfile = JSON.parse(res.body.toString());
-    expect(userProfile.permission).toStrictEqual(1);
+    expect(userProfile.permission).toStrictEqual(ownerPermission);
   });
 });
