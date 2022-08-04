@@ -611,3 +611,61 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
 
   return { messageId: messageIdCopy };
 }
+
+export function messageSendV2 (token: string, channelId: number, message: string): MessageSendV1 {
+  const data = getData();
+  let existChannel = 0;
+  let existAuth = 0;
+  let messageIdCopy = 0;
+
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "Access Denied: Token is invalid");
+  }
+
+  // If length of message is less than 1 or over 1000 characters
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, "Message is too long or too short");
+  }
+
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // To loop through all the existing channels
+  for (const channel of data.channels) {
+    // If the channel Id exists
+    if (channelId === channel.channelId) {
+      existChannel = 1;
+      // To loop through all the members in selected channel
+      for (const member of channel.allMembers) {
+        // If the auth user is a member
+        if (authUserId === member.uId) {
+          existAuth = 1;
+
+          messageIdCopy = data.systemInfo.messageTotal;
+          data.systemInfo.messageTotal++;
+          const newChannelMessage: MessagesObj = {
+            messageId: messageIdCopy,
+            uId: authUserId,
+            message: message,
+            timeSent: Math.floor((new Date()).getTime() / 1000),
+            reacts: [],
+            isPinned: false,
+          };
+          channel.messages.push(newChannelMessage);
+          setData(data);
+          return { messageId: messageIdCopy };
+        }
+      }
+    }
+  }
+
+  // If the channel Id does not exist or is invalid
+  if (existChannel === 0) {
+    throw HTTPError(400, "channelId does not refer to a valid channel");
+  }
+
+  // If channelId is valid and the authorised user is not a member of the channel
+  if (existAuth === 0) {
+    throw HTTPError(403, "Access Denied: User is not a member of the channel");
+  }
+}

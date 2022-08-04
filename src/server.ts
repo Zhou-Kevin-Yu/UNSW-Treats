@@ -10,7 +10,8 @@ import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetReques
 import { channelsCreateV1, channelsListV1, channelsListallV1, channelsCreateV3 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
-   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
+   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
+   messageSendV2 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
@@ -344,7 +345,7 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
 app.post('/message/send/v2', (req: Request, res: Response) => {
   const { channelId, message } = req.body;
   const token = req.header('token');
-  res.json(messageSendV1(token, channelId, message));
+  res.json(messageSendV2(token, channelId, message));
 });
 
 app.put('/message/edit/v2', (req: Request, res: Response) => {
