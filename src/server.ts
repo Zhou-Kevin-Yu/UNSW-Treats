@@ -16,6 +16,7 @@ import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+import { notificationsGetV1 } from './notifications';
 
 // const errorOutput = { error: 'error' };
 
@@ -341,6 +342,12 @@ app.post('/test/genToken', (req: Request, res: Response) => {
   const { email } = req.body;
   res.json(generateResetCode(email));
 })
+
+////////////////// All notification requests ///////////
+app.get('/notifications/get/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(notificationsGetV1(token));
+});
 
 // get Data before spinning up server
 const readData = persistantReadData();
