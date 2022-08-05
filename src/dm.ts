@@ -67,6 +67,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   if (uIds.includes(authUserId)) {
     return { error: 'error' };
   }
+  // add authUser to members uids array before setting data
   uIds.push(authUserId);
   const dmName = generateDmName(uIds);
   const dmNew: DmObj = {
@@ -412,6 +413,16 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     counter++;
   }
   messagesReturn.reverse();
+  for (const message of messagesReturn) {
+    for (const reactObj of message.reacts) {
+      if (reactObj.uIds.includes(authUserId)) {
+        reactObj.isThisUserReacted = true;
+      } else {
+        reactObj.isThisUserReacted = false;
+      }
+    }
+  }
+
   const returnObj : DmMessagesV1 = {
     messages: messagesReturn,
     start: start,

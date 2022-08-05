@@ -19,6 +19,7 @@ function persistantReadData(): Data {
         messageTotal: 0,
       },
       standups: [],
+      delayedMessages: [],
     };
     setData(data)
   }

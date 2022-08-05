@@ -32,6 +32,9 @@ General
 channel/addowner/v1 & channel/removeowner/v1
 - Global Owner can add and remove themselves as a channel owner
 
-*ITERATION 3 ASSUMPTIONS*
+*ITERATION 3 ASSUMPTIONS *
+message/pin/v1
+- when message exists in a dm, all members are able to pin, not just the creator
 standup Start v1:
 if the standup doesn't exist right before the stand up sends it's message, throw a http 400 error, this will only happen if someone where to call clear
+- when a standup sends or a delayed message sends, the user must still be logged in with a valid token

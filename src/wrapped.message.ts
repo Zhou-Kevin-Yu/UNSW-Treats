@@ -29,7 +29,6 @@ export function messageShareV1SS(token: string, ogMessageId: number, message: st
           }
         }
   );
-  ;
   return res;
 }
 
@@ -47,7 +46,10 @@ export function messageReactV1SS(token: string, messageId: number, reactId: numb
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messageUnreactV1SS(token: string, messageId: number, reactId: number) {
@@ -64,7 +66,10 @@ export function messageUnreactV1SS(token: string, messageId: number, reactId: nu
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messagePinV1SS(token: string, messageId: number) {
@@ -80,7 +85,10 @@ export function messagePinV1SS(token: string, messageId: number) {
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messageUnpinV1SS(token: string, messageId: number) {
@@ -96,7 +104,10 @@ export function messageUnpinV1SS(token: string, messageId: number) {
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messageSendlaterV1SS(token: string, channelId: number, message: string, timeSent: number) {
@@ -114,10 +125,13 @@ export function messageSendlaterV1SS(token: string, channelId: number, message: 
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
-export function messageSendlaterDmV1SS(token: string, channelId: number, message: string, timeSent: number) {
+export function messageSendlaterDmV1SS(token: string, dmId: number, message: string, timeSent: number) {
   const res = request(
     'POST',
         `${url}:${port}/message/sendlaterdm/v1`,
@@ -126,13 +140,16 @@ export function messageSendlaterDmV1SS(token: string, channelId: number, message
             'token': token,
           },
           json: {
-            channelId,
+            dmId,
             message,
             timeSent,
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 //////////// Old message wrapped requests - updated routes and token in header ////////////
@@ -196,7 +213,10 @@ function messageSendV2SS(token: string, channelId: number, message: string) {
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 //////////// Old message wrapped requests ////////////
 function messageRemoveV1SS(token: string, messageId: number) {

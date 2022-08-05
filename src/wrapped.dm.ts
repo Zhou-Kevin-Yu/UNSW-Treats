@@ -37,4 +37,23 @@ function dmCreateV1SS(token: string, uIds: number[]) {
   return JSON.parse(res.body as string);
 }
 
-export { dmMessagesV1SS, dmCreateV1SS };
+function dmCreateV2SS(token: string, uIds: number[]) {
+  const res = request(
+    'POST',
+    `${url}:${port}/dm/create/v2`,
+    {
+      headers: {
+        'token': token,
+      },
+      json: {
+        uIds: uIds,
+      }
+    }
+  );
+  return {
+    statusCode: res.statusCode,
+    body: JSON.parse(res.body as string),
+  };
+}
+
+export { dmMessagesV1SS, dmCreateV1SS, dmCreateV2SS };
