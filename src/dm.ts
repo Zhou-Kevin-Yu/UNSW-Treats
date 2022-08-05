@@ -1,5 +1,6 @@
 // import { sortAndDeduplicateDiagnostics } from 'typescript';
 import { getData, setData } from './dataStore';
+import { NotificationsObj } from './dataStore';
 import { DmCreateV1, DmListV1, /* DmRemoveV1, */ DmDetailsV1, DmLeaveV1, DmMessagesV1 } from './dataStore';
 import { Dm, DmObj, User, MessagesObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
@@ -67,6 +68,9 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   }
   uIds.push(authUserId);
   const dmName = generateDmName(uIds);
+  //
+  dmCreateNotifV1(dmNum, dmName, authUserId, uIds);
+  //
   const dmNew: DmObj = {
     dmId: dmNum,
     creator: authUserId,
@@ -77,6 +81,30 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   data.dms[dmNum] = dmNew;
   setData(data);
   return { dmId: dmNum };
+}
+
+export function dmCreateNotifV1 (dmNum: number, dmName: string, authUserId: number, uIds: number[]) {
+  
+  const data = getData();
+  
+  let authUserHandle = '';
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      authUserHandle = user.handleStr;
+    }
+  }
+
+  for (const user of data.users) {
+    if (uIds.includes(user.uId) === true) {
+      const newNotification: NotificationsObj = {
+        channelId: -1,
+        dmId: dmNum,
+        notificationMessage: `@${authUserHandle} added you to ${dmName}`,
+      };
+      user.notifications.push(newNotification);
+      setData(data);
+    }
+  }
 }
 
 /**

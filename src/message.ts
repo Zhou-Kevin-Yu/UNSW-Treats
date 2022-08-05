@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { MessagesObj, User } from './dataStore';
+import { NotificationsObj } from './dataStore';
 import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
 import { userProfileV2 } from './user';
 import HTTPError from 'http-errors';
@@ -125,7 +126,77 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
 }
 
 export function messageReactV1(token: string, messageId: number, reactId: number) {
+  
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token) );
+  messageReactNotifV1 (reactId, authUserId, messageId);
+  
   return {};
+}
+
+export function messageReactNotifV1 (reactId: number, authUserId: number, messageId: number) {
+  
+  const data = getData();
+  
+  let authUserHandle = '';
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      authUserHandle = user.handleStr;
+    }
+  }
+  
+  // let channelName = '';
+  let dmName = '';
+  // let channelIdCopy = -1;
+  let dmIdCopy = -1;
+  let userId = -1;
+
+  // // Find message in channel
+  // for (const channel of data.channels) {
+  //   for (const message of channel.messages) {
+  //     if (message.messageId === messageId) {
+  //       channelName = channel.name;
+  //       channelIdCopy = channel.channelId;
+  //       userId = message.uId;
+  //     }
+  //   }
+  // }
+
+  // Find message in DM
+  for (const dm of data.dms) {
+    for (const message of dm.messages) {
+      if (message.messageId === messageId) {
+        dmName = dm.name;
+        dmIdCopy = dm.dmId;
+        userId = message.uId;
+      }
+    }
+  }
+
+  // // React to channel message
+  // for (const user of data.users) {
+  //   if (userId === user.uId) {
+  //     const newNotification: NotificationsObj = {
+  //       channelId: channelIdCopy,
+  //       dmId: -1,
+  //       notificationMessage: `@${authUserHandle} reacted to your message in ${channelName}`,
+  //     };
+  //     user.notifications.push(newNotification);
+  //     setData(data);
+  //   }
+  // }
+
+  // React to DM message
+  for (const user of data.users) {
+    if (userId === user.uId) {
+      const newNotification: NotificationsObj = {
+        channelId: -1,
+        dmId: dmIdCopy,
+        notificationMessage: `@${authUserHandle} reacted to your message in ${dmName}`,
+      };
+      user.notifications.push(newNotification);
+      setData(data);
+    }
+  }
 }
 
 export function messageUnreactV1(token: string, messageId: number, reactId: number) {
@@ -195,7 +266,10 @@ export function messageSendV1 (token: string, channelId: number, message: string
     // Find the channel Id 
     if (channelId === channel.channelId) {
       // To loop through all the members in selected channel
+      let channelName = channel.name;
+
       for (const member of channel.allMembers) {
+        
         // If the auth user is a member
         if (authUserId === member.uId) {
           messageIdCopy = data.systemInfo.messageTotal;
@@ -208,10 +282,39 @@ export function messageSendV1 (token: string, channelId: number, message: string
             reacts: [],
             isPinned: false,
           };
+          //
+          messageSendTaggedV1(channelId, channelName, authUserId, message);
+          //
           channel.messages.push(newChannelMessage);
           setData(data);
           return { messageId: messageIdCopy };
         }
+      }
+    }
+  }
+}
+
+export function messageSendTaggedV1 (channelId: number, channelName: string, authUserId: number, message: string) {
+  
+  const data = getData();
+  
+  let authUserHandle = '';
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      authUserHandle = user.handleStr;
+    }
+  }
+
+  for (const user of data.users) {
+    if (message.includes(`@${user.handleStr}`) === true) {
+      if (data.channels[channelId].allMembers.includes(user) === true) {
+        const newNotification: NotificationsObj = {
+          channelId: channelId,
+          dmId: -1,
+          notificationMessage: `@${authUserHandle} tagged you in ${channelName}: ${message.substring(0,20)}`,
+        };
+        user.notifications.push(newNotification);
+        setData(data);
       }
     }
   }
@@ -586,6 +689,8 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
     if (dm !== undefined || dm !== null) {
       // Find the DM
       if (dmId === dm.dmId) {
+        let dmName = dm.name;
+
         // To loop through all the members in selected DM
         for (let i = 0; i < dm.members.length; i++) {
           // If the auth user is a member of DM
@@ -601,6 +706,9 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
               reacts: [],
               isPinned: false,
             };
+            //
+            messageSendDmTaggedV1(dmId, dmName, authUserId, message);
+            // 
             dm.messages.push(newDmMessage);
             setData(data);
           }
@@ -610,6 +718,33 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
   }
 
   return { messageId: messageIdCopy };
+}
+
+export function messageSendDmTaggedV1 (dmId: number, dmName: string, authUserId: number, message: string) {
+  
+  const data = getData();
+  
+  let authUserHandle = '';
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      authUserHandle = user.handleStr;
+    }
+  }
+
+  for (const user of data.users) {
+    if (message.includes(`@${user.handleStr}`) === true) {
+      if (data.dms[dmId].members.includes(user.uId) === true) {
+        const newNotification: NotificationsObj = {
+          channelId: -1,
+          dmId: dmId,
+          notificationMessage: `@${authUserHandle} tagged you in ${dmName}: ${message.substring(0,20)}`,
+        };
+
+        user.notifications.push(newNotification);
+        setData(data);
+      }
+    }
+  }
 }
 
 export function messageSendV2 (token: string, channelId: number, message: string): MessageSendV1 {

@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
+import { NotificationsObj } from './dataStore';
 import { messageSendDmV1 } from './message';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user';
@@ -68,6 +69,7 @@ function channelJoinV1(authUserId: number, channelId: number): ChannelJoinV1 {
       nameLast: data.users[authUserId].nameLast,
       email: data.users[authUserId].email,
       handleStr: data.users[authUserId].handleStr,
+      notifications: data.users[authUserId].notifications,
     });
 
   setData(data);
@@ -114,6 +116,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
   let nameLastCopy = '';
   let emailCopy = '';
   let handlestrCopy = '';
+  let notificationsCopy: NotificationsObj[] = [];
 
   for (const user of data.users) {
     // If the user Id exists
@@ -123,6 +126,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
       nameLastCopy = user.nameLast;
       emailCopy = user.email;
       handlestrCopy = user.handleStr;
+      notificationsCopy = user.notifications;
     }
   }
 
@@ -136,10 +140,15 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
     // If the channel Id exists
     if (channelId === channel.channelId) {
       existChannel = 1;
+      let channelName = channel.name;
+
       // To loop through all the members in selected channel
       for (const member of channel.allMembers) {
         // If the auth user is a member
         if (authUserId === member.uId) {
+          //
+          channelInviteNotifV1(channelName, authUserId, channelId, uId);
+          //
           // Push object user into allMembers array
           channel.allMembers.push({
             uId: uId,
@@ -147,6 +156,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
             nameLast: nameLastCopy,
             email: emailCopy,
             handleStr: handlestrCopy,
+            notifications: notificationsCopy,
           });
           setData(data);
           return { };
@@ -162,6 +172,31 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
     return { error: 'error' };
   }
 }
+
+export function channelInviteNotifV1 (channelName: string, authUserId: number, channelId: number, uId: number) {
+  
+  const data = getData();
+  
+  let authUserHandle = '';
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      authUserHandle = user.handleStr;
+    }
+  }
+
+  for (const user of data.users) {
+    if (uId === user.uId) {
+      const newNotification: NotificationsObj = {
+        channelId: channelId,
+        dmId: -1,
+        notificationMessage: `@${authUserHandle} added you to ${channelName}`,
+      };
+      user.notifications.push(newNotification);
+      setData(data);
+    }
+  }
+}
+
 
 /*
  * ChannelDetailsV1 provides the details of a valid channel if an authorised
