@@ -342,8 +342,6 @@ app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV3(token, channelId, uId));
 });
 
-
-
 // Old channel requests
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
@@ -383,7 +381,7 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });
 
-////////////////// All message requests //////////////////////
+// All message requests
 // New message requests
 app.post('/message/share/v1', (req: Request, res: Response) => {
   const { ogMessageId, message, channelId, dmId } = req.body;
@@ -427,31 +425,8 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
 });
 
-// Old message requests - updated routes
-app.post('/message/send/v2', (req: Request, res: Response) => {
-  const { channelId, message } = req.body;
-  const token = req.header('token');
-  res.json(messageSendV2(token, channelId, message));
-});
+// Old message requests - V3 compatible
 
-app.put('/message/edit/v2', (req: Request, res: Response) => {
-  const { messageId, message } = req.body;
-  const token = req.header('token');
-  res.json(messageEditV1(token, messageId, message));
-});
-
-app.delete('/message/remove/v2', (req: Request, res: Response) => {
-  const token = req.header('token');
-  const messageId = req.query.messageId as string;
-  const newMessageId = parseInt(messageId);
-  res.json(messageRemoveV1(token, newMessageId));
-});
-
-app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const { dmId, message } = req.body;
-  const token = req.header('token');
-  res.json(messageSendDmV1(token, dmId, message));
-});
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
