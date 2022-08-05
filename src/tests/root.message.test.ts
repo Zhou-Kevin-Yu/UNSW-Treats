@@ -6,13 +6,15 @@ import { channelsCreateV2SS } from '../wrapped.channels';
 import { channelMessagesV2SS, channelJoinV2SS } from '../wrapped.channel';
 import { messageSendV1SS, messageEditV1SS, messageSendDmV1SS, messageRemoveV1SS } from '../wrapped.message';
 import { dmCreateV1SS, dmMessagesV1SS } from '../wrapped.dm';
+import { messageSendV2SS/*, messageSendDmV2SS ,messageEditV2SS, messageRemoveV2SS */ } from '../wrapped.message';
+import { messageShareV1SS/*, messageReactV1SS, messageUnreactV1SS, messagePinV1SS, messageUnpinV1SS, messageSendlaterV1SS, messageSendlaterDmV1SS */ } from '../wrapped.message';
+// import { channelMessagesV3SS, channelLeaveV2SS } from '../wrapped.channel';
 
 // const errorReturn = { error: 'error' };
 const aboveMaxLengthMessage = 'HkFmF9IW0tFB7V0Gs08ZpEUbqOtsWUvLdxRmCSqLlsnm2J4SXlcc7aMJ8Mbxk2q24EjdHX6hTyT9FueMIHnJOIwQxBR5v73lePT7I9za4MZrFUNjVmS1V2FuLk2I3gIhVzKMPA1UQ3WEy5Lom3j3y52PA3iXpZNANMAcpBAeHzI7YxACN9cWvC1BktQyVXs6R6EpWKxhHUq3t8CSE7w3TnYBdUvbHO6j7FZt4KosdQrhux8yPxj2MPf5qilJ9ogUIzpO5axsdRwnWnHaT5taMmvZtsJR1abWwnEtrbZhIGXrY3Omt0RvQRGMmqmxAgtDU8YhzZjRJalcNmCbxkUl9PcvUuLrKkAZebQyunxjM9Szw0RAwB7bNMDSIRhBfgpCApue9oRxIJGo0h50eXTDYDl0Kjr1oMDqantYKsji0Ph0wGB0wc1TDr8l41b6Ys2n6Imveo6pFsd8Z55K3ZtRPie8VisqngbmWwRKka6Ca7GZSYqhjzEHUopbmzmC9uJC7PwYszEv5rwkUm9gFw1S5Nx9pnGaU0JiTc7XPZ2F6YJD0Cz7rCXcxR5L1N4T9krZzFYfAqzqq9PDNrKo0awQJReFNDz3qEVxiyIw3DH4GNQaNpTiCtX1qSTidZ1oBLH0XkGtcNiXrPrP44vmQAcCamGJsp0oUaB6uhP0yzrPvenVe3gzQWijnFwpD8vdUzXwmC8FZcixAQ45ek2iziFBtweZ3Qrt9J6E8KRZUmz3rkwvbUIndo0oJXfPyN1toHgqswAAoFimBKZUYJgGb1JwBH4K51hzQebzotV6emZ8T0pXpdAjWC19bE8wAg9IvZgeZRUVG6zP0O9TrigkHCDDAH8cUw02041aJaJOv3qH8Ulc90q9FU5UCZNM8w084Rq199Tlo3jYCcjB2NhORWcf4ldCN29JzC9KGLkBnHMDrrOYl1AtQmM7ARG5fO7rmH91WHN79aSf1HNf000DSdQ8l7wBxrZhvcEFwTTuz5Kk1';
 const OK = 200;
 const port = config.port;
 let url = config.url;
-
 // console.log(os.platform());
 
 if (os.platform() === 'darwin') {
@@ -30,6 +32,422 @@ beforeEach(() => {
   clearV1ServerSide();
 });
 /// //////// ITERATION 3 TESTING ///////////
+/*
+test('', () => {
+
+    });
+*/
+describe('Iteration 3 Function Testing', () => {
+  describe('Testing /message/share/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('ChannelToDmShare', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const message0 = messageSendV2SS(user0.token, channel0.channelId, 'message0');
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        // user0 shares message0, which is in channel0, to dm0, a dm they are part of
+        const res = JSON.parse(messageShareV1SS(user0.token, message0.messageId, '', -1, dm0.dmId).body as string);
+        expect(res.sharedMessageId).toBe(message0.messageId + 1);
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('channelId AND dmId Invalid - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelsCreateV2SS(user0.token, 'channel1', true);
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+        // 3 and 2 refer to invaid channels and dms
+        const res = messageShareV1SS(user0.token, message0.messageId, '', 3, 2);
+        expect(res.statusCode).toBe(400);
+      });
+      test("Neither channelId nor dmId are '-1' - (channel)", () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const channel1 = channelsCreateV2SS(user0.token, 'channel1', true);
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+        // dmId and channelId are valid (0 and 0)
+        const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, dm0.dmId);
+        expect(res.statusCode).toBe(400);
+      });
+      test("UserSharesMessage they don't have access to - (channel)", () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        // user1 shares message0, which is in channel0, a channel user1 isnt part of
+        const res = messageShareV1SS(user1.token, message0.messageId, '', -1, dm0.dmId);
+        expect(res.statusCode).toBe(400);
+      });
+      test('messageLen > 1000  - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
+        const dm0 = dmCreateV1SS(user0.token, [user1.authUserId]);
+
+        let str = '';
+        // 1001-10 because original message is 8 + 2 newline characters
+        for (let i = 0; i < 1001 - 10; i++) {
+          str = str + 'a';
+        }
+        expect(str.length).toBe(991);
+
+        // user0 shares a message of length 1001 to dm0 from channel0
+        const res = messageShareV1SS(user1.token, message0.messageId, str, -1, dm0.dmId);
+        expect(res.statusCode).toBe(400);
+      });
+      test('UserSharesMessage to channel they dont have access to - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        const channel1 = channelsCreateV2SS(user1.token, 'channel1', true);
+
+        // user0 shares message0, which is in channel0, to channel1, a channel they arent part of
+        const res = messageShareV1SS(user0.token, message0.messageId, '', channel1.channelId, -1);
+        expect(res.statusCode).toBe(403);
+      });
+    });
+  });
+
+/*
+  describe('Testing /message/react/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('User1 reacts to User0 message  - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts to user0's message in channel0
+        const res = messageReactV1SS(user1.token, message0.messageId, 1);
+        expect(res).toStrictEqual({});
+
+        const messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].reacts[0].reactId).toBe(1);
+        expect(messages.messages[0].reacts[0].uIds).toStrictEqual([1]);
+        expect(messages.messages[0].reacts[0].isThisUserReacted).toBe(true);
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('User reacts to message in a channel they are not part of  - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1  tries to react to message0, a message in channel0, which they arent part of
+        const res = messageReactV1SS(user1.token, message0.messageId, 1);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+
+      test('incorrect reactId  - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts 2, an invalid react
+        const res = messageReactV1SS(user1.token, message0.messageId, 2);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+
+      test('User has already reacted  - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts to user0's message in channel0
+        let res = messageReactV1SS(user1.token, message0.messageId, 1);
+        expect(res).toStrictEqual({});
+
+        const messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].reacts[0].reactId).toBe(1);
+        expect(messages.messages[0].reacts[0].uIds).toStrictEqual([1]);
+        expect(messages.messages[0].reacts[0].isThisUserReacted).toBe(true);
+
+        // exact same react should fail
+        res = messageReactV1SS(user1.token, message0.messageId, 1);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+    });
+  });
+
+  describe('Testing /message/unreact/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('React and unreact to message in a channel - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts to user0's message in channel0
+        let res = messageReactV1SS(user1.token, message0.messageId, 1);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].reacts[0].reactId).toBe(1);
+        expect(messages.messages[0].reacts[0].uIds).toStrictEqual([1]);
+        expect(messages.messages[0].reacts[0].isThisUserReacted).toBe(true);
+
+        res = messageUnreactV1SS(user1.token, message0.messageId, 1);
+        expect(res).toStrictEqual({});
+
+        messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].reacts[0].reactId).toBe(1);
+        expect(messages.messages[0].reacts[0].uIds).toStrictEqual([]);
+        expect(messages.messages[0].reacts[0].isThisUserReacted).toBe(false);
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('React and unreact to message in a channel - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts to user0's message in channel0
+        messageReactV1SS(user1.token, message0.messageId, 1);
+
+        // user1 leaves channel 0
+        channelLeaveV2SS(user1.token, channel0.channelId);
+
+        const res = messageUnreactV1SS(user1.token, message0.messageId, 1);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('invalid reactId - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 reacts to user0's message in channel0
+        messageReactV1SS(user1.token, message0.messageId, 1);
+
+        // invalid reactId should fail
+        const res = messageUnreactV1SS(user1.token, message0.messageId, 2);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('message does not contain a reactId from authUser - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // No react has taken place
+        const res = messageUnreactV1SS(user1.token, message0.messageId, 2);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+    });
+  });
+
+  describe('Testing /message/pin/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('success pin case - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 pins user0's message in channel0
+        const res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        const messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('message exists in a channel the user is not part of', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        // channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 pins user1's message in channel0, but user1 has not joined channel 0 (should fail)
+        const res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+
+      test('already pinned - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user0 pins user0's message in channel0
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        const messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual(400);
+      });
+
+      test('user does not have owner permissions of channel - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user1 does not have owner permissions in channel0
+        const res = messagePinV1SS(user1.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(403);
+      });
+    });
+  });
+
+  describe('Testing /message/unpin/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('successful unpin - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(false);
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('message exists in channel user is not part of', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        // channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user0.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user0.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user1.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('message not already pinned', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 tries to unpin message message that isn't already pinned
+        let res = messageUnpinV1SS(user0.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(400);
+      });
+      test('user does not have perms to unpin - (channel)', () => {
+        const user0 = authRegisterV2ServerSide('u0@gmail.com', 'passworD67', 'u', '0');
+        const user1 = authRegisterV2ServerSide('u1@gmail.com', 'passworD67', 'u', '1');
+        const channel0 = channelsCreateV2SS(user0.token, 'channel0', true);
+        channelJoinV2SS(user1.token, channel0.channelId);
+
+        const message0 = messageSendV1SS(user1.token, channel0.channelId, 'message0');
+
+        // user0 pins message
+        let res = messagePinV1SS(user0.token, message0.messageId);
+        expect(res).toStrictEqual({});
+
+        let messages = channelMessagesV3SS(user1.token, channel0.channelId, 0);
+        expect(messages.messages[0].messageId).toBe(message0.messageId);
+        expect(messages.messages[0].isPinned).toBe(true);
+
+        res = messageUnpinV1SS(user1.token, message0.messageId);
+        expect(res.statusCode).toStrictEqual(403);
+      });
+    });
+  });
+
+  describe('Testing /message/sendlater/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('', () => {
+
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('', () => {
+
+      });
+    });
+  });
+
+  describe('Testing /message/sendlaterDm/v1', () => {
+    describe('Testing Success Cases', () => {
+      test('', () => {
+
+      });
+    });
+    describe('Testing Error Cases', () => {
+      test('', () => {
+
+      });
+    });
+  });
+*/
+});
 
 /// //////// ITERATION 2 TESTING ///////////
 
@@ -113,12 +531,13 @@ describe('Testing iteration 2 Errors', () => {
 });
 
 // HTTP testing for a combination of message functions being used
-describe('HTTP tests using multiple message functions', () => {
+describe('IITERATION 1 and 2 TESTING', () => {
+  describe('HTTP tests using multiple message functions', () => {
   // Success testing for message in channel where functions are used again after remove
-  test('Remove a message in channel and then see if /send, /edit and /remove still works', () => {
+    test('Remove a message in channel and then see if /send, /edit and /remove still works', () => {
     // Create a token from authRegisterV2
-    const res1 = request(
-      'POST',
+      const res1 = request(
+        'POST',
       `${url}:${port}/auth/register/v3`,
       {
         json: {
@@ -128,12 +547,12 @@ describe('HTTP tests using multiple message functions', () => {
           nameLast: 'Yu',
         }
       }
-    );
-    const registerObj = JSON.parse(res1.getBody() as string);
-    const token = registerObj.token;
-    // Create a channel Id from channelsCreateV2
-    const res2 = request(
-      'POST',
+      );
+      const registerObj = JSON.parse(res1.getBody() as string);
+      const token = registerObj.token;
+      // Create a channel Id from channelsCreateV2
+      const res2 = request(
+        'POST',
       `${url}:${port}/channels/create/v2`,
       {
         json: {
@@ -142,13 +561,13 @@ describe('HTTP tests using multiple message functions', () => {
           isPublic: true,
         }
       }
-    );
-    const channelObj = JSON.parse(res2.getBody() as string);
-    const channelId = channelObj.channelId;
+      );
+      const channelObj = JSON.parse(res2.getBody() as string);
+      const channelId = channelObj.channelId;
 
-    // Create a messageId from messageSendV1
-    const res3 = request(
-      'POST',
+      // Create a messageId from messageSendV1
+      const res3 = request(
+        'POST',
       `${url}:${port}/message/send/v1`,
       {
         json: {
@@ -157,13 +576,13 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'I love COMP1531',
         }
       }
-    );
-    const message1Obj = JSON.parse(res3.getBody() as string);
-    const messageId = message1Obj.messageId;
+      );
+      const message1Obj = JSON.parse(res3.getBody() as string);
+      const messageId = message1Obj.messageId;
 
-    // The user removes message
-    const res4 = request(
-      'DELETE',
+      // The user removes message
+      const res4 = request(
+        'DELETE',
       `${url}:${port}/message/remove/v1`,
       {
         qs: {
@@ -171,15 +590,15 @@ describe('HTTP tests using multiple message functions', () => {
           messageId: messageId,
         }
       }
-    );
-    const data = JSON.parse(res4.getBody() as string);
-    expect(res4.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data).toStrictEqual({ });
+      );
+      const data = JSON.parse(res4.getBody() as string);
+      expect(res4.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data).toStrictEqual({ });
 
-    // The user sends another message
-    const res5 = request(
-      'POST',
+      // The user sends another message
+      const res5 = request(
+        'POST',
       `${url}:${port}/message/send/v1`,
       {
         json: {
@@ -188,19 +607,19 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'I do not like engineering',
         }
       }
-    );
-    const message2Obj = JSON.parse(res5.getBody() as string);
-    const messageId2 = message2Obj.messageId;
-    const data2 = JSON.parse(res5.getBody() as string);
+      );
+      const message2Obj = JSON.parse(res5.getBody() as string);
+      const messageId2 = message2Obj.messageId;
+      const data2 = JSON.parse(res5.getBody() as string);
 
-    expect(res5.statusCode).toBe(OK);
-    // Expect to return message Id
-    expect(data2).toStrictEqual({ messageId: expect.any(Number) });
-    expect(data2.messageId).toBe(1); // second message ever sent should have the messageId : 1;
+      expect(res5.statusCode).toBe(OK);
+      // Expect to return message Id
+      expect(data2).toStrictEqual({ messageId: expect.any(Number) });
+      expect(data2.messageId).toBe(1); // second message ever sent should have the messageId : 1;
 
-    // The user edits the just sent message (second message ever sent)
-    const res6 = request(
-      'PUT',
+      // The user edits the just sent message (second message ever sent)
+      const res6 = request(
+        'PUT',
       `${url}:${port}/message/edit/v1`,
       {
         json: {
@@ -209,15 +628,15 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'I love engineering!',
         }
       }
-    );
-    const data3 = JSON.parse(res6.getBody() as string);
-    expect(res6.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data3).toStrictEqual({ });
+      );
+      const data3 = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data3).toStrictEqual({ });
 
-    // The user then removes just edited message (second message ever sent)
-    const res7 = request(
-      'DELETE',
+      // The user then removes just edited message (second message ever sent)
+      const res7 = request(
+        'DELETE',
       `${url}:${port}/message/remove/v1`,
       {
         qs: {
@@ -225,18 +644,18 @@ describe('HTTP tests using multiple message functions', () => {
           messageId: messageId2,
         }
       }
-    );
-    const data4 = JSON.parse(res7.getBody() as string);
-    expect(res7.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data4).toStrictEqual({ });
-  });
+      );
+      const data4 = JSON.parse(res7.getBody() as string);
+      expect(res7.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data4).toStrictEqual({ });
+    });
 
-  // Success testing for message in DM where functions are used again after remove
-  test('Remove a message in DM and then see if /sendDM, /edit and /remove still works', () => {
+    // Success testing for message in DM where functions are used again after remove
+    test('Remove a message in DM and then see if /sendDM, /edit and /remove still works', () => {
     // Create a token from authRegisterV2
-    const res1 = request(
-      'POST',
+      const res1 = request(
+        'POST',
       `${url}:${port}/auth/register/v3`,
       {
         json: {
@@ -246,13 +665,13 @@ describe('HTTP tests using multiple message functions', () => {
           nameLast: 'Yu',
         }
       }
-    );
-    const registerObj = JSON.parse(res1.getBody() as string);
-    const firstToken = registerObj.token;
+      );
+      const registerObj = JSON.parse(res1.getBody() as string);
+      const firstToken = registerObj.token;
 
-    // Create a second user from authRegisterV2
-    const res2 = request(
-      'POST',
+      // Create a second user from authRegisterV2
+      const res2 = request(
+        'POST',
       `${url}:${port}/auth/register/v3`,
       {
         json: {
@@ -262,13 +681,13 @@ describe('HTTP tests using multiple message functions', () => {
           nameLast: 'Xu',
         }
       }
-    );
-    const register2Obj = JSON.parse(res2.getBody() as string);
-    const secondUser = [register2Obj.authUserId];
+      );
+      const register2Obj = JSON.parse(res2.getBody() as string);
+      const secondUser = [register2Obj.authUserId];
 
-    // Create a dm Id from dm/create/v1
-    const dmRes = request(
-      'POST',
+      // Create a dm Id from dm/create/v1
+      const dmRes = request(
+        'POST',
       `${url}:${port}/dm/create/v1`,
       {
         json: {
@@ -276,13 +695,13 @@ describe('HTTP tests using multiple message functions', () => {
           uIds: secondUser,
         }
       }
-    );
-    const dmObj = JSON.parse(dmRes.getBody() as string);
-    const dmId = dmObj.dmId;
+      );
+      const dmObj = JSON.parse(dmRes.getBody() as string);
+      const dmId = dmObj.dmId;
 
-    // Send a message from authorisedUser to the DM specified by dmId
-    const res3 = request(
-      'POST',
+      // Send a message from authorisedUser to the DM specified by dmId
+      const res3 = request(
+        'POST',
       `${url}:${port}/message/senddm/v1`,
       {
         json: {
@@ -291,19 +710,19 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'Hi everyone GLHF',
         }
       }
-    );
-    const data = JSON.parse(res3.getBody() as string);
-    const messageObj = JSON.parse(res3.getBody() as string);
-    const messageId = messageObj.messageId;
+      );
+      const data = JSON.parse(res3.getBody() as string);
+      const messageObj = JSON.parse(res3.getBody() as string);
+      const messageId = messageObj.messageId;
 
-    expect(res3.statusCode).toBe(OK);
-    // Expect to return messageId
-    expect(data).toStrictEqual({ messageId: expect.any(Number) });
-    expect(data.messageId).toBe(0); // first message should have the messageId : 0;
+      expect(res3.statusCode).toBe(OK);
+      // Expect to return messageId
+      expect(data).toStrictEqual({ messageId: expect.any(Number) });
+      expect(data.messageId).toBe(0); // first message should have the messageId : 0;
 
-    // The user removes message sent in DM
-    const res4 = request(
-      'DELETE',
+      // The user removes message sent in DM
+      const res4 = request(
+        'DELETE',
       `${url}:${port}/message/remove/v1`,
       {
         qs: {
@@ -311,15 +730,15 @@ describe('HTTP tests using multiple message functions', () => {
           messageId: messageId,
         }
       }
-    );
-    const data2 = JSON.parse(res4.getBody() as string);
-    expect(res4.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data2).toStrictEqual({ });
+      );
+      const data2 = JSON.parse(res4.getBody() as string);
+      expect(res4.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data2).toStrictEqual({ });
 
-    // The user sends another message (second message ever)
-    const res5 = request(
-      'POST',
+      // The user sends another message (second message ever)
+      const res5 = request(
+        'POST',
       `${url}:${port}/message/senddm/v1`,
       {
         json: {
@@ -328,19 +747,19 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'Good luck',
         }
       }
-    );
-    const data3 = JSON.parse(res5.getBody() as string);
-    const message2Obj = JSON.parse(res5.getBody() as string);
-    const messageId2 = message2Obj.messageId;
+      );
+      const data3 = JSON.parse(res5.getBody() as string);
+      const message2Obj = JSON.parse(res5.getBody() as string);
+      const messageId2 = message2Obj.messageId;
 
-    expect(res5.statusCode).toBe(OK);
-    // Expect to return messageId
-    expect(data3).toStrictEqual({ messageId: expect.any(Number) });
-    expect(data3.messageId).toBe(1); // second message should have the messageId : 1;
+      expect(res5.statusCode).toBe(OK);
+      // Expect to return messageId
+      expect(data3).toStrictEqual({ messageId: expect.any(Number) });
+      expect(data3.messageId).toBe(1); // second message should have the messageId : 1;
 
-    // The user edits the just sent message (second message ever sent)
-    const res6 = request(
-      'PUT',
+      // The user edits the just sent message (second message ever sent)
+      const res6 = request(
+        'PUT',
       `${url}:${port}/message/edit/v1`,
       {
         json: {
@@ -349,15 +768,15 @@ describe('HTTP tests using multiple message functions', () => {
           message: 'Bad luck to everyone!',
         }
       }
-    );
-    const data4 = JSON.parse(res6.getBody() as string);
-    expect(res6.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data4).toStrictEqual({ });
+      );
+      const data4 = JSON.parse(res6.getBody() as string);
+      expect(res6.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data4).toStrictEqual({ });
 
-    // The user then removes just edited message (second message ever sent)
-    const res7 = request(
-      'DELETE',
+      // The user then removes just edited message (second message ever sent)
+      const res7 = request(
+        'DELETE',
       `${url}:${port}/message/remove/v1`,
       {
         qs: {
@@ -365,211 +784,211 @@ describe('HTTP tests using multiple message functions', () => {
           messageId: messageId2,
         }
       }
-    );
-    const data5 = JSON.parse(res7.getBody() as string);
-    expect(res7.statusCode).toBe(OK);
-    // Expect to return empty object
-    expect(data5).toStrictEqual({ });
-  });
+      );
+      const data5 = JSON.parse(res7.getBody() as string);
+      expect(res7.statusCode).toBe(OK);
+      // Expect to return empty object
+      expect(data5).toStrictEqual({ });
+    });
 
-  // // Error test for where user sends message in channel, removes it, and if user trys to edit and remove deleted message
-  // test('Error test where user tries to edit and remove deleted channel message', () => {
-  //   // Create a token from authRegisterV2
-  //   const res1 = request(
-  //     'POST',
-  //     `${url}:${port}/auth/register/v3`,
-  //     {
-  //       json: {
-  //         email: 'kevinyu@email.com',
-  //         password: 'KevinsPassword0',
-  //         nameFirst: 'Kevin',
-  //         nameLast: 'Yu',
-  //       }
-  //     }
-  //   );
-  //   const registerObj = JSON.parse(res1.getBody() as string);
-  //   const token = registerObj.token;
-  //   // Create a channel Id from channelsCreateV2
-  //   const res2 = request(
-  //     'POST',
-  //     `${url}:${port}/channels/create/v2`,
-  //     {
-  //       json: {
-  //         token: token,
-  //         name: 'COMP1531',
-  //         isPublic: true,
-  //       }
-  //     }
-  //   );
-  //   const channelObj = JSON.parse(res2.getBody() as string);
-  //   const channelId = channelObj.channelId;
+    // // Error test for where user sends message in channel, removes it, and if user trys to edit and remove deleted message
+    // test('Error test where user tries to edit and remove deleted channel message', () => {
+    //   // Create a token from authRegisterV2
+    //   const res1 = request(
+    //     'POST',
+    //     `${url}:${port}/auth/register/v3`,
+    //     {
+    //       json: {
+    //         email: 'kevinyu@email.com',
+    //         password: 'KevinsPassword0',
+    //         nameFirst: 'Kevin',
+    //         nameLast: 'Yu',
+    //       }
+    //     }
+    //   );
+    //   const registerObj = JSON.parse(res1.getBody() as string);
+    //   const token = registerObj.token;
+    //   // Create a channel Id from channelsCreateV2
+    //   const res2 = request(
+    //     'POST',
+    //     `${url}:${port}/channels/create/v2`,
+    //     {
+    //       json: {
+    //         token: token,
+    //         name: 'COMP1531',
+    //         isPublic: true,
+    //       }
+    //     }
+    //   );
+    //   const channelObj = JSON.parse(res2.getBody() as string);
+    //   const channelId = channelObj.channelId;
 
-  //   // Create a messageId from messageSendV1
-  //   const res3 = request(
-  //     'POST',
-  //     `${url}:${port}/message/send/v1`,
-  //     {
-  //       json: {
-  //         token: token,
-  //         channelId: channelId,
-  //         message: 'I love COMP1531',
-  //       }
-  //     }
-  //   );
-  //   const message1Obj = JSON.parse(res3.getBody() as string);
-  //   const messageId = message1Obj.messageId;
+    //   // Create a messageId from messageSendV1
+    //   const res3 = request(
+    //     'POST',
+    //     `${url}:${port}/message/send/v1`,
+    //     {
+    //       json: {
+    //         token: token,
+    //         channelId: channelId,
+    //         message: 'I love COMP1531',
+    //       }
+    //     }
+    //   );
+    //   const message1Obj = JSON.parse(res3.getBody() as string);
+    //   const messageId = message1Obj.messageId;
 
-  //   // The user removes message
-  //   const res4 = request(
-  //     'DELETE',
-  //     `${url}:${port}/message/remove/v1`,
-  //     {
-  //       qs: {
-  //         token: token,
-  //         messageId: messageId,
-  //       }
-  //     }
-  //   );
-  //   const data = JSON.parse(res4.getBody() as string);
-  //   expect(res4.statusCode).toBe(OK);
-  //   // Expect to return empty object
-  //   expect(data).toStrictEqual({ });
+    //   // The user removes message
+    //   const res4 = request(
+    //     'DELETE',
+    //     `${url}:${port}/message/remove/v1`,
+    //     {
+    //       qs: {
+    //         token: token,
+    //         messageId: messageId,
+    //       }
+    //     }
+    //   );
+    //   const data = JSON.parse(res4.getBody() as string);
+    //   expect(res4.statusCode).toBe(OK);
+    //   // Expect to return empty object
+    //   expect(data).toStrictEqual({ });
 
-  //   // The user edits the just deleted message (first message ever sent)
-  //   const res6 = request(
-  //     'PUT',
-  //     `${url}:${port}/message/edit/v1`,
-  //     {
-  //       json: {
-  //         token: token,
-  //         messageId: messageId,
-  //         message: 'I love engineering!',
-  //       }
-  //     }
-  //   );
-  //   const data3 = JSON.parse(res6.getBody() as string);
-  //   expect(res6.statusCode).toBe(OK);
-  //   // Expect to return error
-  //   expect(data3).toStrictEqual(errorReturn);
+    //   // The user edits the just deleted message (first message ever sent)
+    //   const res6 = request(
+    //     'PUT',
+    //     `${url}:${port}/message/edit/v1`,
+    //     {
+    //       json: {
+    //         token: token,
+    //         messageId: messageId,
+    //         message: 'I love engineering!',
+    //       }
+    //     }
+    //   );
+    //   const data3 = JSON.parse(res6.getBody() as string);
+    //   expect(res6.statusCode).toBe(OK);
+    //   // Expect to return error
+    //   expect(data3).toStrictEqual(errorReturn);
 
-  //   // The user removes the just deleted message (first message ever sent)
-  //   const res7 = request(
-  //     'DELETE',
-  //     `${url}:${port}/message/remove/v1`,
-  //     {
-  //       qs: {
-  //         token: token,
-  //         messageId: messageId,
-  //       }
-  //     }
-  //   );
-  //   const data4 = JSON.parse(res7.getBody() as string);
-  //   expect(res7.statusCode).toBe(OK);
-  //   // Expect to return error
-  //   expect(data4).toStrictEqual(errorReturn);
-  // });
+    //   // The user removes the just deleted message (first message ever sent)
+    //   const res7 = request(
+    //     'DELETE',
+    //     `${url}:${port}/message/remove/v1`,
+    //     {
+    //       qs: {
+    //         token: token,
+    //         messageId: messageId,
+    //       }
+    //     }
+    //   );
+    //   const data4 = JSON.parse(res7.getBody() as string);
+    //   expect(res7.statusCode).toBe(OK);
+    //   // Expect to return error
+    //   expect(data4).toStrictEqual(errorReturn);
+    // });
 
-  // // Error test for where user sends message in DM, removes it, and if user trys to edit and remove deleted message
-  // test('Error test where user tries to edit and remove deleted DM message', () => {
-  //   // Create a token from authRegisterV2
-  //   const res1 = request(
-  //     'POST',
-  //     `${url}:${port}/auth/register/v3`,
-  //     {
-  //       json: {
-  //         email: 'kevinyu@email.com',
-  //         password: 'KevinsPassword0',
-  //         nameFirst: 'Kevin',
-  //         nameLast: 'Yu',
-  //       }
-  //     }
-  //   );
-  //   const registerObj = JSON.parse(res1.getBody() as string);
-  //   const firstToken = registerObj.token;
+    // // Error test for where user sends message in DM, removes it, and if user trys to edit and remove deleted message
+    // test('Error test where user tries to edit and remove deleted DM message', () => {
+    //   // Create a token from authRegisterV2
+    //   const res1 = request(
+    //     'POST',
+    //     `${url}:${port}/auth/register/v3`,
+    //     {
+    //       json: {
+    //         email: 'kevinyu@email.com',
+    //         password: 'KevinsPassword0',
+    //         nameFirst: 'Kevin',
+    //         nameLast: 'Yu',
+    //       }
+    //     }
+    //   );
+    //   const registerObj = JSON.parse(res1.getBody() as string);
+    //   const firstToken = registerObj.token;
 
-  //   // Create a second user from authRegisterV2
-  //   const res2 = request(
-  //     'POST',
-  //     `${url}:${port}/auth/register/v3`,
-  //     {
-  //       json: {
-  //         email: 'user@gmail.com',
-  //         password: 'abcdefg',
-  //         nameFirst: 'Calvin',
-  //         nameLast: 'Xu',
-  //       }
-  //     }
-  //   );
-  //   const register2Obj = JSON.parse(res2.getBody() as string);
-  //   const secondUser = [register2Obj.authUserId];
+    //   // Create a second user from authRegisterV2
+    //   const res2 = request(
+    //     'POST',
+    //     `${url}:${port}/auth/register/v3`,
+    //     {
+    //       json: {
+    //         email: 'user@gmail.com',
+    //         password: 'abcdefg',
+    //         nameFirst: 'Calvin',
+    //         nameLast: 'Xu',
+    //       }
+    //     }
+    //   );
+    //   const register2Obj = JSON.parse(res2.getBody() as string);
+    //   const secondUser = [register2Obj.authUserId];
 
-  //   // Create a dm Id from dm/create/v1
-  //   const dmRes = request(
-  //     'POST',
-  //     `${url}:${port}/dm/create/v1`,
-  //     {
-  //       json: {
-  //         token: firstToken,
-  //         uIds: secondUser,
-  //       }
-  //     }
-  //   );
-  //   const dmObj = JSON.parse(dmRes.getBody() as string);
-  //   const dmId = dmObj.dmId;
+    //   // Create a dm Id from dm/create/v1
+    //   const dmRes = request(
+    //     'POST',
+    //     `${url}:${port}/dm/create/v1`,
+    //     {
+    //       json: {
+    //         token: firstToken,
+    //         uIds: secondUser,
+    //       }
+    //     }
+    //   );
+    //   const dmObj = JSON.parse(dmRes.getBody() as string);
+    //   const dmId = dmObj.dmId;
 
-  //   // Send a message from authorisedUser to the DM specified by dmId
-  //   const res3 = request(
-  //     'POST',
-  //     `${url}:${port}/message/senddm/v1`,
-  //     {
-  //       json: {
-  //         token: firstToken,
-  //         dmId: dmId,
-  //         message: 'Hi everyone GLHF',
-  //       }
-  //     }
-  //   );
-  //   const data = JSON.parse(res3.getBody() as string);
-  //   const messageObj = JSON.parse(res3.getBody() as string);
-  //   const messageId = messageObj.messageId;
+    //   // Send a message from authorisedUser to the DM specified by dmId
+    //   const res3 = request(
+    //     'POST',
+    //     `${url}:${port}/message/senddm/v1`,
+    //     {
+    //       json: {
+    //         token: firstToken,
+    //         dmId: dmId,
+    //         message: 'Hi everyone GLHF',
+    //       }
+    //     }
+    //   );
+    //   const data = JSON.parse(res3.getBody() as string);
+    //   const messageObj = JSON.parse(res3.getBody() as string);
+    //   const messageId = messageObj.messageId;
 
-  //   expect(res3.statusCode).toBe(OK);
-  //   // Expect to return messageId
-  //   expect(data).toStrictEqual({ messageId: expect.any(Number) });
-  //   expect(data.messageId).toBe(0); // first message should have the messageId : 0;
+    //   expect(res3.statusCode).toBe(OK);
+    //   // Expect to return messageId
+    //   expect(data).toStrictEqual({ messageId: expect.any(Number) });
+    //   expect(data.messageId).toBe(0); // first message should have the messageId : 0;
 
-  //   // The user removes message sent in DM
-  //   const res4 = request(
-  //     'DELETE',
-  //     `${url}:${port}/message/remove/v1`,
-  //     {
-  //       qs: {
-  //         token: firstToken,
-  //         messageId: messageId,
-  //       }
-  //     }
-  //   );
-  //   const data2 = JSON.parse(res4.getBody() as string);
-  //   expect(res4.statusCode).toBe(OK);
-  //   // Expect to return empty object
-  //   expect(data2).toStrictEqual({ });
+    //   // The user removes message sent in DM
+    //   const res4 = request(
+    //     'DELETE',
+    //     `${url}:${port}/message/remove/v1`,
+    //     {
+    //       qs: {
+    //         token: firstToken,
+    //         messageId: messageId,
+    //       }
+    //     }
+    //   );
+    //   const data2 = JSON.parse(res4.getBody() as string);
+    //   expect(res4.statusCode).toBe(OK);
+    //   // Expect to return empty object
+    //   expect(data2).toStrictEqual({ });
 
-  //   // The user edits the just deleted message (first message ever sent)
-  //   const res6 = request(
-  //     'PUT',
-  //     `${url}:${port}/message/edit/v1`,
-  //     {
-  //       json: {
-  //         token: firstToken,
-  //         messageId: messageId,
-  //         message: 'Bad luck to everyone!',
-  //       }
-  //     }
-  //   );
-  //   const data4 = JSON.parse(res6.getBody() as string);
-  //   expect(res6.statusCode).toBe(OK);
-  //   // Expect to return error
-  //   expect(data4).toStrictEqual(errorReturn);
+    //   // The user edits the just deleted message (first message ever sent)
+    //   const res6 = request(
+    //     'PUT',
+    //     `${url}:${port}/message/edit/v1`,
+    //     {
+    //       json: {
+    //         token: firstToken,
+    //         messageId: messageId,
+    //         message: 'Bad luck to everyone!',
+    //       }
+    //     }
+    //   );
+    //   const data4 = JSON.parse(res6.getBody() as string);
+    //   expect(res6.statusCode).toBe(OK);
+    //   // Expect to return error
+    //   expect(data4).toStrictEqual(errorReturn);
 
   //   // The user then removes the just deleted message (first message ever sent)
   //   const res7 = request(
@@ -587,6 +1006,7 @@ describe('HTTP tests using multiple message functions', () => {
   //   // Expect to return error
   //   expect(data5).toStrictEqual(errorReturn);
   // });
+  });
 });
 
 // HTTP testing for message/send/v1
@@ -778,6 +1198,7 @@ describe('HTTP tests for message/send', () => {
               message: 'I am Etkin',
             }
           }
+
         );
         // const data = JSON.parse(res.getBody() as string);
         expect(res.statusCode).toBe(400);
@@ -934,13 +1355,12 @@ describe('HTTP tests for message/send', () => {
         // Expect to return error
         // expect(data).toStrictEqual(errorReturn);
       });
-    });
 
-    // If the channelId is valid but authorised user is not a member
-    test('Test authId that is not a member of the channel', () => {
+      // If the channelId is valid but authorised user is not a member
+      test('Test authId that is not a member of the channel', () => {
       // Create a token (authorised user) from authRegisterV2
-      const res1 = request(
-        'POST',
+        const res1 = request(
+          'POST',
         `${url}:${port}/auth/register/v3`,
         {
           json: {
@@ -950,12 +1370,12 @@ describe('HTTP tests for message/send', () => {
             nameLast: 'smith',
           }
         }
-      );
-      const register1Obj = JSON.parse(res1.getBody() as string);
-      const authToken = register1Obj.token;
-      // Create a token (member user) from authRegisterV2
-      const res2 = request(
-        'POST',
+        );
+        const register1Obj = JSON.parse(res1.getBody() as string);
+        const authToken = register1Obj.token;
+        // Create a token (member user) from authRegisterV2
+        const res2 = request(
+          'POST',
         `${url}:${port}/auth/register/v3`,
         {
           json: {
@@ -965,13 +1385,13 @@ describe('HTTP tests for message/send', () => {
             nameLast: 'Xu',
           }
         }
-      );
-      const register2Obj = JSON.parse(res2.getBody() as string);
-      const userToken = register2Obj.token;
-      // Create a channel Id from channelsCreateV2 but uses the token from the member user
-      // Therefore the authorised user is not a member of the channel
-      const channelRes = request(
-        'POST',
+        );
+        const register2Obj = JSON.parse(res2.getBody() as string);
+        const userToken = register2Obj.token;
+        // Create a channel Id from channelsCreateV2 but uses the token from the member user
+        // Therefore the authorised user is not a member of the channel
+        const channelRes = request(
+          'POST',
         `${url}:${port}/channels/create/v2`,
         {
           json: {
@@ -980,12 +1400,12 @@ describe('HTTP tests for message/send', () => {
             isPublic: true,
           }
         }
-      );
-      const channelObj = JSON.parse(channelRes.getBody() as string);
-      const channelId = channelObj.channelId;
-      // Create a messageId from messageSendV1 but using authToken so return error
-      const res = request(
-        'POST',
+        );
+        const channelObj = JSON.parse(channelRes.getBody() as string);
+        const channelId = channelObj.channelId;
+        // Create a messageId from messageSendV1 but using authToken so return error
+        const res = request(
+          'POST',
         `${url}:${port}/message/send/v1`,
         {
           json: {
@@ -994,15 +1414,16 @@ describe('HTTP tests for message/send', () => {
             message: 'I study COMP1531',
           }
         }
-      );
-      // const data = JSON.parse(res.getBody() as string);
-      expect(res.statusCode).toBe(403);
-      // Expect to return error
-      // expect(data).toStrictEqual(errorReturn);
+
+        );
+        // const data = JSON.parse(res.getBody() as string);
+        expect(res.statusCode).toBe(403);
+        // Expect to return error
+        // expect(data).toStrictEqual(errorReturn);
+      });
     });
   });
 });
-
 // HTTP testing for message/edit/v1
 describe('HTTP tests for message/edit', () => {
   // If messageEditV1 is successful
@@ -2856,13 +3277,12 @@ describe('HTTP tests for message/senddm', () => {
         // Expect to return error
         // expect(data).toStrictEqual(errorReturn);
       });
-    });
 
-    // If dmId is valid and the authorised user is not a member of the DM
-    test('Test authId that is not a member of the DM', () => {
+      // If dmId is valid and the authorised user is not a member of the DM
+      test('Test authId that is not a member of the DM', () => {
       // Create a token (authorised user) from authRegisterV2
-      const res1 = request(
-        'POST',
+        const res1 = request(
+          'POST',
         `${url}:${port}/auth/register/v3`,
         {
           json: {
@@ -2872,13 +3292,13 @@ describe('HTTP tests for message/senddm', () => {
             nameLast: 'smith',
           }
         }
-      );
-      const register1Obj = JSON.parse(res1.getBody() as string);
-      const authToken = register1Obj.token;
+        );
+        const register1Obj = JSON.parse(res1.getBody() as string);
+        const authToken = register1Obj.token;
 
-      // Create a token (member user) from authRegisterV2
-      const res2 = request(
-        'POST',
+        // Create a token (member user) from authRegisterV2
+        const res2 = request(
+          'POST',
         `${url}:${port}/auth/register/v3`,
         {
           json: {
@@ -2888,13 +3308,13 @@ describe('HTTP tests for message/senddm', () => {
             nameLast: 'Xu',
           }
         }
-      );
-      const register2Obj = JSON.parse(res2.getBody() as string);
-      const userToken = register2Obj.token;
+        );
+        const register2Obj = JSON.parse(res2.getBody() as string);
+        const userToken = register2Obj.token;
 
-      // Create another token (another member user) from authRegisterV2
-      const res3 = request(
-        'POST',
+        // Create another token (another member user) from authRegisterV2
+        const res3 = request(
+          'POST',
         `${url}:${port}/auth/register/v3`,
         {
           json: {
@@ -2904,14 +3324,14 @@ describe('HTTP tests for message/senddm', () => {
             nameLast: 'Nguyen',
           }
         }
-      );
-      const register3Obj = JSON.parse(res3.getBody() as string);
-      const thirdUser = [register3Obj.authUserId];
+        );
+        const register3Obj = JSON.parse(res3.getBody() as string);
+        const thirdUser = [register3Obj.authUserId];
 
-      // Create a dm Id from dm/create/v1 but uses the token from the member user
-      // Therefore the authorised user is not a member of the DM
-      const dmRes = request(
-        'POST',
+        // Create a dm Id from dm/create/v1 but uses the token from the member user
+        // Therefore the authorised user is not a member of the DM
+        const dmRes = request(
+          'POST',
         `${url}:${port}/dm/create/v1`,
         {
           json: {
@@ -2919,13 +3339,13 @@ describe('HTTP tests for message/senddm', () => {
             uIds: thirdUser,
           }
         }
-      );
-      const dmObj = JSON.parse(dmRes.getBody() as string);
-      const dmId = dmObj.dmId;
+        );
+        const dmObj = JSON.parse(dmRes.getBody() as string);
+        const dmId = dmObj.dmId;
 
-      // Return error since authorised user is not member of DM
-      const res4 = request(
-        'POST',
+        // Return error since authorised user is not member of DM
+        const res4 = request(
+          'POST',
         `${url}:${port}/message/senddm/v1`,
         {
           json: {
@@ -2934,11 +3354,12 @@ describe('HTTP tests for message/senddm', () => {
             message: 'Hi guys',
           }
         }
-      );
-      // const data = JSON.parse(res4.getBody() as string);
-      expect(res4.statusCode).toBe(403);
+        );
+        // const data = JSON.parse(res4.getBody() as string);
+        expect(res4.statusCode).toBe(403);
       // Expect to return error
       // expect(data).toStrictEqual(errorReturn);
+      });
     });
   });
 });

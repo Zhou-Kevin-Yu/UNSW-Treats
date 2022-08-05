@@ -17,7 +17,8 @@ function persistantReadData(): Data {
       dms: [],
       systemInfo: {
         messageTotal: 0,
-      }
+      },
+      standups: [],
     };
     setData(data)
   }
