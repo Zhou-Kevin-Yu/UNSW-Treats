@@ -91,11 +91,11 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     nameLast: nameLast,
     email: email,
     handleStr: handle,
+    notifications: [],
     password: hashThis(password+SECRET),
     permission: perm,
     tokens: [],
     resetCodes: [],
-    notifications: [],
   };
   setData(data);
   const token = generateToken(authUserId);

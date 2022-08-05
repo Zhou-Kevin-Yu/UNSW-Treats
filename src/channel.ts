@@ -143,6 +143,7 @@ function channelJoinV1forV3(authUserId: number, channelId: number): ChannelJoinV
       nameLast: data.users[authUserId].nameLast,
       email: data.users[authUserId].email,
       handleStr: data.users[authUserId].handleStr,
+      notifications: data.users[authUserId].notifications,
     });
 
   setData(data);
@@ -283,6 +284,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
   let nameLastCopy = '';
   let emailCopy = '';
   let handlestrCopy = '';
+  let notificationsCopy: NotificationsObj[] = [];
 
   for (const user of data.users) {
     // If the user Id exists
@@ -292,6 +294,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
       nameLastCopy = user.nameLast;
       emailCopy = user.email;
       handlestrCopy = user.handleStr;
+      notificationsCopy = user.notifications;
     }
   }
 
@@ -305,6 +308,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
     // If the channel Id exists
     if (channelId === channel.channelId) {
       existChannel = 1;
+      let channelName = channel.name;
       // To loop through all the members in selected channel
       for (const member of channel.allMembers) {
         // If the auth user is a member
@@ -319,6 +323,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
             nameLast: nameLastCopy,
             email: emailCopy,
             handleStr: handlestrCopy,
+            notifications: notificationsCopy,
           });
           setData(data);
           return { };
