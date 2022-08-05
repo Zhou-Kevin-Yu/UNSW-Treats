@@ -104,7 +104,10 @@ export function messageUnpinV1SS(token: string, messageId: number) {
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 export function messageSendlaterV1SS(token: string, channelId: number, message: string, timeSent: number) {

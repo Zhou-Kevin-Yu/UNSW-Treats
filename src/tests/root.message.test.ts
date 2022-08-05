@@ -340,7 +340,6 @@ describe('Iteration 3 Function Testing', () => {
       });
     });
   });
-/*
   describe('Testing /message/unpin/v1', () => {
     describe('Testing Success Cases', () => {
       test('successful unpin - (channel)', () => {
@@ -353,14 +352,14 @@ describe('Iteration 3 Function Testing', () => {
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         let messages = channelMessagesV2SS(user1.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
         expect(messages.messages[0].isPinned).toBe(true);
 
         res = messageUnpinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         messages = channelMessagesV2SS(user1.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
@@ -378,7 +377,7 @@ describe('Iteration 3 Function Testing', () => {
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         let messages = channelMessagesV2SS(user0.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
@@ -409,7 +408,7 @@ describe('Iteration 3 Function Testing', () => {
 
         // user0 pins message
         let res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         let messages = channelMessagesV2SS(user1.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
@@ -420,6 +419,7 @@ describe('Iteration 3 Function Testing', () => {
       });
     });
   });
+/*
 
   describe('Testing /message/sendlater/v1', () => {
     describe('Testing Success Cases', () => {

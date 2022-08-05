@@ -276,7 +276,6 @@ export function messagePinV1(token: string, messageId: number) {
     msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message);
     let channelFound = false;
     for (const user of data.channels[messageInfo.channelIndex].allMembers) {
-      console.log("CHAHCAHCAHCHACH", channelFound);
       if (user.uId === authUserId) {
         channelFound = true;
         break;
@@ -326,6 +325,68 @@ export function messagePinV1(token: string, messageId: number) {
 }
 
 export function messageUnpinV1(token: string, messageId: number) {
+  let data =  getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(400, 'Invalid Token');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  
+  let messageInfo = messageSearch(messageId);
+  let msgIndex = -1;
+
+  if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
+    throw HTTPError(400, 'message of messageId: MessageId does not exist in data');
+  }
+
+  if (messageInfo.channelIndex !== -1) {
+    msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message);
+    let channelFound = false;
+    for (const user of data.channels[messageInfo.channelIndex].allMembers) {
+      if (user.uId === authUserId) {
+        channelFound = true;
+        break;
+      }
+    }
+    if (!channelFound) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel that the authorised user has joined');
+    }
+  }
+  //check if user is in dm
+  if (messageInfo.dmIndex !== -1) {
+    msgIndex = data.dms[messageInfo.dmIndex].messages.indexOf(messageInfo.message)
+    if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a DM that the authorised user has joined');
+    }
+  }
+
+  // if message is in channel
+  if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
+    // already pinned
+    if (!data.channels[messageInfo.channelIndex].messages[msgIndex].isPinned) {
+      throw HTTPError(400, 'message is not already pinned')
+    } else {
+      const owners = data.channels[messageInfo.channelIndex].ownerMembers.map((n) => n.uId);
+      if (owners.includes(authUserId)) {
+        data.channels[messageInfo.channelIndex].messages[msgIndex].isPinned = false;
+      } else {
+        throw HTTPError(403, 'messageId refers to a valid message in a joined channel and the authorised user does not have owner permissions in the channel/DM');
+      }
+    }
+  } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
+    if (!data.dms[messageInfo.dmIndex].messages[msgIndex].isPinned) {
+      throw HTTPError(400, 'message is not already pinned')
+    } else {
+      if (data.dms[messageInfo.dmIndex].members.includes(authUserId)) {
+        data.channels[messageInfo.dmIndex].messages[msgIndex].isPinned = false;
+      } else {
+        throw HTTPError(403, 'messageId refers to a valid message in a joined DM and the authorised user does not have owner permissions in the channel/DM');
+      }
+    }
+  } else {
+    throw HTTPError(400, 'THIS SHOULD BE CAUGHT EARLIER');
+  }
+  setData(data);
+
   return {};
 }
 
