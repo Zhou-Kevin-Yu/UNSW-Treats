@@ -172,7 +172,7 @@ export function messageReactV1(token: string, messageId: number, reactId: number
     const newReact: ReactObj = {
       reactId: reactId,
       uIds: [authUserId],
-      isThisUserReacted: false,
+      isThisUserReacted: null,
     };
     if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
       data.channels[messageInfo.channelIndex].messages[msgIndex].reacts.push(newReact);
@@ -239,8 +239,8 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
 
   const reactsExist = messageInfo.message.reacts.map((n) => n.reactId);
   const reactIndex = reactsExist.indexOf(reactId);
-  console.log("AAAAAAAAAAAAAAAAAAAA", reactIndex, reactsExist, reactId, messageInfo.message.reacts[reactIndex].uIds);
-  console.log((reactIndex !== -1),(!reactsExist.includes(reactId)),(!messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)));
+  // console.log("AAAAAAAAAAAAAAAAAAAA", reactIndex, reactsExist, reactId, messageInfo.message.reacts[reactIndex].uIds);
+  // console.log((reactIndex !== -1),(!reactsExist.includes(reactId)),(!messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)));
   if (reactIndex === -1 || !reactsExist.includes(reactId) || !messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
     throw HTTPError(400, 'the message does not contain a react with ID reactId from the authorised user');
   }

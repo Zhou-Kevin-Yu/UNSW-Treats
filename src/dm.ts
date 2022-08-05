@@ -275,6 +275,16 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
     counter++;
   }
   messagesReturn.reverse();
+  for (const message of messagesReturn) {
+    for (const reactObj of message.reacts) {
+      if (reactObj.uIds.includes(authUserId)) {
+        reactObj.isThisUserReacted = true;
+      } else {
+        reactObj.isThisUserReacted = false;
+      }
+    }
+  }
+
   const returnObj : DmMessagesV1 = {
     messages: messagesReturn,
     start: start,

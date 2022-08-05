@@ -1,3 +1,4 @@
+import { updateIndexSignature } from 'typescript';
 import { getData, setData } from './dataStore';
 import { ChannelJoinV1, ChannelInviteV1, ChannelDetailsV1, ChannelMessagesV1 } from './dataStore';
 import { MessagesObj } from './dataStore';
@@ -303,6 +304,20 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   }
 
   msgArray.reverse();
+
+  // New in ITERATION 3 - update isThisUserReacted for each message
+  for (const message of msgArray) {
+    for (const reactObj of message.reacts) {
+      if (reactObj.uIds.includes(authUserId)) {
+        reactObj.isThisUserReacted = true;
+      } else {
+        reactObj.isThisUserReacted = false;
+      }
+    }
+  }
+
+  // console.log(msgArray.map((n) => n.reacts));
+
   /*
   // commented out becauase i dont think we have to flip the indexes  
   for (const index in msgArray) {
