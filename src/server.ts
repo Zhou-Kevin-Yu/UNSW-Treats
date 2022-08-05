@@ -94,7 +94,7 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
   res.json(authPasswordResetResetV1(resetCode, newPassword));
 });
 
-// channels functions
+// channels functions - OLD Channels
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   if (!isTokenValid(token)) {
@@ -127,7 +127,7 @@ app.get('/channels/listall/v2', (req: Request, res: Response) => {
   }
 });
 
-// V3 channels routes
+// Channels requests
 app.post('/channels/create/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   if (!isTokenValid(token)) {
