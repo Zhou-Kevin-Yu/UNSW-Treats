@@ -7,6 +7,7 @@ export interface User {
   nameFirst: string;
   nameLast: string;
   handleStr: string;
+  notifications: NotificationsObj[];
 }
 
 export interface UserDetailsV1 {
@@ -75,11 +76,6 @@ export interface ChannelMessagesV1 {
   end?: number;
   error?: 'error';
 }
-
-// For notifications/get/v1
-// export interface NotificationsGetV1 {
-//   notifications: NotificationsObj[];
-// }
 
 export interface ChannelsCreateV1 {
   channelId?: number;
@@ -183,6 +179,7 @@ interface UserObj {
   permission: number;
   tokens: string[];
   resetCodes: string[],
+  notifications: NotificationsObj[];
 }
 
 interface ChannelObj {
@@ -220,8 +217,6 @@ export interface Data {
   dms: DmObj[];
   systemInfo: SystemInfo;
   standups: standupObj[];
-  // For notifications/get/v1
-  notifications: NotificationsObj[];
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
@@ -233,8 +228,6 @@ let data: Data = {
     messageTotal: 0,
   },
   standups: [],
-  // For notifications/get/v1
-  notifications: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

@@ -95,6 +95,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     permission: perm,
     tokens: [],
     resetCodes: [],
+    notifications: [],
   };
   setData(data);
   const token = generateToken(authUserId);

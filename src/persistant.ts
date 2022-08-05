@@ -19,7 +19,6 @@ function persistantReadData(): Data {
         messageTotal: 0,
       },
       standups: [],
-      notifications: [],
     };
     setData(data)
   }

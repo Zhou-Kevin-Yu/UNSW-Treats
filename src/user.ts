@@ -33,6 +33,7 @@ function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
     nameFirst: data.nameFirst,
     nameLast: data.nameLast,
     handleStr: data.handleStr,
+    notifications: data.notifications,
   };
 
   return { user };
