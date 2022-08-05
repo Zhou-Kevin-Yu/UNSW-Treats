@@ -8,6 +8,9 @@ import { channelsListV1, channelsListallV1 } from './channels';
 import { dmListV1 } from './dm';
 import request from 'sync-request';
 import fs from 'fs';
+import config from './config.json';
+import sharp from 'sharp';
+
 /**
  *
  * For a valid user, returns information about their userId,
@@ -168,11 +171,9 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
 
 function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
 
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token))
   //xEnd is less than or equal to xStart or yEnd is less than or equal to yStart
   if (xEnd <= xStart || yEnd <= yStart) return { error: 'error' };
-
-  const width = xEnd - xStart;
-  const height = yEnd - yStart;
 
   //Check if image is jpg
   if (!/\.(jpg)$/.test(imgUrl))return { error: 'error' };
@@ -186,13 +187,15 @@ function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number,
   if (res.statusCode !== 200) return { error: 'error' };
 
   const body = res.getBody();
+  const output = `photos/uId${authUserId}` + Date.now() + `.jpg`;
+  const width = xEnd - xStart;
+  const height = yEnd - yStart;
 
-  //Check dimensions of url....
-  //crop image
-  //save properly
+  sharp(body).extract({width: width, height: height, left: xStart, top: yStart}).toFile(output);
+
+  //.catch return { error: 'error' };
   //app.use('/photos', express.static('photos'));
-  //filename
-  fs.writeFileSync('photos/test.jpg', body, { flag: 'w' });
+  //set default url for all users
 
   return {};
 }
