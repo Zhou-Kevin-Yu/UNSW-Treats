@@ -3,6 +3,8 @@ import { getData, setData } from './dataStore';
 import { UserDetailsV1, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import isEmail from 'validator/lib/isEmail';
+
+import HTTPError from 'http-errors';
 /**
  *
  * For a valid user, returns information about their userId,
@@ -38,6 +40,25 @@ function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   return { user };
 }
 
+function userProfileV1useinV3(authUserId: number, uId: number): UserDetailsV1 {
+  const dataStore = getData();
+
+  if (!(authUserId in dataStore.users && uId in dataStore.users)) {
+    throw HTTPError(400, 'Invalid user');
+  }
+
+  const data = dataStore.users[uId];
+  const user: User = {
+    uId: data.uId,
+    email: data.email,
+    nameFirst: data.nameFirst,
+    nameLast: data.nameLast,
+    handleStr: data.handleStr,
+  };
+
+  return { user };
+}
+
 /**
  *
  * For a valid user, returns information about their userId,
@@ -55,6 +76,15 @@ function userProfileV2(token: string, uId: number): UserDetailsV1 {
   }
 
   return userProfileV1(authUserId, uId);
+}
+
+function userProfileV3(token: string, uId: number): UserDetailsV1 {
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null) {
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  return userProfileV1useinV3(authUserId, uId);
 }
 
 /**
@@ -160,4 +190,4 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   return {};
 }
 
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 };
+export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userProfileV3 };

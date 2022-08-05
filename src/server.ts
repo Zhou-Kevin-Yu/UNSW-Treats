@@ -18,7 +18,8 @@ import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
-import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
+  userProfileV3 } from './user';
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
@@ -188,6 +189,16 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSethandleV1(token, handleStr));
 });
+
+// All user requests - ALL V3 COMPLIANT NOT YET
+app.get('/user/profile/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const u = req.query.uId as string;
+  const uId = parseInt(u);
+  res.json(userProfileV3(token, uId));
+});
+
+
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
