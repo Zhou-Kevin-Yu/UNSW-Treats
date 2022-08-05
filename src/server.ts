@@ -19,7 +19,7 @@ import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
-  userProfileV3 } from './user';
+  userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 } from './user';
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
@@ -190,7 +190,7 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   res.json(userProfileSethandleV1(token, handleStr));
 });
 
-// All user requests - ALL V3 COMPLIANT NOT YET
+// All user requests - ALL V3 COMPLIANT
 app.get('/user/profile/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   const u = req.query.uId as string;
@@ -198,6 +198,23 @@ app.get('/user/profile/v3', (req: Request, res: Response) => {
   res.json(userProfileV3(token, uId));
 });
 
+app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { nameFirst, nameLast } = req.body;
+  res.json(userProfileSetnameV3(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { email } = req.body;
+  res.json(userProfileSetemailV3(token, email));
+});
+
+app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { handleStr } = req.body;
+  res.json(userProfileSethandleV3(token, handleStr));
+});
 
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {

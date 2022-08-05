@@ -120,6 +120,37 @@ function userProfileSetnameV1(token: string, nameFirst: string, nameLast: string
 
 /**
  *
+ * For a valid user, updates their name
+ *`
+ * @param {string} token - valid login token
+ * @param {string} nameFirst - namefirst (must be less than 50 characters)
+ * @param {string} nameLast - nameLast (must be less than 50 characters)
+ */
+ function userProfileSetnameV3(token: string, nameFirst: string, nameLast: string) {
+  // check if token is invalid
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null) {
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  // check if name is invalid
+  if (nameFirst.length > 50 || nameFirst.length < 1) {
+    throw HTTPError(400, "Invalid name");
+  }
+  if (nameLast.length > 50 || nameLast.length < 1) {
+    throw HTTPError(400, "Invalid Last Name");
+  }
+
+  const data = getData();
+  data.users[authUserId].nameFirst = nameFirst;
+  data.users[authUserId].nameLast = nameLast;
+  setData(data);
+
+  return {};
+}
+
+/**
+ *
  * For a valid user, updates their email
  *`
  * @param {string} token - valid login token
@@ -143,6 +174,40 @@ function userProfileSetemailV1(token: string, email: string): { error?: 'error' 
   for (const user of data.users) {
     if (user.email === email) {
       return { error: 'error' };
+    }
+  }
+
+  data.users[authUserId].email = email;
+  setData(data);
+
+  return {};
+}
+
+/**
+ *
+ * For a valid user, updates their email
+ *`
+ * @param {string} token - valid login token
+ * @param {string} email - new email
+ */
+ function userProfileSetemailV3(token: string, email: string) {
+  // check if token is invalid
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null) {
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  // check if email is invalid
+  if (!isEmail(email)) {
+    throw HTTPError(400, "Invalid email");
+  }
+
+  const data = getData();
+
+  // check if email is already registered
+  for (const user of data.users) {
+    if (user.email === email) {
+      throw HTTPError(400, "Email already registered");
     }
   }
 
@@ -190,4 +255,43 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   return {};
 }
 
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userProfileV3 };
+/**
+ *
+ * For a valid user, updates their handleStr
+ *`
+ * @param {string} token - valid login token
+ * @param {string} handle - new handle (must be greater than 3 and less than 20)
+ */
+ function userProfileSethandleV3(token: string, handle: string) {
+  // check if token is invalid
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null) {
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  // check the length of the handle
+  if (handle.length > 20 || handle.length < 3) {
+    throw HTTPError(400, "Length of handle must be between 3 and 20 characters");
+  }
+
+  // check if handle is alpa-numeric
+  if (!(handle.match(/^[a-zA-Z0-9]+$/))) {
+    throw HTTPError(400, "Handle must be alphanumeric");
+  }
+
+  // Check if handle is already taken
+  const data = getData();
+  for (const user of data.users) {
+    if (user.handleStr === handle) {
+      throw HTTPError(400, "Handle already taken");
+    }
+  }
+
+  data.users[authUserId].handleStr = handle;
+  setData(data);
+
+  return {};
+}
+
+export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, 
+  userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 };
