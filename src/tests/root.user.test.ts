@@ -6,11 +6,31 @@ import os from 'os';
 const port = config.port;
 let url = config.url;
 
-import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide } from '../wrapped.user';
+import { userProfileV2ServerSide, userSetnameV1ServerSide, userSetemailV1ServerSide, userSethandleV1ServerSide, userProfileUploadPhotoV1SS, userStatsV1SS } from '../wrapped.user';
 import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.auth';
+
+import { channelsCreateV2SS } from '../wrapped.channels';
+import { dmCreateV1SS } from '../wrapped.dm';
+import { messageSendDmV2SS, messageSendV2SS } from '../wrapped.message';
 
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
+}
+
+function authRegisterSS(email: string, password: string, nameFirst: string, nameLast: string) {
+  const res = request(
+    'POST',
+          `${url}:${port}/auth/register/v3`,
+          {
+            json: {
+              email,
+              password,
+              nameFirst,
+              nameLast,
+            }
+          }
+  );
+  return JSON.parse(res.body as string);
 }
 
 function clearV1ServerSide() {
@@ -173,6 +193,75 @@ describe('Testing /user/profile/sethandle/v1', () => {
         nameLast: 'Sun',
         handleStr: 'gary',
       }
+    });
+  });
+});
+
+/// /////////////////////////////////////////////////////////////////////
+
+describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
+  describe('Testing Error Cases ', () => {
+    test('HTTP Status not 200', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k31');
+      const url = 'invalid url';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+      expect(object).toStrictEqual({ error: 'error' });
+    });
+    test('values not withim dimensions of url', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k312');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 100020, 785, 900);
+      expect(object).toStrictEqual({ error: 'error' });
+    });
+    test('xEnd less than xStart', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k312');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 500, 500, 0, 0);
+      expect(object).toStrictEqual({ error: 'error' });
+    });
+    test('image uploaded is not jpg', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b423', 'k213');
+      const url = 'https://www.nicepng.com/png/detail/5-52286_download-laughing-iphone-emoji-jpg-emoji-happy-png.png';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+      expect(object).toStrictEqual({ error: 'error' });
+    });
+  });
+  describe('Testing correct output', () => {
+    test('correct outpu', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b452', 'k423');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 25, 25);
+
+      expect(object).toStrictEqual({});
+    });
+  });
+});
+
+describe('HTTP tests for user/stats/v1', () => {
+  describe('Testing Error Cases ', () => {
+    test('Invlaid token', () => { /// ///////////////////////idk
+
+    });
+  });
+  describe('Testing correct output', () => {
+    test('Correct output1', () => {
+      const reg12 = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const reg23 = authRegisterSS('gary.sun@gmail.com', 'rnadom8', 'gary', 'sun');
+      const channel1 = channelsCreateV2SS(reg12.token, 'COMP1531', true);
+      channelsCreateV2SS(reg12.token, 'COMP2521', false);
+      const dm1 = dmCreateV1SS(reg12.token, [reg23.authUserId]);
+      messageSendDmV2SS(reg12.token, dm1.dmId, 'Hi, how are you?');
+      messageSendV2SS(reg12.token, channel1.channelId, 'hello everyone');
+
+      const object = userStatsV1SS(reg12.token);
+
+      expect(object).toStrictEqual({
+        channelsJoined: [{ numChannelsJoined: 2, timeStamp: expect.any(Number) }],
+        dmsJoined: [{ numDmsJoined: 1, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 2, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      });
     });
   });
 });

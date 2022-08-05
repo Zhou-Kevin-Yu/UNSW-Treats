@@ -15,6 +15,8 @@ test('Test successful user clear', () => {
     permission: 1,
     tokens: ['token'],
     resetCodes: ['code'],
+    profileImgUrl: 'src/photos/default.jpg'
+
   };
   // const dataInit = data;
   setData(data);

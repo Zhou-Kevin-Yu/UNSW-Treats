@@ -168,7 +168,7 @@ export interface DmObj {
   name: string;
   messages: MessagesObj[];
 }
-interface UserObj {
+export interface UserObj {
   uId: number;
   nameFirst: string;
   nameLast: string;
@@ -178,6 +178,7 @@ interface UserObj {
   permission: number;
   tokens: string[];
   resetCodes: string[],
+  profileImgUrl: string
 }
 
 interface ChannelObj {

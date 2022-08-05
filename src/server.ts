@@ -11,17 +11,20 @@ import { channelsCreateV1, channelsListV1, channelsListallV1,
   channelsCreateV3, channelsListV3, channelsListallV3 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1, 
 dmCreateV3, dmListV3, dmRemoveV3, dmDetailsV3, dmLeaveV3, dmMessagesV3 } from './dm';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
-   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
-   messageSendV2, messageEditV3, messageRemoveV3, messageSendDmV3 } from './message';
-import { usersAllV1, usersAllV3 } from './users';
+import { messageSendV1, messageSendV2, messageEditV3, messageSendDmV3, messageRemoveV3, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
+
+   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
+
+import {  userProfileUploadPhotoV1, userStatsV1, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 } from './user';
+
+import { usersAllV1, usersAllV3, usersStatsV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1,
   channelLeaveV3, channelAddOwnerV3, channelRemoveOwnerV3 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2,
   channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channel_wrap';
-import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
-  userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 } from './user';
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userProfileV3 } from './user';
+
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
@@ -51,10 +54,9 @@ app.get('/echo', (req, res, next) => {
   }
 });
 
-
-
 // for logging errors
 app.use(morgan('dev'));
+app.use('/photos', express.static('photos'));
 
 // for checking token validity
 // TODO: check for which route calls, rather than if token exists
@@ -199,6 +201,24 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSethandleV1(token, handleStr));
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
+  const { imgUrl, xStart, xEnd, yStart, yEnd } = req.body;
+  const token = req.header('token');
+  res.json(userProfileUploadPhotoV1(token, imgUrl, xStart, xEnd, yStart, yEnd));
+});
+
+app.get('/user/stats/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(userStatsV1(token));
+});
+
+app.get('/users/stats/v1', (req: Request, res: Response) => {
+  res.json(usersStatsV1());
+});
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // All user requests - ALL V3 COMPLIANT
 app.get('/user/profile/v3', (req: Request, res: Response) => {
