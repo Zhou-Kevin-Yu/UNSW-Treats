@@ -5,6 +5,7 @@ const request = require('sync-request');
 
 import os from 'os';
 import { tokenToAuthUserId } from '../token';
+import { authRegisterV2ServerSide } from '../wrapped.auth';
 
 const OK = 200;
 const port = config.port;
@@ -21,36 +22,18 @@ const memberPermission = 2;
 
 describe('Testing basic functionality', () => {
   test('Setting to new permission', () => {
-    let res = request('POST', `${url}:${port}/auth/register/v3`, {
-        json: {
-            email: 'kevinyu@unsw.com',
-            password: 'KevinsPassword0',
-            nameFirst: 'Kevin',
-            nameLast: 'Yu'
-        }
-    });
-    const owner = JSON.parse(res.body.toString());
-    res = request('POST', `${url}:${port}/auth/register/v3`, {
+    const owner = authRegisterV2ServerSide('kevinyu@unsw.com', 'KevinsPassword0', 'Kevin', 'Yu');
+    const user = authRegisterV2ServerSide('Bob@email.com', 'Bobspassword0', 'Bob', 'Smith');
+    let res = request('POST', `${url}:${port}/admin/userpermission/change/v1`, {
+      headers: {
+        token: owner.token
+      },
       json: {
-          email: 'Bob@email.com',
-          password: 'Bobspassword0',
-          nameFirst: 'Bob',
-          nameLast: 'Smith'
+        uId: user.authUserId,
+        permissionId: ownerPermission
       }
     });
-    const user = JSON.parse(res.body.toString());
-    res = request('POST', `${url}:${port}/admin/userpermission/change/v1`, {
-      json: {
-            uId: user.uId,
-            permissionId: ownerPermission
-        }
-    });
-    res = request('GET', `${url}:${port}/user/profile/v3`, {
-        qs: {
-          uId: user.uId
-        }
-    });
-    const userProfile = JSON.parse(res.body.toString());
+    const userProfile = userProfileV2ServerSide(owner.token, user.authUserId);
     expect(userProfile.permission).toStrictEqual(ownerPermission);
   });
 });

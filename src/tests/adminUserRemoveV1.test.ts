@@ -5,6 +5,7 @@ const request = require('sync-request');
 
 import os from 'os';
 import { tokenToAuthUserId } from '../token';
+import { authRegisterV2ServerSide } from '../wrapped.auth';
 
 const OK = 200;
 const port = config.port;
@@ -18,30 +19,41 @@ beforeEach(() => request('DELETE', `${url}:${port}/clear/v1`));
 
 describe('Testing basic functionality', () => {
   test('Removing a single user', () => {
-    //MISSING MESSAGE TESTING
-    let res = request('POST', `${url}:${port}/auth/register/v2`, {
-    json: {
-        email: 'kevinyu@unsw.com',
-        password: 'KevinsPassword0',
-        nameFirst: 'Kevin',
-        nameLast: 'Yu'
-    }});
-    const user = JSON.parse(res.body.toString());
-    const uId = user.authUserId;
-    res = request('DELETE', `${url}:${port}/admin/user/remove/v1`, { qs: { uId: uId }});
-    res = request('GET', `${url}:${port}/users/all/v3`), { qs: {} };
-    expect(JSON.parse(res.body.toString())).toStrictEqual({ users: [] });
-    res = request('GET', `${url}:${port}/user/profile/v3`, { qs: { uId: uId } });
-    const profile = JSON.parse(res.body.toString());
+    // MISSING MESSAGE TESTING
+    const owner = authRegisterV2ServerSide('kevinyu@unsw.com', 'KevinsPassword0', 'Kevin', 'Yu');
+    const user = authRegisterV2ServerSide('Bob@email.com', 'Bobspassword0', 'Bob', 'Smith');
+    let res = request('DELETE', `${url}:${port}/admin/user/remove/v1`, {
+      headers: {
+        'token': owner.token
+      },
+      qs: {
+        uId: user.authUserId
+      }
+    });
+    res = request('GET', `${url}:${port}/users/all/v3`), {
+      headers: {
+        'token': owner.token
+      },
+      qs: {}
+    };
+    expect(JSON.parse(res.body as string)).toStrictEqual({ users: [] });
+    res = request('GET', `${url}:${port}/user/profile/v3`, {
+      headers: {
+        'token': owner.token
+      },
+      qs: {
+        uId: user.authUserId
+      }
+    });
+    const profile = JSON.parse(res.body as string);
     expect(profile).toStrictEqual({
-        user: {
-            uId: uId,
-            email: profile.email,
-            nameFirst: 'Removed',
-            nameLast: 'user',
-            handleStr: 'profile.handleStr',
-            permission: 0
-        }
+      user: {
+        uId: user.authUserId,
+        email: profile.email + '(removed user)',
+        nameFirst: 'Removed',
+        nameLast: 'user',
+        handleStr: profile.handleStr + '(removed user)',
+      }
     });
   });
 });

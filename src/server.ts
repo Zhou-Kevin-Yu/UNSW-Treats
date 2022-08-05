@@ -385,7 +385,6 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 });
 
 //Admin requests
-
 app.delete('admin/user/remove/v1', (req: Request, res: Response) => {
   const uId = parseInt(req.query.uId as string);
   res.json(adminUserRemoveV1(req.header('token'), uId));
