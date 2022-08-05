@@ -75,8 +75,10 @@ function standupStartV1 (token: string, channelId: number, length: number) {
         standUpMsg = standUpMsgArr.join('');
         // TODO - send the actual message
         console.log("token im sending: " + token);
+        console.log("standUp msg is", standUpMsg);
         const msgSender = messageSendInsideStandup(token, channelId, standUpMsg);
         if(msgSender.hasOwnProperty('error')) {
+            // throw HTTPError(400, "message sending fails");
             return {};
             clearInterval(pid);
         }
