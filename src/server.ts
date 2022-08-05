@@ -14,7 +14,7 @@ dmCreateV3, dmListV3, dmRemoveV3, dmDetailsV3, dmLeaveV3, dmMessagesV3 } from '.
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
    messageSendV2 } from './message';
-import { usersAllV1 } from './users';
+import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
@@ -474,11 +474,17 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-////////////////// All users requests //////////////////
+// Users Requests
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
+});
+
+// Users Requests - V3 READY
+app.get('/users/all/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(usersAllV3(token));
 });
 
 // Standup routes 
