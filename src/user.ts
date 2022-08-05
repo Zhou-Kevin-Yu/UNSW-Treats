@@ -22,11 +22,15 @@ import isEmail from 'validator/lib/isEmail';
 function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   const dataStore = getData();
 
-  if (!(authUserId in dataStore.users && uId < dataStore.users.length)) {
-    return { error: 'error'};
+  if (!(authUserId in dataStore.users)) {
+    return { error: 'error' };
   }
 
-  if (uId < dataStore.users.length && uId === undefined) {
+  if (!(uId in dataStore.users && uId < dataStore.users.length)) {
+    return { error: 'error' };
+  }
+
+  if (uId < dataStore.users.length && (uId === undefined || uId === null)) {
     const user: User = {
       uId: uId,
       email: 'Removed',

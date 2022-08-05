@@ -385,15 +385,15 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 });
 
 //Admin requests
-app.delete('admin/user/remove/v1', (req: Request, res: Response) => {
-  const uId = parseInt(req.query.uId as string);
-  res.json(adminUserRemoveV1(req.header('token'), uId));
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const { token, uId } = req.body;
+  res.json(adminUserRemoveV1(token, uId));
 });
 
-app.post('admin/userpermission/change/v1', (req: Request, res: Response) => {
-  const uId = parseInt(req.query.uId as string);
-  const permissionId = parseInt(req.query.permissionId as string);
-  res.json(adminChangeUserPermissionV1(req.header('token'), uId, permissionId));
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { uId, permissionId } = req.body;
+  res.json(adminChangeUserPermissionV1(token, uId, permissionId));
 });
 
 /// All routes for testing purposes
