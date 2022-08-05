@@ -125,10 +125,13 @@ export function messageSendlaterV1SS(token: string, channelId: number, message: 
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
-export function messageSendlaterDmV1SS(token: string, channelId: number, message: string, timeSent: number) {
+export function messageSendlaterDmV1SS(token: string, dmId: number, message: string, timeSent: number) {
   const res = request(
     'POST',
         `${url}:${port}/message/sendlaterdm/v1`,
@@ -137,13 +140,16 @@ export function messageSendlaterDmV1SS(token: string, channelId: number, message
             'token': token,
           },
           json: {
-            channelId,
+            dmId,
             message,
             timeSent,
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 
 //////////// Old message wrapped requests - updated routes and token in header ////////////
@@ -207,7 +213,10 @@ function messageSendV2SS(token: string, channelId: number, message: string) {
           }
         }
   );
-  return JSON.parse(res.body as string);
+  return {
+    body: JSON.parse(res.body as string),
+    statusCode: res.statusCode,
+  }
 }
 //////////// Old message wrapped requests ////////////
 function messageRemoveV1SS(token: string, messageId: number) {

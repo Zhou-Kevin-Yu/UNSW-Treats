@@ -57,6 +57,7 @@ export interface MessagesObj {
 }
 
 export interface MessageLater {
+  messageId: number;
   message: string;
   channelId: number;
   dmId: number;

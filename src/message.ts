@@ -420,6 +420,7 @@ export function messageSendlaterV1(token: string, channelId: number, message: st
 
   const msgId = data.systemInfo.messageTotal;
   const newMessageLater: MessageLater = {
+    messageId: msgId,
     message: message,
     channelId: channelId,
     dmId: -1,
@@ -433,14 +434,21 @@ export function messageSendlaterV1(token: string, channelId: number, message: st
     if (!(channelId in data.channels)) {
       return {};
     }
-    messageSendInsideStandup(token, channelId, message);
+    const newMsgId = messageSendInsideStandup(token, channelId, message).messageId;
     let newData  = getData();
-    const delayedMessage = newData.delayedMessages.find(n => n.channelId === newMessageLater.channelId);
+    // console.log(newData.channels[0].messages);
+    const delayedMessage = newData.delayedMessages.find(n => n.messageId === newMessageLater.messageId);
 
+    // update msgId
+    const newMsg = messageSearch(newMsgId).message;
+    const newMsgIndex = data.channels[channelId].messages.indexOf(newMsg);
+    data.channels[channelId].messages[newMsgIndex].messageId = msgId;
 
     // update with exact timeSent
     const msgIdArr = newData.channels[channelId].messages.map((n) => n.messageId);
+    // console.log(msgIdArr, msgId);
     const msgIndex = msgIdArr.indexOf(msgId);
+    // console.log(msgIndex)
     data.channels[channelId].messages[msgIndex].timeSent = timeSent;
     
     // remove the delayedMessage
@@ -453,7 +461,76 @@ export function messageSendlaterV1(token: string, channelId: number, message: st
 }
 
 export function messageSendlaterDmV1(token: string, dmId: number, message: string, timeSent: number): MessageSendlaterV1 {
-  return { messageId: -1 };
+  let data = getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "Access Denied: Token is invalid");
+  }
+  const authUserId = tokenToAuthUserId(token, true);
+
+  // check if channelId refers to a valid channel`
+  console.log(dmId, data.dms);
+  if (!(dmId in data.dms)) {
+    throw HTTPError(400, "dmId does not refer to a valid channel");
+  }
+
+  // check if message is < 1000 characters
+  if (message.length > 1000 || message.length < 1) {
+    throw HTTPError(400, "length of message is less than 1 or over 1000 characters");
+  }
+  
+  // check if timeSent is in the past
+  const currTime = Math.floor((new Date()).getTime() / 1000);
+  if (timeSent < currTime) {
+    throw HTTPError(400, "timeSent is a time in the past");
+  }
+
+  // check if user is in channel they are posting the message to
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    throw HTTPError(403, "authorised user is not a member of the dm they are trying to post to");
+  }
+
+  const msgId = data.systemInfo.messageTotal;
+  const newMessageLater: MessageLater = {
+    messageId: msgId,
+    message: message,
+    channelId: -1,
+    dmId: dmId,
+  };  
+  data.delayedMessages.push(newMessageLater);
+  data.systemInfo.messageTotal++;
+  setData(data);
+
+  const delay = (timeSent - currTime) * 1000;
+  const pid = setTimeout(() => {
+    if (!(dmId in data.dms)) {
+      return {};
+    }
+    const newMsgId = messageSendDmV1(token, dmId, message).messageId;
+    let newData  = getData();
+    // console.log(newData.channels[0].messages);
+    const delayedMessage = newData.delayedMessages.find(n => n.messageId === newMessageLater.messageId);
+
+    // update msgId
+    const newMsg = messageSearch(newMsgId).message;
+    console.log(newMsg, newMsgId);
+    const newMsgIndex = data.dms[dmId].messages.indexOf(newMsg);
+    console.log(data.dms[dmId].messages, newMsgIndex);
+    data.dms[dmId].messages[newMsgIndex].messageId = msgId;
+
+    // update with exact timeSent
+    const msgIdArr = newData.dms[dmId].messages.map((n) => n.messageId);
+    // console.log(msgIdArr, msgId);
+    const msgIndex = msgIdArr.indexOf(msgId);
+    // console.log(msgIndex)
+    data.dms[dmId].messages[msgIndex].timeSent = timeSent;
+    
+    // remove the delayedMessage
+    newData.delayedMessages.splice(delayedMessage.dmId, 1);
+    setData(newData);
+
+  }, delay);
+
+  return { messageId: msgId };
 }
 
 
@@ -1421,6 +1498,64 @@ export function messageSendInsideStandup (token: string, channelId: number, mess
   }
 
   // If channelId is valid and the authorised user is not a member of the channel
+  if (existAuth === 0) {
+    return { error: 'error' };
+  }
+}
+
+export function messageSendInsideStandupDm (token: string, dmId: number, message: string): MessageSendV1 {
+  const data = getData();
+  let existdm = 0;
+  let existAuth = 0;
+  let messageIdCopy = 0;
+
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    return { error: 'error' };
+  }
+
+  // // If length of message is less than 1 or over 1000 characters
+  // if (message.length < 1 || message.length > 1000) {
+  //   return { error: 'error' };
+  // }
+
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // To loop through all the existing dms
+  for (const dm of data.dms) {
+    // If the dm Id exists
+    if (dmId === dm.dmId) {
+      existdm = 1;
+      // To loop through all the members in selected dm
+      for (const member of dm.members) {
+        // If the auth user is a member
+        if (authUserId === member) {
+          existAuth = 1;
+
+          messageIdCopy = data.systemInfo.messageTotal;
+          data.systemInfo.messageTotal++;
+          const newDmMessage: MessagesObj = {
+            messageId: messageIdCopy,
+            uId: authUserId,
+            message: message,
+            timeSent: Math.floor((new Date()).getTime() / 1000),
+            reacts: [],
+            isPinned: false,
+          };
+          dm.messages.push(newDmMessage);
+          setData(data);
+          return { messageId: messageIdCopy };
+        }
+      }
+    }
+  }
+
+  // If the dm Id does not exist or is invalid
+  if (existdm === 0) {
+    return { error: 'error' };
+  }
+
+  // If dmId is valid and the authorised user is not a member of the dm
   if (existAuth === 0) {
     return { error: 'error' };
   }
