@@ -25,6 +25,8 @@ import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
+import { searchV1 } from './search';
+
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
 import { isPrivateIdentifier } from 'typescript';
@@ -67,6 +69,13 @@ app.use((req: Request, res: Response, next) => {
     }
   }
   next();
+});
+
+// All search requests
+app.get('/search/v1', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const query = req.query.queryStr as string;
+  res.json(searchV1(token, query));
 });
 
 // All auth requests - ALL V3 COMPLIANT
