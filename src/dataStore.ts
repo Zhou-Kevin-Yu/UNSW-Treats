@@ -77,9 +77,9 @@ export interface ChannelMessagesV1 {
 }
 
 // For notifications/get/v1
-export interface NotificationsGetV1 {
-  notifications: NotificationsObj[];
-}
+// export interface NotificationsGetV1 {
+//   notifications: NotificationsObj[];
+// }
 
 export interface ChannelsCreateV1 {
   channelId?: number;
@@ -233,6 +233,8 @@ let data: Data = {
     messageTotal: 0,
   },
   standups: [],
+  // For notifications/get/v1
+  notifications: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

@@ -57,6 +57,21 @@ function userProfileV2(token: string, uId: number): UserDetailsV1 {
   return userProfileV1(authUserId, uId);
 }
 
+// /**
+//  * For a valid user, returns information about their userId, email, first name, last name, and handle
+//  * calls userProfileV2
+//  * @param {string} token - valid login token
+//  * @param {number} uId - id of the user to be queried
+//  */
+// function userProfileV3(token: string, uId: number): UserDetailsV1 {
+//   // const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+//   // if (authUserId === null) {
+//   //   return { error: 'error' };
+//   // }
+
+//   return userProfileV2(token, uId);
+// }
+
 /**
  *
  * For a valid user, updates their name
@@ -160,4 +175,4 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   return {};
 }
 
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 };
+export { /*userProfileV3,*/ userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 };
