@@ -1,6 +1,11 @@
 import { clearV1 } from '../other';
 import { getData, setData } from '../dataStore';
 import { Data } from '../dataStore';
+import config from '../config.json';
+
+const PORT: number = parseInt(process.env.PORT || config.port);
+const HOST: string = process.env.IP || 'localhost';
+
 
 test('Test successful user clear', () => {
   clearV1();
@@ -15,6 +20,8 @@ test('Test successful user clear', () => {
     permission: 1,
     tokens: ['token'],
     resetCodes: ['code'],
+    profileImgUrl: `${HOST}:${PORT}/photos/default.jpg`
+
   };
   // const dataInit = data;
   setData(data);

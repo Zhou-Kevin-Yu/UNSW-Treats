@@ -186,20 +186,22 @@ function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number,
       'GET',
       imgUrl
   );
-
   //Check status code of HTTP request
   if (res.statusCode !== 200) return { error: 'error' };
 
   const body = res.getBody();
-  const output = `${HOST}/${PORT}/photos/uId${authUserId}` + Date.now() + `.jpg`;
+  const output = `${HOST}:${PORT}/photos/uId${authUserId}` + Date.now() + `.jpg`;
   const width = xEnd - xStart;
   const height = yEnd - yStart;
+  fs.writeFileSync(output, '',)
 
   try { sharp(body).extract({width: width, height: height, left: xStart, top: yStart}).toFile(output);
   } catch(err) {
+    fs.unlinkSync(output);
     return { error: 'error' };
   }
   data.users[authUserId].profileImgUrl = output;
+
   setData(data);
   return {};
 }

@@ -44,8 +44,6 @@ app.get('/echo', (req, res, next) => {
   }
 });
 
-
-
 // for logging errors
 app.use(morgan('dev'));
 app.use('/photos', express.static('photos'));

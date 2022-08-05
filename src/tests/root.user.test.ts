@@ -203,38 +203,35 @@ describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
   describe('Testing Error Cases ', () => {
     test('HTTP Status not 200', () => {
       const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
-      const url = 'invalid url'
-      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500 );
-      expect(object).toStrictEqual({ error: 'error'});
+      const url = 'invalid url';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+      expect(object).toStrictEqual({ error: 'error' });
     });
     test('values not withim dimensions of url', () => {
 
     });
     test('xEnd less than xStart', () => {
-
       const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
-      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'
-      const object = userProfileUploadPhotoV1SS(reg.token, url, 500, 500, 0, 0 );
-      expect(object).toStrictEqual({ error: 'error'});
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 500, 500, 0, 0);
+      expect(object).toStrictEqual({ error: 'error' });
     });
     test('image uploaded is not jpg', () => {
-
       const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
-      const url = 'https://www.nicepng.com/png/detail/5-52286_download-laughing-iphone-emoji-jpg-emoji-happy-png.png'
-      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500 );
-      expect(object).toStrictEqual({ error: 'error'});
+      const url = 'https://www.nicepng.com/png/detail/5-52286_download-laughing-iphone-emoji-jpg-emoji-happy-png.png';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+      expect(object).toStrictEqual({ error: 'error' });
     });
-
   });
   describe('Testing correct output', () => {
-      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
-      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'
-    
-      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500 );
+    const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+    const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
 
-      expect(object).toStrictEqual({});
+    const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+
+    expect(object).toStrictEqual({});
   });
-}) 
+});
 
 describe('HTTP tests for user/stats/v1', () => {
   describe('Testing Error Cases ', () => {

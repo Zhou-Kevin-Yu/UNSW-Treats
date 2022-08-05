@@ -98,7 +98,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     permission: perm,
     tokens: [],
     resetCodes: [],
-    profileImgUrl: `${HOST}/${PORT}/photos/default.jpg`;
+    profileImgUrl: `${HOST}:${PORT}/photos/default.jpg`
   };
   setData(data);
   const token = generateToken(authUserId);

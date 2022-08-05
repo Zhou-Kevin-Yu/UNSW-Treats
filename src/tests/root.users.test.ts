@@ -6,7 +6,6 @@ import { dmCreateV1SS } from '../wrapped.dm';
 import { messageSendDmV2SS } from '../wrapped.message';
 import { authRegisterV2ServerSide } from '../wrapped.auth';
 
-
 import os from 'os';
 // import { register } from 'ts-node';
 
@@ -114,7 +113,7 @@ describe('Testing user setname', () => {
         token: reg1.token,
       }
     });
-    
+
     const result = JSON.parse(res1.body as string);
     expect(res1.statusCode).toBe(200);
     expect(result).toStrictEqual({
@@ -156,13 +155,13 @@ describe('HTTP tests for users/stats/v1', () => {
       channelsCreateV2SS(reg2.token, 'COMP2521', false);
       const dm1 = dmCreateV1SS(reg1.token, [reg2.authUserId]);
       const message1 = messageSendDmV2SS(reg1.token, dm1.dmId, 'Hi, how are you?');
-      
+
       const object = usersStatsV1SS(reg1.token);
 
       expect(object).toStrictEqual({
         channelsExist: [{ numChannelsExist: 2, timeStamp: expect.any(Number) }],
         dmsExist: [{ numDmsExist: 1, timeStamp: expect.any(Number) }],
-        messagesExist: [{ numMessagesExist: 1, timeStamp: expect.any(Number)}],
+        messagesExist: [{ numMessagesExist: 1, timeStamp: expect.any(Number) }],
         utilizationRate: expect.any(Number)
       });
     });
@@ -174,7 +173,7 @@ describe('HTTP tests for users/stats/v1', () => {
       const dm1 = dmCreateV1SS(reg1.token, [reg2.authUserId]);
       messageSendDmV2SS(reg1.token, dm1.dmId, 'Hi, how are you?');
       const a = messageSendDmV2SS(reg2.token, dm1.dmId, 'Im good, how are you?');
-      
+
       const object = usersStatsV1SS(reg1.token);
 
       expect(object).toStrictEqual({
