@@ -64,7 +64,7 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-// All auth requests
+// All auth requests - ALL V3 COMPLIANT
 app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   const returned = authLoginV1(email, password);
@@ -80,7 +80,6 @@ app.post('/auth/register/v3', (req: Request, res: Response) => {
 });
 
 app.post('/auth/logout/v2', (req: Request, res: Response) => {
-  // const { token } = req.body;
   const token = req.header('token');
   res.json(authLogoutV1(token));
 });
@@ -95,7 +94,7 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
   res.json(authPasswordResetResetV1(resetCode, newPassword));
 });
 
-/// /////////////////////////////////////////////////////////channels functions
+// channels functions
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   if (!isTokenValid(token)) {
