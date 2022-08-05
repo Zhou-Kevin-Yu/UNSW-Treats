@@ -16,7 +16,8 @@ import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, message
    messageSendV2 } from './message';
 import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
-import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
+import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1,
+  channelLeaveV3, channelAddOwnerV3 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2,
   channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
@@ -322,6 +323,20 @@ app.get('/channel/messages/v3', (req: Request, res: Response) => {
   const start = parseInt(req.query.start as string);
   res.json(channelMessagesV3(token, channelId, start));
 });
+
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId } = req.body;
+  res.json(channelLeaveV3(token, channelId));
+});
+
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, uId } = req.body;
+  res.json(channelAddOwnerV3(token, channelId, uId));
+});
+
+
 
 
 

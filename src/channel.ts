@@ -5,6 +5,8 @@ import { messageSendDmV1 } from './message';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user';
 
+import { standupActiveV1 } from './standup';
+
 import HTTPError from 'http-errors';
 
 /*
@@ -639,6 +641,39 @@ export function channelLeaveV1(token: string, channelId: number) {
   return {};
 }
 
+export function channelLeaveV3(token: string, channelId: number) {
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // if (authUserId === null || data.channels[channelId] === undefined ||
+  // !(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+  //   return { error: 'error' };
+  // }
+
+  if (authUserId === null || authUserId === undefined) {
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+  if (data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+    throw HTTPError(400, 'ChannelId is not valid');
+  }
+  if (!(data.channels[channelId].allMembers.some(user => user.uId === authUserId))) {
+    throw HTTPError(403, 'AuthUser is not a member of the channel');
+  }
+
+  //Check if authUser is starter of a standup
+  if (standupActiveV1(token, channelId)) {
+    const standup = data.standups.find(standup => standup.channelId === channelId);
+    if (standup.startingUserId === authUserId) {
+      throw HTTPError(403, 'AuthUser is the starter of a standup');
+    }
+  }
+
+  data.channels[channelId].allMembers = data.channels[channelId].allMembers.filter(user => user.uId !== authUserId);
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== authUserId);
+  setData(data);
+  return {};
+}
+
 export function channelAddOwnerV1(token: string, channelId: number, uId: number) {
   const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -685,6 +720,52 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   const authUserGlobal = data.users[authUserId].permission;
   if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
+  }
+
+  data.channels[channelId].ownerMembers.push(user);
+  setData(data);
+  return {};
+}
+
+export function channelAddOwnerV3(token: string, channelId: number, uId: number) {
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  if (authUserId === null || authUserId === undefined) {
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+  if (uId === null || uId === undefined) {
+    throw HTTPError(403, 'Uid is not valid');
+  }
+
+  const userObj = userProfileV1(authUserId, uId);
+
+  if (userObj === { error: 'error' }) {
+    throw HTTPError(403, 'Uid is not valid');
+  }
+
+  const user = userObj.user;
+
+  // checks if chanellId does not refer to a valid channel
+  if (data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+    throw HTTPError(400, 'ChannelId is not valid');
+  }
+  // checks if uId referes to a user who is not a member of the channel
+  if (!(data.channels[channelId].allMembers.some(member => member.uId === user.uId))) {
+    throw HTTPError(400, 'uId is not a member of the channel');
+  }
+  // checks if Uid refers to a user who is already an owner of the channel
+  if (data.channels[channelId].ownerMembers.some(member => member.uId === user.uId)) {
+    throw HTTPError(400, 'uId is already an owner of the channel');
+  }
+  // check if authUserId refers to a user who doesn't have owner permissions in this channel
+  const authUserOjb = userProfileV1(authUserId, authUserId);
+  if (authUserOjb === { error: 'error' }) { 
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+  const authUserGlobal = data.users[authUserId].permission;
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+    throw HTTPError(403, 'AuthUser does not have permissions in this channel');
   }
 
   data.channels[channelId].ownerMembers.push(user);
