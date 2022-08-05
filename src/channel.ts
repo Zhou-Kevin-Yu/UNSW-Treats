@@ -661,7 +661,7 @@ export function channelLeaveV3(token: string, channelId: number) {
   }
 
   //Check if authUser is starter of a standup
-  if (standupActiveV1(token, channelId)) {
+  if (standupActiveV1(token, channelId).isActive) {
     const standup = data.standups.find(standup => standup.channelId === channelId);
     if (standup.startingUserId === authUserId) {
       throw HTTPError(403, 'AuthUser is the starter of a standup');
