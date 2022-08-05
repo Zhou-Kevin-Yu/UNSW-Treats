@@ -445,7 +445,7 @@ app.delete('/message/remove/v2', (req: Request, res: Response) => {
   res.json(messageRemoveV3(token, newMessageId));
 });
 
-app.post('/message/senddm/v1', (req: Request, res: Response) => {
+app.post('/message/senddm/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message } = req.body;
   res.json(messageSendDmV3(token, dmId, message));
