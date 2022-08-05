@@ -171,7 +171,7 @@ describe('HTTP tests for users/stats/v1', () => {
       const channel1 = channelsCreateV2SS(reg1.token, 'COMP1531', true);
       const dm1 = dmCreateV1SS(reg1.token, [reg2.authUserId]);
       messageSendDmV2SS(reg1.token, dm1.dmId, 'Hi, how are you?');
-      messageSendV2SS(reg2.token, channel1.channelId, 'Im good, how are you?');
+      messageSendV2SS(reg1.token, channel1.channelId, 'Im good, how are you?');
 
       const object = usersStatsV1SS(reg1.token);
 

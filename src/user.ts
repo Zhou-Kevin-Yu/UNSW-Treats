@@ -265,8 +265,6 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
   return {};
 }
 
-<<<<<<< HEAD
-
 function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
   
   const data = getData();
@@ -349,9 +347,6 @@ function userStatsV1(token: string) {
   };
 }
 
-
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userStatsV1, userProfileUploadPhotoV1 };
-=======
 /**
  *
  * For a valid user, updates their handleStr
@@ -390,6 +385,7 @@ export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
   return {};
 }
 
-export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, 
-  userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 };
->>>>>>> master
+export { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1, userStatsV1, userProfileUploadPhotoV1 };
+
+export { userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 };
+
