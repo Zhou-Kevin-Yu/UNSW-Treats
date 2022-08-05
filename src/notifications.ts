@@ -1,5 +1,6 @@
 import { getData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
+import { NotificationsObj, NotificationsGetV1 } from './dataStore';
 import HTTPError from 'http-errors';
 
 // Array of objects, where each object contains types { channelId, dmId, notificationMessage } where
@@ -16,9 +17,33 @@ import HTTPError from 'http-errors';
  * Return the user's most recent 20 notifications, ordered from most recent to least recent.
  * @returns 
  */
-export function notificationsGetV1 (token: string) {
+export function notificationsGetV1 (token: string): NotificationsGetV1 {
 
-  // const data = getData();
+  const data = getData();
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "token passed in is invalid");
+  }
+
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  
+
+  // let notificationArray: NotificationsObj[] = [];
+  // const newNotification: NotificationsObj = {
+  //   channelId: ,
+  //   dmId: ,
+  //   notificationMessage: ,
+  // };
+  // 
+  // notificationArray = data.notifications.push(newNotification);
+  // notificationArray.reverse();
+  
+  // Loop to push messages into msgArray
+  // for (let i = startCopy; i < endCopy; i++) {
+  //   msgArray.push(channel.messages[i]);
+  // }
+
 
 
   // use for loops and if statements
@@ -30,24 +55,5 @@ export function notificationsGetV1 (token: string) {
   // need to find channel/dm name, message string and user's handle
 
   return {};
+  // return notificationArray;
 }
-
-// ask about how to implement it for this since there are no parameters do we still do const token = req.header('token'); for notifications
-// app.get('/notifications/get/v1', (req: Request, res: Response) => {
-//   const token = req.header('token');
-//   res.json(notificationsGetV1(token));
-// });
-
-
-// app.post('/message/sendlater/v1', (req: Request, res: Response) => {
-//   const { channelId, message, timeSent } = req.body;
-//   const token = req.header('token');
-//   res.json(messageSendlaterV1(token, channelId, message, timeSent));
-// });
-
-// app.get('/dm/details/v1', (req: Request, res: Response) => {
-//   const token = req.query.token as string;
-//   const dmId = req.query.dmId as string;
-//   const newDmId = parseInt(dmId);
-//   res.json(dmDetailsV1(token, newDmId));
-// });
