@@ -56,6 +56,13 @@ export interface MessagesObj {
   isPinned: boolean;
 }
 
+// For notifications/get/v1
+export interface NotificationsObj {
+  channelId: number;
+  dmId: number;
+  notificationMessage: string;
+}
+
 interface ReactObj {
   reactId: number;
   uIds: number[];
@@ -67,6 +74,11 @@ export interface ChannelMessagesV1 {
   start?: number;
   end?: number;
   error?: 'error';
+}
+
+// For notifications/get/v1
+export interface NotificationsGetV1 {
+  notifications: NotificationsObj[];
 }
 
 export interface ChannelsCreateV1 {
@@ -208,6 +220,8 @@ export interface Data {
   dms: DmObj[];
   systemInfo: SystemInfo;
   standups: standupObj[];
+  // For notifications/get/v1
+  notifications: NotificationsObj[];
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
