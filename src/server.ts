@@ -7,7 +7,7 @@ import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
-import { channelsCreateV1, channelsListV1, channelsListallV1, channelsCreateV3 } from './channels';
+import { channelsCreateV1, channelsListV1, channelsListallV1, channelsCreateV3, channelsListV3 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
@@ -136,6 +136,16 @@ app.post('/channels/create/v3', (req: Request, res: Response) => {
   const { name, isPublic } = req.body;
   const authId = tokenToAuthUserId(token, true);
   res.json(channelsCreateV3(authId, name, isPublic));
+});
+
+app.get('/channels/list/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Access Denied: Token is invalid');
+  } else {
+    const authId = tokenToAuthUserId(token, true);
+    res.json(channelsListV3(authId));
+  }
 });
 
 /// /////////////////////////////////////////////////////////

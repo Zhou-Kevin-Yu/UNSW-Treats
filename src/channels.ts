@@ -102,6 +102,26 @@ function channelsListV1(authUserId: number): ChannelsListV1 {
   return { channels: channelArr };
 }
 
+function channelsListV3(authUserId: number): ChannelsListV1 {
+  const data = getData();
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, "Access Denied: AuthUser is invalid");
+  }
+  const channelArr = [];
+  for (const channel of data.channels) {
+    for (const members of channel.allMembers) {
+      if (authUserId === members.uId) {
+        const channelObject = {
+          channelId: channel.channelId,
+          name: channel.name
+        };
+        channelArr.push(channelObject);
+      }
+    }
+  }
+  return { channels: channelArr };
+}
+
 function channelsCreateV3(authUserId: number, name: string, isPublic: boolean): ChannelsCreateV1 {
   // Checking for a valid channel name
   if (name.length < 1 || name.length > 20) {
@@ -132,4 +152,4 @@ function channelsCreateV3(authUserId: number, name: string, isPublic: boolean): 
   return { channelId: newChannel.channelId };
 }
 
-export { channelsCreateV1, channelsListallV1, channelsListV1, channelsCreateV3 };
+export { channelsCreateV1, channelsListallV1, channelsListV1, channelsCreateV3, channelsListV3 };
