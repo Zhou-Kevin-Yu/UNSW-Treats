@@ -29,6 +29,7 @@ import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
 import { searchV1 } from './search';
+import { adminUserPermissionChangeV1 } from './admin';
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
@@ -71,6 +72,13 @@ app.use((req: Request, res: Response, next) => {
     }
   }
   next();
+});
+
+/////// admin routes ////////
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const { uId, permissionId } = req.body;
+  const token = req.header('token');
+  res.json(adminUserPermissionChangeV1(token, uId, permissionId));
 });
 
 // All search requests
