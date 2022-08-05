@@ -11,7 +11,7 @@ import { authRegisterV2ServerSide, authLogoutV1ServerSide } from '../wrapped.aut
 
 import { channelsCreateV2SS } from '../wrapped.channels';
 import { dmCreateV1SS } from '../wrapped.dm';
-import { messageSendDmV2SS } from '../wrapped.message';
+import { messageSendDmV2SS, messageSendV2SS } from '../wrapped.message';
 
 if (os.platform() === 'darwin') {
   url = 'http://localhost';
@@ -208,7 +208,10 @@ describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
       expect(object).toStrictEqual({ error: 'error' });
     });
     test('values not withim dimensions of url', () => {
-
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k312');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 100020, 785, 900);
+      expect(object).toStrictEqual({ error: 'error' });
     });
     test('xEnd less than xStart', () => {
       const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k312');
@@ -249,13 +252,14 @@ describe('HTTP tests for user/stats/v1', () => {
       channelsCreateV2SS(reg12.token, 'COMP2521', false);
       const dm1 = dmCreateV1SS(reg12.token, [reg23.authUserId]);
       messageSendDmV2SS(reg12.token, dm1.dmId, 'Hi, how are you?');
+      messageSendV2SS(reg12.token, channel1.channelId, 'hello everyone');
 
       const object = userStatsV1SS(reg12.token);
 
       expect(object).toStrictEqual({
         channelsJoined: [{ numChannelsJoined: 2, timeStamp: expect.any(Number) }],
         dmsJoined: [{ numDmsJoined: 1, timeStamp: expect.any(Number) }],
-        messagesSent: [{ numMessagesSent: 1, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 2, timeStamp: expect.any(Number) }],
         involvementRate: expect.any(Number)
       });
     });
