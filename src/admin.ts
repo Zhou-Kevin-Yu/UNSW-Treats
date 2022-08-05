@@ -22,7 +22,7 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
     throw HTTPError(400, "invalid permissionId");
   }
 
-  if (data.users[uId].permission = permissionId) {
+  if (data.users[uId].permission === permissionId) {
     throw HTTPError(400, "user already has permissionId");
   }
   const authUserId = tokenToAuthUserId(token, true);
