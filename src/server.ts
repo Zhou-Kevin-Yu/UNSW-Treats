@@ -18,7 +18,7 @@ import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2,
-  channelDetailsV3, channelJoinV3, channelInviteV3 } from './channel_wrap';
+  channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
   userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 } from './user';
 
@@ -314,6 +314,13 @@ app.post('/channel/invite/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   const { channelId, uId } = req.body;
   res.json(channelInviteV3(token, channelId, uId));
+});
+
+app.get('/channel/messages/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(channelMessagesV3(token, channelId, start));
 });
 
 
