@@ -7,25 +7,27 @@ import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
-import { channelsCreateV1, channelsListV1, channelsListallV1, channelsCreateV3 } from './channels';
-import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
+import { channelsCreateV1, channelsListV1, channelsListallV1, 
+  channelsCreateV3, channelsListV3, channelsListallV3 } from './channels';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1, 
+dmCreateV3, dmListV3, dmRemoveV3, dmDetailsV3, dmLeaveV3, dmMessagesV3 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
-   messageSendV2 } from './message';
-import { usersAllV1 } from './users';
+   messageSendV2, messageEditV3, messageRemoveV3, messageSendDmV3 } from './message';
+import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
-import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
-import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
-import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1,
+  channelLeaveV3, channelAddOwnerV3, channelRemoveOwnerV3 } from './channel';
+import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2,
+  channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channel_wrap';
+import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
+  userProfileV3, userProfileSetnameV3, userProfileSetemailV3, userProfileSethandleV3 } from './user';
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
-
-// const errorOutput = { error: 'error' };
 
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
 import { isPrivateIdentifier } from 'typescript';
-// import createHttpError from 'http-errors';
 import HTTPError from 'http-errors';
 
 // Set up web app, use JSON
@@ -55,9 +57,7 @@ app.use(morgan('dev'));
 // for checking token validity
 // TODO: check for which route calls, rather than if token exists
 app.use((req: Request, res: Response, next) => {
-  // console.log("request: ", req.url);
   const fullToken = req.header('token');
-  // console.log("I HAVE THE TOKEN", fullToken);
   if (fullToken !== undefined && fullToken !== null) {
     if (!isTokenValid(fullToken)) {
       throw HTTPError(403, "Access Denied: Token is invalid");
@@ -69,14 +69,14 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-// All auth requests
+// All auth requests - ALL V3 COMPLIANT
 app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   const returned = authLoginV1(email, password);
   if ('error' in returned) {
     throw HTTPError(400, 'Invalid email or password');
   }
-  res.json(authLoginV1(email, password));
+  res.json(returned);
 });
 
 app.post('/auth/register/v3', (req: Request, res: Response) => {
@@ -85,7 +85,6 @@ app.post('/auth/register/v3', (req: Request, res: Response) => {
 });
 
 app.post('/auth/logout/v2', (req: Request, res: Response) => {
-  // const { token } = req.body;
   const token = req.header('token');
   res.json(authLogoutV1(token));
 });
@@ -100,7 +99,7 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
   res.json(authPasswordResetResetV1(resetCode, newPassword));
 });
 
-/// /////////////////////////////////////////////////////////channels functions
+// channels functions - OLD Channels
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   if (!isTokenValid(token)) {
@@ -133,7 +132,7 @@ app.get('/channels/listall/v2', (req: Request, res: Response) => {
   }
 });
 
-// V3 channels routes
+// Channels requests - ALL V3 COMPLIANT
 app.post('/channels/create/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   if (!isTokenValid(token)) {
@@ -144,8 +143,27 @@ app.post('/channels/create/v3', (req: Request, res: Response) => {
   res.json(channelsCreateV3(authId, name, isPublic));
 });
 
-/// /////////////////////////////////////////////////////////
+app.get('/channels/list/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Access Denied: Token is invalid');
+  } else {
+    const authId = tokenToAuthUserId(token, true);
+    res.json(channelsListV3(authId));
+  }
+});
 
+app.get('/channels/listall/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Access Denied: Token is invalid');
+  } else {
+    const authId = tokenToAuthUserId(token, true);
+    res.json(channelsListallV3(authId));
+  }
+});
+
+// Clear Route
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
@@ -172,6 +190,33 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSethandleV1(token, handleStr));
 });
+
+// All user requests - ALL V3 COMPLIANT
+app.get('/user/profile/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const u = req.query.uId as string;
+  const uId = parseInt(u);
+  res.json(userProfileV3(token, uId));
+});
+
+app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { nameFirst, nameLast } = req.body;
+  res.json(userProfileSetnameV3(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { email } = req.body;
+  res.json(userProfileSetemailV3(token, email));
+});
+
+app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { handleStr } = req.body;
+  res.json(userProfileSethandleV3(token, handleStr));
+});
+
 // All dm requests
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
@@ -213,52 +258,91 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
 });
 // TODO add dm/messages/v1
 
-////////////////// All channel requests //////////////////////
-// Old message requests - with updated routes
-app.post('/channel/addowner/v2', (req: Request, res: Response) => {
-  const { channelId, uId } = req.body;
+// DM requests - ALL V3 COMPLIANT
+app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
-  res.json(channelAddOwnerV1(token, channelId, uId));
+  const { uIds } = req.body;
+  res.json(dmCreateV3(token, uIds));
 });
 
+app.get('/dm/list/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(dmListV3(token));
+});
+
+app.delete('/dm/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  res.json(dmRemoveV3(token, newDmId));
+});
+
+app.get('/dm/details/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  res.json(dmDetailsV3(token, newDmId));
+});
+
+app.post('/dm/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { dmId } = req.body;
+  res.json(dmLeaveV3(token, dmId));
+});
+
+app.get('/dm/messages/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = parseInt(req.query.dmId as string)
+  const start = parseInt(req.query.start as string)
+  res.json(dmMessagesV3(token, dmId, start));
+});
+
+
+// All channel requests - ALL V3 COMPLIANT NOT YET
 app.get('/channel/details/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   const cId = parseInt(req.query.channelId as string);
-  res.json(channelDetailsV2(token, cId));
-});
-
-app.post('/channel/invite/v3', (req: Request, res: Response) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  res.json(channelInviteV2(token, channelId, uId));
+  res.json(channelDetailsV3(token, cId));
 });
 
 app.post('/channel/join/v3', (req: Request, res: Response) => {
-  const { channelId } = req.body;
   const token = req.header('token');
-  res.json(channelJoinV2(token, channelId));
+  const { channelId } = req.body;
+  res.json(channelJoinV3(token, channelId));
 });
 
-app.post('/channel/leave/v2', (req: Request, res: Response) => {
-  const { channelId } = req.body;
+app.post('/channel/invite/v3', (req: Request, res: Response) => {
   const token = req.header('token');
-  res.json(channelLeaveV1(token, channelId));
+  const { channelId, uId } = req.body;
+  res.json(channelInviteV3(token, channelId, uId));
 });
 
 app.get('/channel/messages/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   const channelId = parseInt(req.query.channelId as string);
   const start = parseInt(req.query.start as string);
-  res.json(channelMessagesV2(token, channelId, start));
+  res.json(channelMessagesV3(token, channelId, start));
+});
+
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId } = req.body;
+  res.json(channelLeaveV3(token, channelId));
+});
+
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, uId } = req.body;
+  res.json(channelAddOwnerV3(token, channelId, uId));
 });
 
 app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { channelId, uId } = req.body;
-  res.json(channelRemoveOwnerV1(token, channelId, uId));
+  res.json(channelRemoveOwnerV3(token, channelId, uId));
 });
 
-// Old message requests
+// Old channel requests
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelAddOwnerV1(token, channelId, uId));
@@ -297,7 +381,7 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 });
 
-////////////////// All message requests //////////////////////
+// All message requests
 // New message requests
 app.post('/message/share/v1', (req: Request, res: Response) => {
   const { ogMessageId, message, channelId, dmId } = req.body;
@@ -341,30 +425,30 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   res.json(messageSendlaterDmV1(token, dmId, message, timeSent));
 });
 
-// Old message requests - updated routes
+// Old message requests - V3 compatible
 app.post('/message/send/v2', (req: Request, res: Response) => {
-  const { channelId, message } = req.body;
   const token = req.header('token');
+  const { channelId, message } = req.body;
   res.json(messageSendV2(token, channelId, message));
 });
 
 app.put('/message/edit/v2', (req: Request, res: Response) => {
-  const { messageId, message } = req.body;
   const token = req.header('token');
-  res.json(messageEditV1(token, messageId, message));
+  const { messageId, message } = req.body;
+  res.json(messageEditV3(token, messageId, message));
 });
 
 app.delete('/message/remove/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const messageId = req.query.messageId as string;
   const newMessageId = parseInt(messageId);
-  res.json(messageRemoveV1(token, newMessageId));
+  res.json(messageRemoveV3(token, newMessageId));
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const { dmId, message } = req.body;
   const token = req.header('token');
-  res.json(messageSendDmV1(token, dmId, message));
+  const { dmId, message } = req.body;
+  res.json(messageSendDmV3(token, dmId, message));
 });
 
 // Old message requests
@@ -390,11 +474,17 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, dmId, message));
 });
 
-////////////////// All users requests //////////////////
+// Users Requests
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
+});
+
+// Users Requests - V3 READY
+app.get('/users/all/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(usersAllV3(token));
 });
 
 // Standup routes 
