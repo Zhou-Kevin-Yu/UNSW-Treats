@@ -11,6 +11,9 @@ import fs from 'fs';
 import config from './config.json';
 import sharp from 'sharp';
 
+const PORT: number = parseInt(process.env.PORT || config.port);
+const HOST: string = process.env.IP || 'localhost';
+
 /**
  *
  * For a valid user, returns information about their userId,
@@ -170,13 +173,14 @@ function userProfileSethandleV1(token: string, handle: string): { error?: 'error
 
 
 function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number): { error?: 'error' } {
-
+  
+  const data = getData();
   const authUserId = tokenToAuthUserId(token, isTokenValid(token))
   //xEnd is less than or equal to xStart or yEnd is less than or equal to yStart
   if (xEnd <= xStart || yEnd <= yStart) return { error: 'error' };
 
   //Check if image is jpg
-  if (!/\.(jpg)$/.test(imgUrl))return { error: 'error' };
+  if (!imgUrl.endsWith(".jpg"))return { error: 'error' };
 
   const res = request(
       'GET',
@@ -187,16 +191,16 @@ function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number,
   if (res.statusCode !== 200) return { error: 'error' };
 
   const body = res.getBody();
-  const output = `photos/uId${authUserId}` + Date.now() + `.jpg`;
+  const output = `${HOST}/${PORT}/photos/uId${authUserId}` + Date.now() + `.jpg`;
   const width = xEnd - xStart;
   const height = yEnd - yStart;
 
-  sharp(body).extract({width: width, height: height, left: xStart, top: yStart}).toFile(output);
-
-  //.catch return { error: 'error' };
-  //app.use('/photos', express.static('photos'));
-  //set default url for all users
-
+  try { sharp(body).extract({width: width, height: height, left: xStart, top: yStart}).toFile(output);
+  } catch(err) {
+    return { error: 'error' };
+  }
+  data.users[authUserId].profileImgUrl = output;
+  setData(data);
   return {};
 }
 

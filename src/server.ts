@@ -48,6 +48,7 @@ app.get('/echo', (req, res, next) => {
 
 // for logging errors
 app.use(morgan('dev'));
+app.use('/photos', express.static('photos'));
 
 // for checking token validity
 // TODO: check for which route calls, rather than if token exists

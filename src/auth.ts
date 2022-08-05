@@ -4,9 +4,12 @@ import { AuthLoginV1, AuthRegisterV1 } from './dataStore';
 import { generateToken, tokenToAuthUserId, isTokenValid } from './token';
 import { sendMail } from './mail';
 import crypto from 'crypto';
+import config from './config.json';
 
 import HTTPError from 'http-errors';
 
+const PORT: number = parseInt(process.env.PORT || config.port);
+const HOST: string = process.env.IP || 'localhost';
 
 const SECRET = 'DREAMTEAM'
 
@@ -95,7 +98,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     permission: perm,
     tokens: [],
     resetCodes: [],
-    profileImgUrl: "default url"
+    profileImgUrl: `${HOST}/${PORT}/photos/default.jpg`;
   };
   setData(data);
   const token = generateToken(authUserId);
