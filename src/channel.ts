@@ -735,13 +735,13 @@ export function channelAddOwnerV3(token: string, channelId: number, uId: number)
     throw HTTPError(403, 'AuthUser is not valid');
   }
   if (uId === null || uId === undefined) {
-    throw HTTPError(403, 'Uid is not valid');
+    throw HTTPError(400, 'Uid is not valid');
   }
 
   const userObj = userProfileV1(authUserId, uId);
 
   if (userObj === { error: 'error' }) {
-    throw HTTPError(403, 'Uid is not valid');
+    throw HTTPError(400, 'Uid is not valid');
   }
 
   const user = userObj.user;
@@ -824,6 +824,57 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
   const authUserGlobal = data.users[authUserId].permission;
   if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
     return { error: 'error' };
+  }
+
+  data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== ownerToBeRemoved.uId);
+  setData(data);
+  return {};
+}
+
+export function channelRemoveOwnerV3(token: string, channelId: number, uId: number) {
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  // const ownerToBeRemoved = userProfileV1(authUserId, uId);
+  const data = getData();
+
+  if (authUserId === null || authUserId === undefined) {
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+  if (uId === null || uId === undefined) {
+    throw HTTPError(400, 'Uid is not valid');
+  }
+  //checks if uId is a valid user
+  if (!(uId in data.users)) {
+    throw HTTPError(400, 'Uid is not valid');
+  }
+
+  const ownerToBeRemovedObj = userProfileV1(authUserId, uId);
+
+  if (ownerToBeRemovedObj === { error: 'error' }) {
+    throw HTTPError(400, 'Uid is not valid');
+  }
+
+  const ownerToBeRemoved = ownerToBeRemovedObj.user;
+
+  // checks if chanellId does not refer to a valid channel
+  if (data.channels[channelId] === undefined || data.channels[channelId] === null || data.channels[channelId].channelId !== channelId) {
+    throw HTTPError(400, 'ChannelId is not valid');
+  }
+  // checks if Uid refers to a user who is not an owner of the channel
+  if (!(data.channels[channelId].ownerMembers.some(member => member.uId === ownerToBeRemoved.uId))) {
+    throw HTTPError(400, 'uId is not a member of the channel');
+  }
+  // checks if uId refers to a user who is currently the only owner of the channel
+  if (data.channels[channelId].ownerMembers.length === 1) { 
+    throw HTTPError(400, 'uId is the only owner of the channel');
+  }
+  // check if authUserId refers to a user who doesn't have owner permissions in this channel
+  const authUserOjb = userProfileV1(authUserId, authUserId);
+  if (authUserOjb === { error: 'error' }) {
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+  const authUserGlobal = data.users[authUserId].permission;
+  if (authUserGlobal !== 1 && !(data.channels[channelId].ownerMembers.some(member => member.uId === authUserId))) {
+    throw HTTPError(403, 'AuthUser does not have permissions in this channel');
   }
 
   data.channels[channelId].ownerMembers = data.channels[channelId].ownerMembers.filter(user => user.uId !== ownerToBeRemoved.uId);

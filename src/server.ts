@@ -17,7 +17,7 @@ import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, message
 import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1,
-  channelLeaveV3, channelAddOwnerV3 } from './channel';
+  channelLeaveV3, channelAddOwnerV3, channelRemoveOwnerV3 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2,
   channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1,
@@ -336,7 +336,11 @@ app.post('/channel/addowner/v2', (req: Request, res: Response) => {
   res.json(channelAddOwnerV3(token, channelId, uId));
 });
 
-
+app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV3(token, channelId, uId));
+});
 
 
 
