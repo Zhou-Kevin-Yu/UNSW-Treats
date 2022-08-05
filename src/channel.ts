@@ -76,6 +76,75 @@ function channelJoinV1(authUserId: number, channelId: number): ChannelJoinV1 {
   return {};
 }
 
+/*
+ * ChannelJoinV1 allows an authorised user to join a valid channel if it is
+ * public but if it is a private channel, only a global owner can join.
+
+ * @param {integer} authUserId - Id of user trying to join
+ * @param {integer} channelId - Id of channel that user wants to join
+ * @return {} - Empty array signifying a successful join to channel
+ * @returns { error : 'error' } - when channelId is invalid
+ *                              - when authUserId does not exist
+                                - when user is trying to join a private
+                                  channelDetailsV1 but they are not a global owner
+*/
+
+function channelJoinV1forV3(authUserId: number, channelId: number): ChannelJoinV1 {
+  const data = getData();
+  // If authUser is valid
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, 'Invalid authUser');
+  }
+
+  let channelExists = false;
+  let memberExists = false;
+  // Check if user is a global owner (1 = global owner, 2 = normal user)
+  const perms = data.users[authUserId].permission;
+
+  // If channelId is invalid
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channelExists = true;
+    }
+  }
+  if (!channelExists) {
+    throw HTTPError(400, 'Invalid channelId');
+  }
+
+  // check if user is already a member
+  for (const member of data.channels[channelId].allMembers) {
+    if (authUserId === member.uId) {
+      throw HTTPError(400, 'User is already a member of the channel');
+    }
+  }
+
+  // Check if channel is private and user is not a member
+  if (!(data.channels[channelId].isPublic)) {
+    for (const member of data.channels[channelId].allMembers) {
+      if (authUserId === member.uId) {
+        memberExists = true;
+      }
+    }
+    // return error if they are not a member and not a global owner
+    if (!memberExists && perms !== 1) {
+      throw HTTPError(403, 'User is not a member of the channel and is not a global owner');
+    }
+  }
+
+  // Add user to channel in allMembers array
+  data.channels[channelId].allMembers.push(
+    {
+      uId: data.users[authUserId].uId,
+      nameFirst: data.users[authUserId].nameFirst,
+      nameLast: data.users[authUserId].nameLast,
+      email: data.users[authUserId].email,
+      handleStr: data.users[authUserId].handleStr,
+    });
+
+  setData(data);
+  return {};
+}
+
 /**
  * Invites a user with ID uId to join a channel with ID channelId
  * and they immediately join
@@ -162,6 +231,95 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Ch
   // If the channel Id does not exist or is invalid
   if (existChannel === 0) {
     return { error: 'error' };
+  }
+}
+
+/**
+ * Invites a user with ID uId to join a channel with ID channelId
+ * and they immediately join
+ *
+ * @param {number} authUserId - authorised user that is a part of the selected channel and making the invite request
+ * @param {number} channelId - id for the selected channel
+ * @param {number} uId  - user to be invited
+ * @returns {object} {} - empty object
+ * @returns {object} {error: 'error'} - return error if channelId is invalid, uId is invalid,
+ * uId refers to a user who is already a member of the channel, or channelId is valid and the authorised user is not a member of the channel
+ */
+
+ function channelInviteV1forV3(authUserId: number, channelId: number, uId: number): ChannelInviteV1 {
+  const data = getData();
+  // if authUser is valid
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, 'Invalid authUser');
+  }
+
+  let existChannel = 0;
+  let existUser = 0;
+  // To loop through all the existing channels
+  for (const channel of data.channels) {
+    // If the channel Id exists
+    if (channelId === channel.channelId) {
+      // To loop through all the members in selected channel
+      for (const member of channel.allMembers) {
+        // If user is already a member of the channel before the invite is sent
+        if (uId === member.uId) {
+          throw HTTPError(400, 'User is already a member of the channel');
+        }
+      }
+    }
+  }
+
+  // Declare as empty strings
+  let nameFirstCopy = '';
+  let nameLastCopy = '';
+  let emailCopy = '';
+  let handlestrCopy = '';
+
+  for (const user of data.users) {
+    // If the user Id exists
+    if (uId === user.uId) {
+      existUser = 1;
+      nameFirstCopy = user.nameFirst;
+      nameLastCopy = user.nameLast;
+      emailCopy = user.email;
+      handlestrCopy = user.handleStr;
+    }
+  }
+
+  // If the user Id does not exist or is invalid
+  if (existUser === 0) {
+    throw HTTPError(400, 'Invalid user');
+  }
+
+  // To loop through all the existing channels
+  for (const channel of data.channels) {
+    // If the channel Id exists
+    if (channelId === channel.channelId) {
+      existChannel = 1;
+      // To loop through all the members in selected channel
+      for (const member of channel.allMembers) {
+        // If the auth user is a member
+        if (authUserId === member.uId) {
+          // Push object user into allMembers array
+          channel.allMembers.push({
+            uId: uId,
+            nameFirst: nameFirstCopy,
+            nameLast: nameLastCopy,
+            email: emailCopy,
+            handleStr: handlestrCopy,
+          });
+          setData(data);
+          return { };
+        }
+      }
+      // If the auth user is not a member of the channel
+      throw HTTPError(403, 'User is not a member of the channel');
+    }
+  }
+
+  // If the channel Id does not exist or is invalid
+  if (existChannel === 0) {
+    throw HTTPError(400, 'Invalid channel');
   }
 }
 
@@ -492,4 +650,4 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
 }
 
 export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1,
-  channelDetailsV1forV3 };
+  channelDetailsV1forV3, channelJoinV1forV3, channelInviteV1forV3 };
