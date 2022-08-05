@@ -930,6 +930,79 @@ export function messageSendDmV1 (token: string, dmId: number, message: string): 
   return { messageId: messageIdCopy };
 }
 
+/**
+* Send a message from authorisedUser to the DM specified by dmId.
+* @param {string} token - user login token
+* @param {number} dmId - id for the selected DM
+* @param {string} message - actual message string
+* @returns {object} object containing messageId - a unique number as each message should have its own unique ID,
+* @returns {object} { error: 'error' } - return error if mdmId does not refer to a valid DM,
+* length of message is less than 1 or over 1000 characters,
+* or dmId is valid and the authorised user is not a member of the DM
+*/
+export function messageSendDmV3 (token: string, dmId: number, message: string): MessageSendDmV1 {
+  const data = getData();
+  let existDm = 0;
+  let existAuth = 0;
+  let messageIdCopy = 0;
+  // If token is invalid
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "token is invalid");
+  }
+
+  // If length of message is less than 1 or over 1000 characters
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, "length of message is less than 1 or over 1000 characters");
+  }
+
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+
+  // To loop through all the existing DMs
+  for (const dm of data.dms) {
+    // Check that the DM is not undefined or null
+    if (dm !== undefined || dm !== null) {
+      // If the dmId exists
+      if (dmId === dm.dmId) {
+        existDm = 1;
+        // To loop through all the members in selected DM
+        // for (const member of dm.members) {
+        for (let i = 0; i < dm.members.length; i++) {
+          // If the auth user is a member of DM
+          if (dm.members[i] === authUserId) {
+            existAuth = 1;
+
+            messageIdCopy = data.systemInfo.messageTotal;
+            data.systemInfo.messageTotal++;
+
+            const newDmMessage: MessagesObj = {
+              messageId: messageIdCopy,
+              uId: authUserId,
+              message: message,
+              timeSent: Math.floor((new Date()).getTime() / 1000),
+              reacts: [],
+              isPinned: false,
+            };
+            dm.messages.push(newDmMessage);
+            setData(data);
+          }
+        }
+      }
+    }
+  }
+
+  // If the dmId does not exist or is invalid
+  if (existDm === 0) {
+    throw HTTPError(400, "dmId does not refer to a valid DM");
+  }
+
+  // If dmId is valid and the authorised user is not a member of the DM
+  if (existAuth === 0) {
+    throw HTTPError(403, "authorised user is not a member of the DM");
+  }
+
+  return { messageId: messageIdCopy };
+}
+
 export function messageSendV2 (token: string, channelId: number, message: string): MessageSendV1 {
   const data = getData();
   let existChannel = 0;
