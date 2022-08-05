@@ -143,6 +143,25 @@ export function dmListV1(token: string): DmListV1 {
   return { dms: userDms };
 }
 
+export function dmListV3(token: string): DmListV1 {
+  const data = getData();
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  const userDms: Dm[] = [];
+  for (const dm of data.dms) {
+    if (dm !== undefined && dm !== null && dm.members.includes(authUserId)) {
+      const tempDm: Dm = {
+        dmId: dm.dmId,
+        name: dm.name,
+      };
+      userDms.push(tempDm);
+    }
+  }
+  return { dms: userDms };
+}
+
 /**
  * given a valid token of an authorised user and a dmId, deletes the Dm.
  *
@@ -181,6 +200,29 @@ export function dmRemoveV1(token: string, dmId: number)/*: DmRemoveV1 */ {
   return {};
 }
 
+export function dmRemoveV3(token: string, dmId: number) {
+  const data = getData();
+  // check if dmId is valid
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
+    throw HTTPError(400, 'Invalid dmId');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  if (data.dms[dmId].creator !== authUserId) {
+    throw HTTPError(403, 'authorised user is not the original creator of the dm');
+  }
+  /* no situation where the creator is not a member (see assumptions)
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    return { error: 'error' };
+  }
+  */
+  delete data.dms[dmId];
+  setData(data);
+  return {};
+}
+
 /**
  * given a valid token and dmId, it returns name and members of that Dm
  *
@@ -202,6 +244,32 @@ export function dmDetailsV1(token: string, dmId: number): DmDetailsV1 {
   // check if authUser is a member of the channel
   if (!(data.dms[dmId].members.includes(authUserId))) {
     return { error: 'error' };
+  }
+  const dmUsers : User[] = [];
+  for (const member of data.dms[dmId].members) {
+    const userCurr : User = userProfileV1(authUserId, member).user; // TODO update with V2 function
+    dmUsers.push(userCurr);
+  }
+  // console.log(dmUsers); //temporary testing of functionality
+  return {
+    name: data.dms[dmId].name,
+    members: dmUsers,
+  };
+}
+
+export function dmDetailsV3(token: string, dmId: number): DmDetailsV1 {
+  const data = getData();
+  // check if dmId is valid
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
+    throw HTTPError(400, 'Invalid dmId');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  // check if authUser is a member of the channel
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    throw HTTPError(403, 'authorised user is not a member of the dm');
   }
   const dmUsers : User[] = [];
   for (const member of data.dms[dmId].members) {
@@ -254,6 +322,39 @@ export function dmLeaveV1(token: string, dmId: number): DmLeaveV1 {
   // console.log("after", data.dms); //temporary testing
   return {};
 }
+
+export function dmLeaveV3(token: string, dmId: number): DmLeaveV1 {
+  const data = getData();
+  // check if dmId is valid
+  // console.log("before", data.dms); //temporary testing
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
+    throw HTTPError(400, 'Invalid dmId');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  // check if authUser is a member of the DM
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    throw HTTPError(403, 'authorised user is not a member of the dm');
+  }
+  // splice out member from array
+  const index = data.dms[dmId].members.indexOf(authUserId, 0);
+  if (index > -1) {
+    data.dms[dmId].members.splice(index, 1);
+  }
+  // if leaver is creator
+  if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length > 1) { // TODO figure out what happens when there is one member
+    data.dms[dmId].creator = data.dms[dmId].members[0]; // set first added member as creator
+  } else if (data.dms[dmId].creator === authUserId && data.dms[dmId].members.length <= 1) {
+  // if current creator is trying to leave and no one else is left, then delete DM
+    dmRemoveV1(token, dmId);
+  }
+  setData(data);
+  // console.log("after", data.dms); //temporary testing
+  return {};
+}
+
 
 /**
  * given a token and user ids, creates a new DM (direct message),
@@ -318,3 +419,51 @@ export function dmMessagesV1(token: string, dmId: number, start: number): DmMess
   }
   return returnObj;
 }
+
+export function dmMessagesV3(token: string, dmId: number, start: number): DmMessagesV1 {
+  const data = getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  // check if dmId is valid
+  if (dmId > data.dms.length || dmId < 0 || data.dms[dmId] === undefined || data.dms[dmId] === null) {
+    throw HTTPError(400, 'Invalid dmId');
+  }
+  // start is greater than total number of messages in the channel
+  if (start > (data.dms[dmId].messages.length)) {
+    throw HTTPError(400, 'Invalid start');
+  }
+  //
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  // error if user is not in dm with dmId: dmId
+  if (!(data.dms[dmId].members.includes(authUserId))) {
+    throw HTTPError(403, 'authorised user is not a member of the dm');
+  }
+  const messagesReturn : MessagesObj[] = [];
+  const dm : DmObj = data.dms[dmId];
+  let counter = 0;
+  let endM = -1;
+  for (const message of dm.messages) {
+    if (counter >= 50) {
+      endM = start + 50;
+      break;
+    }
+    // const messageCurr = {
+    //   messageId: message.messageId,
+    //   uId: message.uId,
+    //   message: message.message,
+    //   timeSent: message.timeSent
+    // };
+    const messageCurr = message;
+    messagesReturn.push(messageCurr);
+    counter++;
+  }
+  messagesReturn.reverse();
+  const returnObj : DmMessagesV1 = {
+    messages: messagesReturn,
+    start: start,
+    end: endM,
+  }
+  return returnObj;
+}
+

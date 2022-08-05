@@ -10,7 +10,7 @@ import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetReques
 import { channelsCreateV1, channelsListV1, channelsListallV1, 
   channelsCreateV3, channelsListV3, channelsListallV3 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1, 
-dmCreateV3 } from './dm';
+dmCreateV3, dmListV3, dmRemoveV3, dmDetailsV3, dmLeaveV3, dmMessagesV3 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
    messageSendV2 } from './message';
@@ -229,13 +229,44 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
 });
 // TODO add dm/messages/v1
 
-// DM requests - ALL V3 COMPLIANT NOT YET
+// DM requests - ALL V3 COMPLIANT
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { uIds } = req.body;
   res.json(dmCreateV3(token, uIds));
 });
 
+app.get('/dm/list/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(dmListV3(token));
+});
+
+app.delete('/dm/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  res.json(dmRemoveV3(token, newDmId));
+});
+
+app.get('/dm/details/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = req.query.dmId as string;
+  const newDmId = parseInt(dmId);
+  res.json(dmDetailsV3(token, newDmId));
+});
+
+app.post('/dm/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { dmId } = req.body;
+  res.json(dmLeaveV3(token, dmId));
+});
+
+app.get('/dm/messages/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const dmId = parseInt(req.query.dmId as string)
+  const start = parseInt(req.query.start as string)
+  res.json(dmMessagesV3(token, dmId, start));
+});
 
 
 ////////////////// All channel requests //////////////////////
