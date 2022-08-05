@@ -2,6 +2,8 @@ import { getData, UserAllV1, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user';
 
+import HTTPError from 'http-errors';
+
 function usersAllV1(token: string): UserAllV1 {
   const data = getData();
   // get token and return error if invalid
@@ -17,4 +19,19 @@ function usersAllV1(token: string): UserAllV1 {
   return { users: userArr };
 }
 
-export { usersAllV1 };
+function usersAllV3(token: string): UserAllV1 {
+  const data = getData();
+  // get token and return error if invalid
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (!isTokenValid(token)) {
+    throw HTTPError(400, 'Invalid token');
+  }
+  const userArr: User[] = [];
+  for (const user of data.users) {
+    const currUser : User = userProfileV1(authUserId, user.uId).user;
+    userArr.push(currUser);
+  }
+  return { users: userArr };
+}
+
+export { usersAllV1, usersAllV3 };

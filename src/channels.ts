@@ -75,6 +75,22 @@ function channelsListallV1(authUserId: number): ChannelsListAllV1 {
   return { channels: channels };
 }
 
+function channelsListallV3(authUserId: number): ChannelsListAllV1 {
+  const data = getData();
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, "Access Denied: AuthUser is invalid");  
+  }
+  const channels = [];
+  for (const channel of data.channels) {
+    const channelNew = {
+      channelId: channel.channelId,
+      name: channel.name,
+    };
+    channels.push(channelNew);
+  }
+  return { channels: channels };
+}
+
 /**
  * Provide an array of all channels (and their associated details) that the authorised user is part of.
  *
@@ -86,6 +102,26 @@ function channelsListV1(authUserId: number): ChannelsListV1 {
   const data = getData();
   if (!(authUserId in data.users)) {
     return { error: 'error' };
+  }
+  const channelArr = [];
+  for (const channel of data.channels) {
+    for (const members of channel.allMembers) {
+      if (authUserId === members.uId) {
+        const channelObject = {
+          channelId: channel.channelId,
+          name: channel.name
+        };
+        channelArr.push(channelObject);
+      }
+    }
+  }
+  return { channels: channelArr };
+}
+
+function channelsListV3(authUserId: number): ChannelsListV1 {
+  const data = getData();
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, "Access Denied: AuthUser is invalid");
   }
   const channelArr = [];
   for (const channel of data.channels) {
@@ -132,4 +168,4 @@ function channelsCreateV3(authUserId: number, name: string, isPublic: boolean): 
   return { channelId: newChannel.channelId };
 }
 
-export { channelsCreateV1, channelsListallV1, channelsListV1, channelsCreateV3 };
+export { channelsCreateV1, channelsListallV1, channelsListV1, channelsCreateV3, channelsListV3, channelsListallV3 };
