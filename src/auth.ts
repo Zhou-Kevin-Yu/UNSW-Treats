@@ -78,6 +78,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   let perm = 0;
   if (data.users.length === 0) {
     perm = 1;
+    data.systemInfo.globalOwners++;
   } else {
     perm = 2;
   }

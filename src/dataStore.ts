@@ -207,6 +207,7 @@ export interface standupObj {
 
 interface SystemInfo {
   messageTotal: number;
+  globalOwners: number;
 }
 
 export interface Data {
@@ -225,6 +226,7 @@ let data: Data = {
   dms: [],
   systemInfo: {
     messageTotal: 0,
+    globalOwners: 0,
   },
   standups: [],
   delayedMessages: [],

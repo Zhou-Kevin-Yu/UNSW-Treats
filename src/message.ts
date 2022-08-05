@@ -505,6 +505,7 @@ export function messageSendlaterDmV1(token: string, dmId: number, message: strin
     if (!(dmId in data.dms)) {
       return {};
     }
+    // console.log(token, dmId, message).messageId
     const newMsgId = messageSendDmV1(token, dmId, message).messageId;
     let newData  = getData();
     // console.log(newData.channels[0].messages);

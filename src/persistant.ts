@@ -17,6 +17,7 @@ function persistantReadData(): Data {
       dms: [],
       systemInfo: {
         messageTotal: 0,
+        globalOwners: 0,
       },
       standups: [],
       delayedMessages: [],
