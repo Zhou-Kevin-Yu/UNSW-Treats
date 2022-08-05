@@ -20,12 +20,9 @@ import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfile
 
 import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
-// const errorOutput = { error: 'error' };
-
 import { getData, setData } from './dataStore';
 import { persistantReadData } from './persistant';
 import { isPrivateIdentifier } from 'typescript';
-// import createHttpError from 'http-errors';
 import HTTPError from 'http-errors';
 
 // Set up web app, use JSON
@@ -55,9 +52,7 @@ app.use(morgan('dev'));
 // for checking token validity
 // TODO: check for which route calls, rather than if token exists
 app.use((req: Request, res: Response, next) => {
-  // console.log("request: ", req.url);
   const fullToken = req.header('token');
-  // console.log("I HAVE THE TOKEN", fullToken);
   if (fullToken !== undefined && fullToken !== null) {
     if (!isTokenValid(fullToken)) {
       throw HTTPError(403, "Access Denied: Token is invalid");
@@ -76,7 +71,7 @@ app.post('/auth/login/v3', (req: Request, res: Response) => {
   if ('error' in returned) {
     throw HTTPError(400, 'Invalid email or password');
   }
-  res.json(authLoginV1(email, password));
+  res.json(returned);
 });
 
 app.post('/auth/register/v3', (req: Request, res: Response) => {
