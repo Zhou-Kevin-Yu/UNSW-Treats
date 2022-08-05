@@ -202,7 +202,7 @@ describe('Testing /user/profile/sethandle/v1', () => {
 describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
   describe('Testing Error Cases ', () => {
     test('HTTP Status not 200', () => {
-      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k31');
       const url = 'invalid url';
       const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
       expect(object).toStrictEqual({ error: 'error' });
@@ -211,25 +211,27 @@ describe('HTTP tests for user/profile/uploadPhoto/v1', () => {
 
     });
     test('xEnd less than xStart', () => {
-      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b31', 'k312');
       const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
       const object = userProfileUploadPhotoV1SS(reg.token, url, 500, 500, 0, 0);
       expect(object).toStrictEqual({ error: 'error' });
     });
     test('image uploaded is not jpg', () => {
-      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b423', 'k213');
       const url = 'https://www.nicepng.com/png/detail/5-52286_download-laughing-iphone-emoji-jpg-emoji-happy-png.png';
       const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
       expect(object).toStrictEqual({ error: 'error' });
     });
   });
   describe('Testing correct output', () => {
-    const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b', 'k');
-    const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
+    test('correct outpu', () => {
+      const reg = authRegisterSS('bk@gmail.com', 'validPass98', 'b452', 'k423');
+      const url = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg';
 
-    const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 500, 500);
+      const object = userProfileUploadPhotoV1SS(reg.token, url, 0, 0, 25, 25);
 
-    expect(object).toStrictEqual({});
+      expect(object).toStrictEqual({});
+    });
   });
 });
 

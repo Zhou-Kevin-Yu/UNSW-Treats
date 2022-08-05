@@ -1,6 +1,6 @@
 export { userProfileV1 };
 import { getData, setData } from './dataStore';
-import { UserDetailsV1, User } from './dataStore';
+import { UserDetailsV1, User, UserObj } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import isEmail from 'validator/lib/isEmail';
 import internal from 'stream';
@@ -190,7 +190,7 @@ function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number,
   if (res.statusCode !== 200) return { error: 'error' };
 
   const body = res.getBody();
-  const output = `${HOST}:${PORT}/photos/uId${authUserId}` + Date.now() + `.jpg`;
+  const output = `src/photos/uId${authUserId}` + Date.now() + `.jpg`;
   const width = xEnd - xStart;
   const height = yEnd - yStart;
   fs.writeFileSync(output, '',)
@@ -200,8 +200,8 @@ function userProfileUploadPhotoV1(token: string, imgUrl: string, xStart: number,
     fs.unlinkSync(output);
     return { error: 'error' };
   }
-  data.users[authUserId].profileImgUrl = output;
 
+  data.users[authUserId].profileImgUrl = output;
   setData(data);
   return {};
 }

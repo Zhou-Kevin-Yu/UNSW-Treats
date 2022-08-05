@@ -161,7 +161,7 @@ export interface DmObj {
   name: string;
   messages: MessagesObj[];
 }
-interface UserObj {
+export interface UserObj {
   uId: number;
   nameFirst: string;
   nameLast: string;
