@@ -13,7 +13,7 @@ import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1,
 dmCreateV3, dmListV3, dmRemoveV3, dmDetailsV3, dmLeaveV3, dmMessagesV3 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
-   messageSendV2 } from './message';
+   messageSendV2, messageEditV3 } from './message';
 import { usersAllV1, usersAllV3 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1,
@@ -430,6 +430,19 @@ app.post('/message/send/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { channelId, message } = req.body;
   res.json(messageSendV2(token, channelId, message));
+});
+
+app.put('/message/edit/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { messageId, message } = req.body;
+  res.json(messageEditV3(token, messageId, message));
+});
+
+app.delete('/message/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = req.query.messageId as string;
+  const newMessageId = parseInt(messageId);
+  res.json(messageRemoveV1(token, newMessageId));
 });
 
 // Old message requests
