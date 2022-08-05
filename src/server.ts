@@ -7,15 +7,18 @@ import errorHandler from 'middleware-http-errors';
 
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
-import { channelsCreateV1, channelsListV1, channelsListallV1 } from './channels';
+import { channelsCreateV1, channelsListV1, channelsListallV1, channelsCreateV3 } from './channels';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
-   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1 } from './message';
+   messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
+   messageSendV2 } from './message';
 import { usersAllV1 } from './users';
 import { clearV1 } from './other';
 import { channelAddOwnerV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { channelDetailsV2, channelInviteV2, channelJoinV2, channelMessagesV2 } from './channel_wrap';
 import { userProfileV2, userProfileSetnameV1, userProfileSetemailV1, userProfileSethandleV1 } from './user';
+
+import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
 // const errorOutput = { error: 'error' };
 
@@ -128,6 +131,17 @@ app.get('/channels/listall/v2', (req: Request, res: Response) => {
     const authId = tokenToAuthUserId(tokenParse, true);
     res.json(channelsListallV1(authId));
   }
+});
+
+// V3 channels routes
+app.post('/channels/create/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Access Denied: Token is invalid');
+  }
+  const { name, isPublic } = req.body;
+  const authId = tokenToAuthUserId(token, true);
+  res.json(channelsCreateV3(authId, name, isPublic));
 });
 
 /// /////////////////////////////////////////////////////////
@@ -331,7 +345,7 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
 app.post('/message/send/v2', (req: Request, res: Response) => {
   const { channelId, message } = req.body;
   const token = req.header('token');
-  res.json(messageSendV1(token, channelId, message));
+  res.json(messageSendV2(token, channelId, message));
 });
 
 app.put('/message/edit/v2', (req: Request, res: Response) => {
@@ -381,6 +395,25 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   const { token } = req.query;
   const tokenParse = token.toString();
   res.json(usersAllV1(tokenParse));
+});
+
+// Standup routes 
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, length } = req.body;
+  res.json(standupStartV1(token, channelId, length));
+});
+
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  res.json(standupActiveV1(token, channelId));
+});
+
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, message } = req.body;
+  res.json(standupSendV1(token, channelId, message));
 });
 
 /// All routes for testing purposes
