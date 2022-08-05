@@ -91,7 +91,8 @@ describe('Testing registration', () => {
       email: 'ben.kerno1@gmail.com',
       nameFirst: 'benjamin',
       nameLast: 'kernohan',
-      handleStr: 'benjaminkernohan'
+      handleStr: 'benjaminkernohan',
+      notifications: [] as [],
     };
     expect(user).toStrictEqual(userCorrect);
   });

@@ -35,6 +35,7 @@ describe('userProfileV1 - testing valid operations', () => {
         nameFirst: 'Gary',
         nameLast: 'Sun',
         handleStr: 'garysun',
+        notifications: [],
       }
     });
   });
@@ -49,6 +50,7 @@ describe('userProfileV1 - testing valid operations', () => {
         nameFirst: 'Manav',
         nameLast: 'Pawar',
         handleStr: 'manavpawar',
+        notifications: [],
       }
     });
   });

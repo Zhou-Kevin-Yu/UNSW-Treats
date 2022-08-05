@@ -50,6 +50,7 @@ describe('Testing /user/profile/v2', () => {
         nameFirst: 'Gary',
         nameLast: 'Sun',
         handleStr: 'garysun',
+        notifications: [],
       }
     });
   });
@@ -87,6 +88,7 @@ describe('Testing /user/profile/setname/v1', () => {
         nameFirst: 'Garyy',
         nameLast: 'Sunn',
         handleStr: 'garysun',
+        notifications: [],
       }
     });
   });
@@ -124,6 +126,7 @@ describe('Testing /user/profile/setemail/v1', () => {
         nameFirst: 'Gary',
         nameLast: 'Sun',
         handleStr: 'garysun',
+        notifications: [],
       }
     });
   });
@@ -172,6 +175,7 @@ describe('Testing /user/profile/sethandle/v1', () => {
         nameFirst: 'Gary',
         nameLast: 'Sun',
         handleStr: 'gary',
+        notifications: [],
       }
     });
   });

@@ -99,7 +99,8 @@ describe('Testing user setname', () => {
         email: 'bk@gmail.com',
         nameFirst: 'b',
         nameLast: 'k',
-        handleStr: 'bk' // expect any string
+        handleStr: 'bk', // expect any string
+        notifications: [],
       }
     });
 
