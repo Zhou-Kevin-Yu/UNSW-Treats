@@ -426,7 +426,11 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
 });
 
 // Old message requests - V3 compatible
-
+app.post('/message/send/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, message } = req.body;
+  res.json(messageSendV2(token, channelId, message));
+});
 
 // Old message requests
 app.post('/message/send/v1', (req: Request, res: Response) => {
