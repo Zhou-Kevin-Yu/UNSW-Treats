@@ -1,6 +1,6 @@
 export { userProfileV1 };
 import { getData, setData } from './dataStore';
-import { UserDetailsV1 } from './dataStore';
+import { UserDetailsV1, User } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import isEmail from 'validator/lib/isEmail';
 import internal from 'stream';
@@ -35,7 +35,7 @@ function userProfileV1(authUserId: number, uId: number): UserDetailsV1 {
   }
 
   const data = dataStore.users[uId];
-  const user = {
+  const user: User = {
     uId: data.uId,
     email: data.email,
     nameFirst: data.nameFirst,
