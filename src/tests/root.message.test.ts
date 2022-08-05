@@ -272,7 +272,7 @@ describe('Iteration 3 Function Testing', () => {
       });
     });
   });
-/*
+
   describe('Testing /message/pin/v1', () => {
     describe('Testing Success Cases', () => {
       test('success pin case - (channel)', () => {
@@ -285,7 +285,7 @@ describe('Iteration 3 Function Testing', () => {
 
         // user1 pins user0's message in channel0
         const res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         const messages = channelMessagesV2SS(user1.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
@@ -316,14 +316,14 @@ describe('Iteration 3 Function Testing', () => {
 
         // user0 pins user0's message in channel0
         let res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual({});
+        expect(res.body).toStrictEqual({});
 
         const messages = channelMessagesV2SS(user1.token, channel0.channelId, 0);
         expect(messages.messages[0].messageId).toBe(message0.messageId);
         expect(messages.messages[0].isPinned).toBe(true);
 
         res = messagePinV1SS(user0.token, message0.messageId);
-        expect(res).toStrictEqual(400);
+        expect(res.statusCode).toStrictEqual(400);
       });
 
       test('user does not have owner permissions of channel - (channel)', () => {
@@ -340,7 +340,7 @@ describe('Iteration 3 Function Testing', () => {
       });
     });
   });
-
+/*
   describe('Testing /message/unpin/v1', () => {
     describe('Testing Success Cases', () => {
       test('successful unpin - (channel)', () => {

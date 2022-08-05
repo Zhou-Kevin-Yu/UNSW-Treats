@@ -31,3 +31,7 @@ General
 
 channel/addowner/v1 & channel/removeowner/v1
 - Global Owner can add and remove themselves as a channel owner
+
+*ITERATION 3 ASSUMPTIONS *
+message/pin/v1
+- when message exists in a dm, all members are able to pin, not just the creator

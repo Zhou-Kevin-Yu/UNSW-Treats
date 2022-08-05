@@ -65,6 +65,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   if (uIds.includes(authUserId)) {
     return { error: 'error' };
   }
+  // add authUser to members uids array before setting data
   uIds.push(authUserId);
   const dmName = generateDmName(uIds);
   const dmNew: DmObj = {

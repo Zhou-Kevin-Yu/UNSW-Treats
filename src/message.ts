@@ -5,6 +5,7 @@ import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, Message
 import { userProfileV2 } from './user';
 
 import HTTPError from 'http-errors';
+import { channel } from 'diagnostics_channel';
 
 ///////////// ITERATION 3 UNIQUE FUNCTIONS //////////////
 function messageSearch(messageId: number) {
@@ -70,13 +71,13 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
       }
     }
     if (!channelFound) {
-      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel that the authorised user has joined');
     }
   }
   //check if user is in dm
   if (messageInfo.dmIndex !== -1) {
     if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
-      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'ogMessageId does not refer to a valid message within a DM that the authorised user has joined');
     }
   }
 
@@ -89,13 +90,13 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
       }
     }
     if (!channelFound) {
-      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the channel or DM they are trying to share the message to');
+      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the channel they are trying to share the message to');
     }
   }
 
   if (dmId !== -1) {
     if (!(data.dms[dmId].members.includes(authUserId))) {
-      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the channel or DM they are trying to share the message to');
+      throw HTTPError(403, 'the pair of channelId and dmId are valid (i.e. one is -1, the other is valid) and the authorised user has not joined the  DM they are trying to share the message to');
     }
   }
 
@@ -128,14 +129,15 @@ export function messageReactV1(token: string, messageId: number, reactId: number
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   
   let messageInfo = messageSearch(messageId);
-  const msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message)
+  let msgIndex = -1;
 
   if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
-    throw HTTPError(400, 'message of messageId: ogMessageId does not exist in data');
+    throw HTTPError(400, 'message of messageId: MessageId does not exist in data');
   }
 
   //check if user is in channel where message exists
   if (messageInfo.channelIndex !== -1) {
+    msgIndex  = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message);
     let channelFound = false;
     for (const user of data.channels[messageInfo.channelIndex].allMembers) {
       if (user.uId === authUserId) {
@@ -144,13 +146,14 @@ export function messageReactV1(token: string, messageId: number, reactId: number
       }
     }
     if (!channelFound) {
-      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel that the authorised user has joined');
     }
   }
   //check if user is in dm
   if (messageInfo.dmIndex !== -1) {
+    msgIndex = data.dms[messageInfo.dmIndex].messages.indexOf(messageInfo.message);
     if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
-      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'messageId does not refer to a valid message within a DM that the authorised user has joined');
     }
   }
 
@@ -202,7 +205,7 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
   
   let messageInfo = messageSearch(messageId);
-  const msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message)
+  let msgIndex = -1;
 
   if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
     throw HTTPError(400, 'message of messageId: MessageId does not exist in data');
@@ -210,6 +213,7 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
 
   //check if user is in channel where message exists
   if (messageInfo.channelIndex !== -1) {
+    msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message);
     let channelFound = false;
     for (const user of data.channels[messageInfo.channelIndex].allMembers) {
       if (user.uId === authUserId) {
@@ -218,13 +222,14 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
       }
     }
     if (!channelFound) {
-      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel that the authorised user has joined');
     }
   }
   //check if user is in dm
   if (messageInfo.dmIndex !== -1) {
+    msgIndex = data.dms[messageInfo.dmIndex].messages.indexOf(messageInfo.message);
     if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
-      throw HTTPError(400, 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      throw HTTPError(400, 'messageId does not refer to a valid message within a DM that the authorised user has joined');
     }
   }
 
@@ -234,12 +239,11 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
 
   const reactsExist = messageInfo.message.reacts.map((n) => n.reactId);
   const reactIndex = reactsExist.indexOf(reactId);
-  // console.log("AAAAAAAAAAAAAAAAAAAA", reactIndex, reactsExist, reactId, messageInfo.message.reacts[reactIndex].uIds);
-  // console.log((reactIndex !== -1),(!reactsExist.includes(reactId)),(!messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)));
+  console.log("AAAAAAAAAAAAAAAAAAAA", reactIndex, reactsExist, reactId, messageInfo.message.reacts[reactIndex].uIds);
+  console.log((reactIndex !== -1),(!reactsExist.includes(reactId)),(!messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)));
   if (reactIndex === -1 || !reactsExist.includes(reactId) || !messageInfo.message.reacts[reactIndex].uIds.includes(authUserId)) {
     throw HTTPError(400, 'the message does not contain a react with ID reactId from the authorised user');
   }
-
   let indexOfAuthUser = -1;
   if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
     indexOfAuthUser = data.channels[messageInfo.channelIndex].messages[msgIndex].reacts[reactIndex].uIds.indexOf(authUserId);
@@ -255,6 +259,69 @@ export function messageUnreactV1(token: string, messageId: number, reactId: numb
 }
 
 export function messagePinV1(token: string, messageId: number) {
+  let data =  getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(400, 'Invalid Token');
+  }
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  
+  let messageInfo = messageSearch(messageId);
+  let msgIndex = -1;
+
+  if (messageInfo.channelIndex === -1 && messageInfo.dmIndex === -1) {
+    throw HTTPError(400, 'message of messageId: MessageId does not exist in data');
+  }
+
+  if (messageInfo.channelIndex !== -1) {
+    msgIndex = data.channels[messageInfo.channelIndex].messages.indexOf(messageInfo.message);
+    let channelFound = false;
+    for (const user of data.channels[messageInfo.channelIndex].allMembers) {
+      console.log("CHAHCAHCAHCHACH", channelFound);
+      if (user.uId === authUserId) {
+        channelFound = true;
+        break;
+      }
+    }
+    if (!channelFound) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a channel that the authorised user has joined');
+    }
+  }
+  //check if user is in dm
+  if (messageInfo.dmIndex !== -1) {
+    msgIndex = data.dms[messageInfo.dmIndex].messages.indexOf(messageInfo.message)
+    if (!(data.dms[messageInfo.dmIndex].members.includes(authUserId))) {
+      throw HTTPError(400, 'messageId does not refer to a valid message within a DM that the authorised user has joined');
+    }
+  }
+
+  // if message is in channel
+  if (messageInfo.channelIndex !== -1 &&  messageInfo.dmIndex === -1) {
+    // already pinned
+    if (data.channels[messageInfo.channelIndex].messages[msgIndex].isPinned) {
+      throw HTTPError(400, 'message is already pinned')
+    } else {
+      const owners = data.channels[messageInfo.channelIndex].ownerMembers.map((n) => n.uId);
+      if (owners.includes(authUserId)) {
+        data.channels[messageInfo.channelIndex].messages[msgIndex].isPinned = true;
+      } else {
+        throw HTTPError(403, 'messageId refers to a valid message in a joined channel and the authorised user does not have owner permissions in the channel/DM');
+      }
+    }
+  } else if (messageInfo.channelIndex === -1 &&  messageInfo.dmIndex !== -1) {
+    if (data.dms[messageInfo.dmIndex].messages[msgIndex].isPinned) {
+      throw HTTPError(400, 'message is already pinned')
+    } else {
+      if (data.dms[messageInfo.dmIndex].members.includes(authUserId)) {
+        data.channels[messageInfo.dmIndex].messages[msgIndex].isPinned = true;
+      } else {
+        throw HTTPError(403, 'messageId refers to a valid message in a joined DM and the authorised user does not have owner permissions in the channel/DM');
+      }
+    }
+  } else {
+    throw HTTPError(400, 'THIS SHOULD BE CAUGHT EARLIER');
+  }
+  setData(data);
+
   return {};
 }
 
