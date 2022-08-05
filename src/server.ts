@@ -9,7 +9,8 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 import { authLoginV1, wrappedAuthRegister, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1, generateResetCode } from './auth';
 import { channelsCreateV1, channelsListV1, channelsListallV1, 
   channelsCreateV3, channelsListV3, channelsListallV3 } from './channels';
-import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1, 
+dmCreateV3 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSendDmV1, messageShareV1,
    messageReactV1, messagePinV1, messageUnreactV1, messageUnpinV1, messageSendlaterV1, messageSendlaterDmV1,
    messageSendV2 } from './message';
@@ -227,6 +228,15 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 // TODO add dm/messages/v1
+
+// DM requests - ALL V3 COMPLIANT NOT YET
+app.post('/dm/create/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { uIds } = req.body;
+  res.json(dmCreateV3(token, uIds));
+});
+
+
 
 ////////////////// All channel requests //////////////////////
 // Old message requests - with updated routes

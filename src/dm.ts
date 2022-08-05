@@ -6,6 +6,8 @@ import { tokenToAuthUserId, isTokenValid } from './token';
 
 import { userProfileV1 } from './user'; // TODO update this with userProfileV2
 
+import HTTPError from 'http-errors';
+
 /**
  * given array of user ids, make a string for the name of a dm
  * The name should be an alphabetically-sorted, comma-and-space-separated
@@ -64,6 +66,41 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateV1 {
   }
   if (uIds.includes(authUserId)) {
     return { error: 'error' };
+  }
+  uIds.push(authUserId);
+  const dmName = generateDmName(uIds);
+  const dmNew: DmObj = {
+    dmId: dmNum,
+    creator: authUserId,
+    members: uIds,
+    name: dmName,
+    messages: [],
+  };
+  data.dms[dmNum] = dmNew;
+  setData(data);
+  return { dmId: dmNum };
+}
+
+export function dmCreateV3(token: string, uIds: number[]): DmCreateV1 {
+  const data = getData();
+  // check if uIds are valid
+  for (const uId of uIds) {
+    if (!(uId in data.users)) {
+      throw HTTPError(400, 'One or more userIds are invalid');
+    }
+  }
+  // return error if duplicates exist
+  if (new Set(uIds).size !== uIds.length) {
+    throw HTTPError(400, 'One or more userIds are duplicated');
+  }
+  // strip token and check if authUserId in uIds
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  const dmNum = data.dms.length;
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  if (uIds.includes(authUserId)) {
+    throw HTTPError(400, 'UserIds cannot include the userId of the user creating the DM');
   }
   uIds.push(authUserId);
   const dmName = generateDmName(uIds);
