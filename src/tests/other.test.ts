@@ -38,14 +38,14 @@ test('Test successful user clear', () => {
   // test if clearV1 works
   clearV1();
   const dataNew = getData();
-  const dataTrue: Data = { 
+  const dataTrue: Data = {
     users: [],
     channels: [],
-    dms: [], 
+    dms: [],
     systemInfo: {
-      messageTotal: 0, 
+      messageTotal: 0,
       globalOwners: 0,
-    }, 
+    },
     standups: [],
     delayedMessages: [],
   };
