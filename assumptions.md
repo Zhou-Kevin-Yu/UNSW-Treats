@@ -37,3 +37,4 @@ message/pin/v1
 - when message exists in a dm, all members are able to pin, not just the creator
 standup Start v1:
 if the standup doesn't exist right before the stand up sends it's message, throw a http 400 error, this will only happen if someone where to call clear
+- when a standup sends or a delayed message sends, the user must still be logged in with a valid token

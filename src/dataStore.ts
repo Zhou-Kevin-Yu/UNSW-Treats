@@ -56,6 +56,12 @@ export interface MessagesObj {
   isPinned: boolean;
 }
 
+export interface MessageLater {
+  message: string;
+  channelId: number;
+  dmId: number;
+}
+
 export interface ReactObj {
   reactId: number;
   uIds: number[];
@@ -208,6 +214,7 @@ export interface Data {
   dms: DmObj[];
   systemInfo: SystemInfo;
   standups: standupObj[];
+  delayedMessages: MessageLater[];
 }
 
 // YOU SHOULD MODIFY THIS OBJECT BELOW
@@ -219,6 +226,7 @@ let data: Data = {
     messageTotal: 0,
   },
   standups: [],
+  delayedMessages: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore';
 import { tokenToAuthUserId, isTokenValid } from './token';
-import { MessagesObj, User, ReactObj } from './dataStore';
+import { MessagesObj, User, ReactObj, MessageLater } from './dataStore';
 import { MessageSendV1, MessageEditV1, MessageRemoveV1, MessageSendDmV1, MessageSendlaterV1, MessageShareV1 } from './dataStore';
 import { userProfileV2 } from './user';
 
@@ -391,7 +391,65 @@ export function messageUnpinV1(token: string, messageId: number) {
 }
 
 export function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number): MessageSendlaterV1 {
-  return { messageId: -1 };
+  let data = getData();
+  if (!isTokenValid(token)) {
+    throw HTTPError(403, "Access Denied: Token is invalid");
+  }
+  const authUserId = tokenToAuthUserId(token, true);
+
+  // check if channelId refers to a valid channel
+  if (!(channelId in data.channels)) {
+    throw HTTPError(400, "channelId does not refer to a valid channel");
+  }
+
+  // check if message is < 1000 characters
+  if (message.length > 1000 || message.length < 1) {
+    throw HTTPError(400, "length of message is less than 1 or over 1000 characters");
+  }
+  
+  // check if timeSent is in the past
+  const currTime = Math.floor((new Date()).getTime() / 1000);
+  if (timeSent < currTime) {
+    throw HTTPError(400, "timeSent is a time in the past");
+  }
+
+  // check if user is in channel they are posting the message to
+  if (!(data.channels[channelId].allMembers.map((n) => n.uId).includes(authUserId))) {
+    throw HTTPError(403, "authorised user is not a member of the channel they are trying to post to");
+  }
+
+  const msgId = data.systemInfo.messageTotal;
+  const newMessageLater: MessageLater = {
+    message: message,
+    channelId: channelId,
+    dmId: -1,
+  };  
+  data.delayedMessages.push(newMessageLater);
+  data.systemInfo.messageTotal++;
+  setData(data);
+
+  const delay = (timeSent - currTime) * 1000;
+  const pid = setTimeout(() => {
+    if (!(channelId in data.channels)) {
+      return {};
+    }
+    messageSendInsideStandup(token, channelId, message);
+    let newData  = getData();
+    const delayedMessage = newData.delayedMessages.find(n => n.channelId === newMessageLater.channelId);
+
+
+    // update with exact timeSent
+    const msgIdArr = newData.channels[channelId].messages.map((n) => n.messageId);
+    const msgIndex = msgIdArr.indexOf(msgId);
+    data.channels[channelId].messages[msgIndex].timeSent = timeSent;
+    
+    // remove the delayedMessage
+    newData.delayedMessages.splice(delayedMessage.channelId, 1);
+    setData(newData);
+
+  }, delay);
+
+  return { messageId: msgId };
 }
 
 export function messageSendlaterDmV1(token: string, dmId: number, message: string, timeSent: number): MessageSendlaterV1 {
