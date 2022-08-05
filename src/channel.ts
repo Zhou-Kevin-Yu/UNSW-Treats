@@ -5,6 +5,8 @@ import { messageSendDmV1 } from './message';
 import { tokenToAuthUserId, isTokenValid } from './token';
 import { userProfileV1 } from './user';
 
+import HTTPError from 'http-errors';
+
 /*
  * ChannelJoinV1 allows an authorised user to join a valid channel if it is
  * public but if it is a private channel, only a global owner can join.
@@ -214,6 +216,42 @@ function channelDetailsV1(authUserId: number, channelId: number): ChannelDetails
 
   // If user is not a member of the channel
   return { error: 'error' };
+}
+
+function channelDetailsV1forV3(authUserId: number, channelId: number): ChannelDetailsV1 {
+  const data = getData();
+  // If authUser is valid
+  if (!(authUserId in data.users)) {
+    throw HTTPError(403, 'AuthUser is not valid');
+  }
+
+  let exists = 0;
+
+  // If channelId is invalid
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      exists = 1;
+    }
+  }
+
+  if (exists === 0) {
+    throw HTTPError(400, 'ChannelId is not valid');
+  }
+
+  for (const member of data.channels[channelId].allMembers) {
+    // If user if a member of the channel
+    if (authUserId === member.uId) {
+      return {
+        name: data.channels[channelId].name,
+        isPublic: data.channels[channelId].isPublic,
+        ownerMembers: data.channels[channelId].ownerMembers,
+        allMembers: data.channels[channelId].allMembers,
+      };
+    }
+  }
+
+  // If user is not a member of the channel
+  throw HTTPError(403, 'User is not a member of the channel');
 }
 
 /**
@@ -453,4 +491,5 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
   return {};
 }
 
-export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1 };
+export { channelJoinV1, channelDetailsV1, channelMessagesV1, channelInviteV1,
+  channelDetailsV1forV3 };

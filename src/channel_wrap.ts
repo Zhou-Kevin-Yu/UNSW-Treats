@@ -1,5 +1,8 @@
-import { channelDetailsV1, channelInviteV1, channelMessagesV1, channelJoinV1 } from './channel';
+import { channelDetailsV1, channelInviteV1, channelMessagesV1, channelJoinV1, 
+  channelDetailsV1forV3 } from './channel';
 import { isTokenValid, tokenToAuthUserId } from './token';
+
+import HTTPError from 'http-errors';
 
 export function channelDetailsV2(token: string, channelId: number) {
   const authUserId = tokenToAuthUserId(token, isTokenValid(token));
@@ -7,6 +10,14 @@ export function channelDetailsV2(token: string, channelId: number) {
     return { error: 'error' };
   }
   return channelDetailsV1(authUserId, channelId);
+}
+
+export function channelDetailsV3(token: string, channelId: number) {
+  const authUserId = tokenToAuthUserId(token, isTokenValid(token));
+  if (authUserId === null || authUserId === undefined) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  return channelDetailsV1forV3(authUserId, channelId);
 }
 
 export function channelInviteV2(token :string, channelId: number, uId: number) {
