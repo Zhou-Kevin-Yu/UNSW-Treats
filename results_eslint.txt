@@ -1,0 +1,754 @@
+
+src/admin.ts
+   2:8   error  'isEmail' is defined but never used              no-unused-vars
+   3:10  error  'AuthLoginV1' is defined but never used          no-unused-vars
+   3:23  error  'AuthRegisterV1' is defined but never used       no-unused-vars
+   4:10  error  'generateToken' is defined but never used        no-unused-vars
+   5:10  error  'sendMail' is defined but never used             no-unused-vars
+   6:8   error  'crypto' is defined but never used               no-unused-vars
+   9:10  error  'isToken' is defined but never used              no-unused-vars
+  12:7   error  'data' is never reassigned. Use 'const' instead  prefer-const
+  14:26  error  Strings must use singlequote                     quotes
+  17:26  error  Strings must use singlequote                     quotes
+  22:26  error  Strings must use singlequote                     quotes
+  26:26  error  Strings must use singlequote                     quotes
+  30:26  error  Strings must use singlequote                     quotes
+  35:26  error  Strings must use singlequote                     quotes
+  43:2   error  Newline required at end of file but not found    eol-last
+
+src/auth.ts
+   11:7   error  'PORT' is assigned a value but never used                                  no-unused-vars
+   12:7   error  'HOST' is assigned a value but never used                                  no-unused-vars
+   14:27  error  Missing semicolon                                                          semi
+   28:43  error  Operator '+' must be spaced                                                space-infix-ops
+   98:32  error  Operator '+' must be spaced                                                space-infix-ops
+  102:20  error  Strings must use singlequote                                               quotes
+  192:1   error  More than 1 blank line not allowed                                         no-multiple-empty-lines
+  198:10  error  Multiple spaces found before 'HTTPError'                                   no-multi-spaces
+  202:7   error  'resetObj' is never reassigned. Use 'const' instead                        prefer-const
+  204:46  error  Operator '+' must be spaced                                                space-infix-ops
+  204:53  error  Operator '+' must be spaced                                                space-infix-ops
+  205:4   error  Missing semicolon                                                          semi
+  207:7   error  'resetCode' is never reassigned. Use 'const' instead                       prefer-const
+  209:3   error  Expected space(s) after "while"                                            keyword-spacing
+  209:9   error  'resetCode' is not modified in this loop                                   no-unmodified-loop-condition
+  209:22  error  'resetCodes' is not modified in this loop                                  no-unmodified-loop-condition
+  210:9   error  'resetObj' is never reassigned. Use 'const' instead                        prefer-const
+  212:48  error  Operator '+' must be spaced                                                space-infix-ops
+  212:55  error  Operator '+' must be spaced                                                space-infix-ops
+  213:6   error  Missing semicolon                                                          semi
+  214:1   error  Trailing spaces not allowed                                                no-trailing-spaces
+  215:9   error  'resetCode' is assigned a value but never used                             no-unused-vars
+  215:9   error  'resetCode' is never reassigned. Use 'const' instead                       prefer-const
+  234:24  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+  234:64  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+  254:55  error  Operator '+' must be spaced                                                space-infix-ops
+  264:15  error  Trailing spaces not allowed                                                no-trailing-spaces
+  268:45  error  Trailing spaces not allowed                                                no-trailing-spaces
+
+src/channel.ts
+    1:10  error  'updateIndexSignature' is defined but never used  no-unused-vars
+    5:10  error  'messageSendDmV1' is defined but never used       no-unused-vars
+  252:1   error  Expected indentation of 0 spaces but found 1      indent
+  458:1   error  Trailing spaces not allowed                       no-trailing-spaces
+  465:11  error  Expected space or tab after '//' in comment       spaced-comment
+  520:69  error  Trailing spaces not allowed                       no-trailing-spaces
+  523:4   error  Trailing spaces not allowed                       no-trailing-spaces
+  525:1   error  Trailing spaces not allowed                       no-trailing-spaces
+  545:1   error  Expected indentation of 0 spaces but found 1      indent
+  573:1   error  Trailing spaces not allowed                       no-trailing-spaces
+  580:11  error  Expected space or tab after '//' in comment       spaced-comment
+  621:69  error  Trailing spaces not allowed                       no-trailing-spaces
+  624:4   error  Trailing spaces not allowed                       no-trailing-spaces
+  626:1   error  Trailing spaces not allowed                       no-trailing-spaces
+  678:3   error  Expected space or tab after '//' in comment       spaced-comment
+  779:44  error  Trailing spaces not allowed                       no-trailing-spaces
+  803:3   error  Expected space or tab after '//' in comment       spaced-comment
+  861:3   error  Expected space or tab after '//' in comment       spaced-comment
+  883:60  error  Trailing spaces not allowed                       no-trailing-spaces
+  901:8   error  Expected a line break after this opening brace    object-curly-newline
+  902:91  error  Expected a line break before this closing brace   object-curly-newline
+
+src/channel_wrap.ts
+  1:8   error  Expected a line break after this opening brace   object-curly-newline
+  1:78  error  Trailing spaces not allowed                      no-trailing-spaces
+  2:91  error  Expected a line break before this closing brace  object-curly-newline
+
+src/channels.ts
+    8:1   error  More than 1 blank line not allowed  no-multiple-empty-lines
+   81:26  error  Strings must use singlequote        quotes
+   81:64  error  Trailing spaces not allowed         no-trailing-spaces
+  124:26  error  Strings must use singlequote        quotes
+  152:26  error  Strings must use singlequote        quotes
+
+src/dataStore.ts
+  55:11  error  'ReactObj' was used before it was defined     no-use-before-define
+  99:1   error  Expected space or tab after '///' in comment  spaced-comment
+
+src/dm.ts
+  359:1  error  More than 1 blank line not allowed                         no-multiple-empty-lines
+  430:4  error  Missing semicolon                                          semi
+  477:4  error  Missing semicolon                                          semi
+  480:1  error  Too many blank lines at the end of file. Max of 0 allowed  no-multiple-empty-lines
+
+src/echo.ts
+  0:0  passing  No linting issues  success
+
+src/mail.ts
+   5:1   error  Expected indentation of 2 spaces but found 4   indent
+   5:11  error  Strings must use singlequote                   quotes
+   6:1   error  Expected indentation of 2 spaces but found 4   indent
+   7:1   error  Expected indentation of 2 spaces but found 4   indent
+   7:15  error  Trailing spaces not allowed                    no-trailing-spaces
+   8:1   error  Expected indentation of 2 spaces but found 4   indent
+   9:1   error  Expected indentation of 4 spaces but found 7   indent
+   9:16  error  Missing space before value for key 'ciphers'   key-spacing
+  10:1   error  Expected indentation of 2 spaces but found 4   indent
+  11:1   error  Expected indentation of 2 spaces but found 4   indent
+  12:1   error  Expected indentation of 4 spaces but found 8   indent
+  13:1   error  Expected indentation of 4 spaces but found 8   indent
+  14:1   error  Expected indentation of 2 spaces but found 4   indent
+  18:7   error  'code' is assigned a value but never used      no-unused-vars
+  21:1   error  Expected indentation of 2 spaces but found 4   indent
+  22:1   error  Expected indentation of 4 spaces but found 8   indent
+  23:1   error  Expected indentation of 4 spaces but found 8   indent
+  24:1   error  Expected indentation of 4 spaces but found 8   indent
+  25:1   error  Expected indentation of 4 spaces but found 8   indent
+  28:1   error  Expected indentation of 2 spaces but found 4   indent
+  29:1   error  Trailing spaces not allowed                    no-trailing-spaces
+  30:1   error  Expected indentation of 2 spaces but found 4   indent
+  30:60  error  Missing space before opening brace             space-before-blocks
+  31:1   error  Expected indentation of 4 spaces but found 8   indent
+  31:9   error  Expected space(s) after "if"                   keyword-spacing
+  31:18  error  Missing space before opening brace             space-before-blocks
+  32:1   error  Expected indentation of 6 spaces but found 12  indent
+  33:1   error  Expected indentation of 4 spaces but found 8   indent
+  34:1   error  Trailing spaces not allowed                    no-trailing-spaces
+  35:1   error  Expected indentation of 4 spaces but found 8   indent
+  36:1   error  Expected indentation of 2 spaces but found 4   indent
+  39:55  error  Newline required at end of file but not found  eol-last
+
+src/message.ts
+     3:23  error  'User' is defined but never used                        no-unused-vars
+     5:10  error  'userProfileV2' is defined but never used               no-unused-vars
+     8:10  error  'channel' is defined but never used                     no-unused-vars
+    10:1   error  Expected space or tab after '///' in comment            spaced-comment
+    12:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+    42:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+    51:65  error  Trailing spaces not allowed                             no-trailing-spaces
+    54:63  error  Trailing spaces not allowed                             no-trailing-spaces
+    57:7   error  'messageInfo' is never reassigned. Use 'const' instead  prefer-const
+    63:3   error  Expected space or tab after '//' in comment             spaced-comment
+    77:3   error  Expected space or tab after '//' in comment             spaced-comment
+   103:69  error  Missing semicolon                                       semi
+   125:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   125:13  error  Multiple spaces found before 'getData'                  no-multi-spaces
+   130:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   131:7   error  'messageInfo' is never reassigned. Use 'const' instead  prefer-const
+   138:3   error  Expected space or tab after '//' in comment             spaced-comment
+   140:13  error  Multiple spaces found before '='                        no-multi-spaces
+   152:3   error  Expected space or tab after '//' in comment             spaced-comment
+   169:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   177:43  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   179:50  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   186:43  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   188:50  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   201:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   201:13  error  Multiple spaces found before 'getData'                  no-multi-spaces
+   206:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   207:7   error  'messageInfo' is never reassigned. Use 'const' instead  prefer-const
+   214:3   error  Expected space or tab after '//' in comment             spaced-comment
+   228:3   error  Expected space or tab after '//' in comment             spaced-comment
+   248:41  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   251:48  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   262:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   262:13  error  Multiple spaces found before 'getData'                  no-multi-spaces
+   267:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   268:7   error  'messageInfo' is never reassigned. Use 'const' instead  prefer-const
+   288:3   error  Expected space or tab after '//' in comment             spaced-comment
+   290:83  error  Missing semicolon                                       semi
+   297:41  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   300:56  error  Missing semicolon                                       semi
+   309:48  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   311:56  error  Missing semicolon                                       semi
+   328:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   328:13  error  Multiple spaces found before 'getData'                  no-multi-spaces
+   333:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   334:7   error  'messageInfo' is never reassigned. Use 'const' instead  prefer-const
+   354:3   error  Expected space or tab after '//' in comment             spaced-comment
+   356:83  error  Missing semicolon                                       semi
+   363:41  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   366:60  error  Missing semicolon                                       semi
+   375:48  error  Multiple spaces found before 'messageInfo'              no-multi-spaces
+   377:60  error  Missing semicolon                                       semi
+   394:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   396:26  error  Strings must use singlequote                            quotes
+   402:26  error  Strings must use singlequote                            quotes
+   407:26  error  Strings must use singlequote                            quotes
+   409:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   413:26  error  Strings must use singlequote                            quotes
+   418:26  error  Strings must use singlequote                            quotes
+   427:5   error  Trailing spaces not allowed                             no-trailing-spaces
+   433:9   error  'pid' is assigned a value but never used                no-unused-vars
+   438:9   error  'newData' is never reassigned. Use 'const' instead      prefer-const
+   438:16  error  Multiple spaces found before '='                        no-multi-spaces
+   453:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   456:22  error  Block must not be padded by blank lines                 padded-blocks
+   464:7   error  'data' is never reassigned. Use 'const' instead         prefer-const
+   466:26  error  Strings must use singlequote                            quotes
+   473:26  error  Strings must use singlequote                            quotes
+   478:26  error  Strings must use singlequote                            quotes
+   480:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   484:26  error  Strings must use singlequote                            quotes
+   489:26  error  Strings must use singlequote                            quotes
+   498:5   error  Trailing spaces not allowed                             no-trailing-spaces
+   504:9   error  'pid' is assigned a value but never used                no-unused-vars
+   510:9   error  'newData' is never reassigned. Use 'const' instead      prefer-const
+   510:16  error  Multiple spaces found before '='                        no-multi-spaces
+   527:1   error  Trailing spaces not allowed                             no-trailing-spaces
+   530:22  error  Block must not be padded by blank lines                 padded-blocks
+   537:1   error  More than 1 blank line not allowed                      no-multiple-empty-lines
+   540:1   error  Expected space or tab after '///' in comment            spaced-comment
+   784:1   error  Expected indentation of 0 spaces but found 1            indent
+   933:26  error  Strings must use singlequote                            quotes
+  1101:1   error  Expected indentation of 0 spaces but found 1            indent
+  1236:26  error  Strings must use singlequote                            quotes
+  1241:26  error  Strings must use singlequote                            quotes
+  1335:26  error  Strings must use singlequote                            quotes
+  1340:26  error  Strings must use singlequote                            quotes
+  1380:26  error  Strings must use singlequote                            quotes
+  1385:26  error  Strings must use singlequote                            quotes
+  1399:26  error  Strings must use singlequote                            quotes
+  1404:26  error  Strings must use singlequote                            quotes
+  1440:26  error  Strings must use singlequote                            quotes
+  1445:26  error  Strings must use singlequote                            quotes
+
+src/other.ts
+   5:11  error  Trailing spaces not allowed  no-trailing-spaces
+   8:13  error  Trailing spaces not allowed  no-trailing-spaces
+  10:23  error  Trailing spaces not allowed  no-trailing-spaces
+  12:7   error  Trailing spaces not allowed  no-trailing-spaces
+
+src/persistant.ts
+  13:3   error  Expected space(s) after "if"                     keyword-spacing
+  14:9   error  'data' is never reassigned. Use 'const' instead  prefer-const
+  25:18  error  Missing semicolon                                semi
+
+src/search.ts
+   6:1   error  Expected indentation of 2 spaces but found 4                   indent
+   7:1   error  Expected indentation of 2 spaces but found 4                   indent
+   8:1   error  Expected indentation of 2 spaces but found 4                   indent
+   9:1   error  Expected indentation of 4 spaces but found 8                   indent
+   9:30  error  Strings must use singlequote                                   quotes
+  10:1   error  Expected indentation of 2 spaces but found 4                   indent
+  11:1   error  Expected indentation of 2 spaces but found 4                   indent
+  12:1   error  Expected indentation of 2 spaces but found 4                   indent
+  13:1   error  Expected indentation of 4 spaces but found 8                   indent
+  13:30  error  Strings must use singlequote                                   quotes
+  14:1   error  Expected indentation of 2 spaces but found 4                   indent
+  15:1   error  Expected indentation of 2 spaces but found 4                   indent
+  16:1   error  Expected indentation of 2 spaces but found 4                   indent
+  17:1   error  Expected indentation of 4 spaces but found 8                   indent
+  17:30  error  Strings must use singlequote                                   quotes
+  18:1   error  Expected indentation of 2 spaces but found 4                   indent
+  19:1   error  Expected indentation of 2 spaces but found 4                   indent
+  21:1   error  Expected indentation of 2 spaces but found 4                   indent
+  22:1   error  Expected indentation of 2 spaces but found 4                   indent
+  23:1   error  Expected indentation of 2 spaces but found 4                   indent
+  24:1   error  Expected indentation of 2 spaces but found 4                   indent
+  25:1   error  Expected indentation of 2 spaces but found 4                   indent
+  25:9   error  'allChannelMessages' is never reassigned. Use 'const' instead  prefer-const
+  26:1   error  Expected indentation of 2 spaces but found 4                   indent
+  27:1   error  Expected indentation of 4 spaces but found 8                   indent
+  27:9   error  Expected space(s) after "for"                                  keyword-spacing
+  28:1   error  Expected indentation of 6 spaces but found 12                  indent
+  29:1   error  Expected indentation of 4 spaces but found 8                   indent
+  30:1   error  Expected indentation of 2 spaces but found 4                   indent
+  31:1   error  Expected indentation of 2 spaces but found 4                   indent
+  32:1   error  Expected indentation of 2 spaces but found 4                   indent
+  33:1   error  Expected indentation of 2 spaces but found 4                   indent
+  35:1   error  More than 1 blank line not allowed                             no-multiple-empty-lines
+  36:1   error  Expected indentation of 2 spaces but found 4                   indent
+  37:1   error  Expected indentation of 2 spaces but found 4                   indent
+  38:1   error  Expected indentation of 2 spaces but found 4                   indent
+  39:1   error  Expected indentation of 2 spaces but found 4                   indent
+  40:1   error  Expected indentation of 2 spaces but found 4                   indent
+  40:9   error  'allDmsMsgs' is never reassigned. Use 'const' instead          prefer-const
+  41:1   error  Expected indentation of 2 spaces but found 4                   indent
+  42:1   error  Expected indentation of 4 spaces but found 8                   indent
+  42:9   error  Expected space(s) after "for"                                  keyword-spacing
+  43:1   error  Expected indentation of 6 spaces but found 12                  indent
+  44:1   error  Expected indentation of 4 spaces but found 8                   indent
+  45:1   error  Expected indentation of 2 spaces but found 4                   indent
+  46:1   error  Expected indentation of 2 spaces but found 4                   indent
+  48:1   error  Expected indentation of 2 spaces but found 4                   indent
+  50:1   error  Expected indentation of 2 spaces but found 4                   indent
+  52:1   error  Expected indentation of 2 spaces but found 4                   indent
+  53:1   error  Expected indentation of 4 spaces but found 8                   indent
+  54:1   error  Expected indentation of 2 spaces but found 4                   indent
+  57:21  error  Newline required at end of file but not found                  eol-last
+
+src/server.ts
+   10:8    error  Expected a line break after this opening brace           object-curly-newline
+   10:62   error  Trailing spaces not allowed                              no-trailing-spaces
+   11:55   error  Expected a line break before this closing brace          object-curly-newline
+   12:8    error  Expected a line break after this opening brace           object-curly-newline
+   12:81   error  Trailing spaces not allowed                              no-trailing-spaces
+   13:1    error  Expected indentation of 2 spaces but found 0             indent
+   13:72   error  Expected a line break before this closing brace          object-curly-newline
+   14:8    error  Expected a line break after this opening brace           object-curly-newline
+   16:1    error  Expected indentation of 2 spaces but found 3             indent
+   16:109  error  Expected a line break before this closing brace          object-curly-newline
+   18:9    error  Multiple spaces found before 'userProfileUploadPhotoV1'  no-multi-spaces
+   22:8    error  Expected a line break after this opening brace           object-curly-newline
+   23:59   error  Expected a line break before this closing brace          object-curly-newline
+   24:8    error  Expected a line break after this opening brace           object-curly-newline
+   25:71   error  Expected a line break before this closing brace          object-curly-newline
+   28:1    error  More than 1 blank line not allowed                       no-multiple-empty-lines
+   36:10   error  'isPrivateIdentifier' is defined but never used          no-unused-vars
+   68:28   error  Strings must use singlequote                             quotes
+   69:62   error  Trailing spaces not allowed                              no-trailing-spaces
+   71:28   error  Strings must use singlequote                             quotes
+   77:1    error  Expected space or tab after '///' in comment             spaced-comment
+  213:1    error  Expected space or tab after '///' in comment             spaced-comment
+  228:1    error  Expected space or tab after '///' in comment             spaced-comment
+  230:1    error  More than 1 blank line not allowed                       no-multiple-empty-lines
+  291:42   error  Missing semicolon                                        semi
+  292:50   error  Missing semicolon                                        semi
+  293:52   error  Missing semicolon                                        semi
+  332:50   error  Missing semicolon                                        semi
+  333:52   error  Missing semicolon                                        semi
+  337:1    error  More than 1 blank line not allowed                       no-multiple-empty-lines
+  527:18   error  Trailing spaces not allowed                              no-trailing-spaces
+  550:3    error  Missing semicolon                                        semi
+
+src/standup.ts
+    7:1   error  More than 1 blank line not allowed                                         no-multiple-empty-lines
+   10:1   error  Expected indentation of 2 spaces but found 4                               indent
+   11:1   error  Expected indentation of 2 spaces but found 4                               indent
+   12:1   error  Expected indentation of 4 spaces but found 8                               indent
+   12:30  error  Strings must use singlequote                                               quotes
+   13:1   error  Expected indentation of 2 spaces but found 4                               indent
+   15:1   error  Expected indentation of 2 spaces but found 4                               indent
+   16:1   error  Expected indentation of 2 spaces but found 4                               indent
+   17:1   error  Expected indentation of 4 spaces but found 8                               indent
+   17:30  error  Strings must use singlequote                                               quotes
+   18:1   error  Expected indentation of 2 spaces but found 4                               indent
+   20:1   error  Expected indentation of 2 spaces but found 4                               indent
+   22:1   error  Expected indentation of 2 spaces but found 4                               indent
+   23:1   error  Expected indentation of 2 spaces but found 4                               indent
+   24:1   error  Expected indentation of 4 spaces but found 8                               indent
+   24:30  error  Strings must use singlequote                                               quotes
+   25:1   error  Expected indentation of 2 spaces but found 4                               indent
+   26:1   error  Expected indentation of 2 spaces but found 4                               indent
+   27:1   error  Expected indentation of 2 spaces but found 4                               indent
+   28:1   error  Expected indentation of 2 spaces but found 4                               indent
+   29:1   error  Expected indentation of 2 spaces but found 4                               indent
+   30:1   error  Expected indentation of 4 spaces but found 8                               indent
+   31:1   error  Expected indentation of 2 spaces but found 4                               indent
+   33:1   error  Expected indentation of 2 spaces but found 4                               indent
+   34:1   error  Expected indentation of 2 spaces but found 4                               indent
+   35:1   error  Expected indentation of 4 spaces but found 8                               indent
+   35:30  error  Strings must use singlequote                                               quotes
+   36:1   error  Expected indentation of 2 spaces but found 4                               indent
+   38:1   error  Expected indentation of 2 spaces but found 4                               indent
+   39:1   error  Expected indentation of 4 spaces but found 8                               indent
+   40:1   error  Expected indentation of 4 spaces but found 8                               indent
+   41:1   error  Expected indentation of 4 spaces but found 8                               indent
+   42:1   error  Expected indentation of 4 spaces but found 8                               indent
+   43:1   error  Expected indentation of 4 spaces but found 8                               indent
+   44:1   error  Expected indentation of 4 spaces but found 8                               indent
+   45:1   error  Expected indentation of 4 spaces but found 8                               indent
+   46:1   error  Expected indentation of 2 spaces but found 4                               indent
+   46:6   error  Missing semicolon                                                          semi
+   47:1   error  Expected indentation of 2 spaces but found 4                               indent
+   48:1   error  Expected indentation of 2 spaces but found 4                               indent
+   50:1   error  Expected indentation of 2 spaces but found 4                               indent
+   51:1   error  Expected indentation of 4 spaces but found 8                               indent
+   51:21  error  Strings must use singlequote                                               quotes
+   53:1   error  Expected indentation of 4 spaces but found 8                               indent
+   54:1   error  Expected indentation of 4 spaces but found 8                               indent
+   55:1   error  Expected indentation of 4 spaces but found 8                               indent
+   56:1   error  Expected indentation of 4 spaces but found 8                               indent
+   57:1   error  Expected indentation of 6 spaces but found 12                              indent
+   58:1   error  Expected indentation of 6 spaces but found 12                              indent
+   58:29  error  Trailing spaces not allowed                                                no-trailing-spaces
+   59:1   error  Expected indentation of 6 spaces but found 12                              indent
+   60:1   error  Expected indentation of 6 spaces but found 12                              indent
+   61:1   error  Expected indentation of 6 spaces but found 12                              indent
+   62:1   error  Expected indentation of 6 spaces but found 12                              indent
+   63:1   error  Expected indentation of 6 spaces but found 12                              indent
+   63:13  error  Unreachable code                                                           no-unreachable
+   63:25  error  Strings must use singlequote                                               quotes
+   64:1   error  Expected indentation of 6 spaces but found 12                              indent
+   65:1   error  Expected indentation of 6 spaces but found 12                              indent
+   65:25  error  Strings must use singlequote                                               quotes
+   66:1   error  Expected indentation of 4 spaces but found 8                               indent
+   67:1   error  Expected indentation of 4 spaces but found 8                               indent
+   67:26  error  Strings must use singlequote                                               quotes
+   68:1   error  Expected indentation of 4 spaces but found 8                               indent
+   68:13  error  'standUpMsgArr' is never reassigned. Use 'const' instead                   prefer-const
+   69:1   error  Expected indentation of 4 spaces but found 8                               indent
+   70:1   error  Expected indentation of 6 spaces but found 12                              indent
+   71:1   error  Expected indentation of 6 spaces but found 12                              indent
+   72:1   error  Expected indentation of 6 spaces but found 12                              indent
+   73:1   error  Expected indentation of 6 spaces but found 12                              indent
+   74:1   error  Expected indentation of 4 spaces but found 8                               indent
+   75:1   error  Expected indentation of 4 spaces but found 8                               indent
+   76:1   error  Expected indentation of 4 spaces but found 8                               indent
+   77:1   error  Expected indentation of 4 spaces but found 8                               indent
+   77:21  error  Strings must use singlequote                                               quotes
+   78:1   error  Expected indentation of 4 spaces but found 8                               indent
+   78:21  error  Strings must use singlequote                                               quotes
+   79:1   error  Expected indentation of 4 spaces but found 8                               indent
+   80:1   error  Expected indentation of 4 spaces but found 8                               indent
+   80:9   error  Expected space(s) after "if"                                               keyword-spacing
+   80:22  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+   81:1   error  Expected indentation of 6 spaces but found 12                              indent
+   82:1   error  Expected indentation of 6 spaces but found 12                              indent
+   83:1   error  Expected indentation of 6 spaces but found 12                              indent
+   83:13  error  Unreachable code                                                           no-unreachable
+   84:1   error  Expected indentation of 4 spaces but found 8                               indent
+   85:1   error  Expected indentation of 4 spaces but found 8                               indent
+   86:1   error  Expected indentation of 4 spaces but found 8                               indent
+   87:1   error  Expected indentation of 4 spaces but found 8                               indent
+   88:1   error  Expected indentation of 2 spaces but found 4                               indent
+   88:14  error  Operator '*' must be spaced                                                space-infix-ops
+   90:1   error  Expected indentation of 2 spaces but found 4                               indent
+   91:1   error  Expected indentation of 4 spaces but found 8                               indent
+   92:1   error  Expected indentation of 2 spaces but found 4                               indent
+   95:60  error  Missing space before opening brace                                         space-before-blocks
+   96:1   error  Expected indentation of 2 spaces but found 4                               indent
+   97:1   error  Expected indentation of 4 spaces but found 8                               indent
+   97:30  error  Strings must use singlequote                                               quotes
+   98:1   error  Expected indentation of 2 spaces but found 4                               indent
+   99:1   error  Expected indentation of 2 spaces but found 4                               indent
+  101:1   error  Expected indentation of 2 spaces but found 4                               indent
+  102:1   error  Expected indentation of 2 spaces but found 4                               indent
+  103:1   error  Expected indentation of 4 spaces but found 8                               indent
+  103:30  error  Strings must use singlequote                                               quotes
+  104:1   error  Expected indentation of 2 spaces but found 4                               indent
+  105:1   error  Expected indentation of 2 spaces but found 4                               indent
+  106:1   error  Expected indentation of 2 spaces but found 4                               indent
+  107:1   error  Expected indentation of 2 spaces but found 4                               indent
+  108:1   error  Expected indentation of 2 spaces but found 4                               indent
+  109:1   error  Expected indentation of 4 spaces but found 8                               indent
+  110:1   error  Expected indentation of 2 spaces but found 4                               indent
+  112:1   error  Expected indentation of 2 spaces but found 4                               indent
+  114:1   error  Expected indentation of 2 spaces but found 4                               indent
+  115:1   error  Expected indentation of 2 spaces but found 4                               indent
+  116:1   error  Expected indentation of 2 spaces but found 4                               indent
+  117:1   error  Expected indentation of 4 spaces but found 8                               indent
+  118:1   error  Expected indentation of 4 spaces but found 8                               indent
+  119:1   error  Expected indentation of 2 spaces but found 4                               indent
+  120:2   error  Unnecessary semicolon                                                      @typescript-eslint/no-extra-semi
+  123:1   error  Expected indentation of 2 spaces but found 4                               indent
+  124:1   error  Expected indentation of 4 spaces but found 8                               indent
+  124:30  error  Strings must use singlequote                                               quotes
+  125:1   error  Expected indentation of 2 spaces but found 4                               indent
+  127:1   error  Expected indentation of 2 spaces but found 4                               indent
+  128:1   error  Expected indentation of 2 spaces but found 4                               indent
+  129:1   error  Expected indentation of 2 spaces but found 4                               indent
+  130:1   error  Expected indentation of 4 spaces but found 8                               indent
+  130:30  error  Strings must use singlequote                                               quotes
+  131:1   error  Expected indentation of 2 spaces but found 4                               indent
+  132:1   error  Expected indentation of 2 spaces but found 4                               indent
+  133:1   error  Expected indentation of 2 spaces but found 4                               indent
+  134:1   error  Expected indentation of 2 spaces but found 4                               indent
+  135:1   error  Expected indentation of 2 spaces but found 4                               indent
+  136:1   error  Expected indentation of 4 spaces but found 8                               indent
+  137:1   error  Expected indentation of 2 spaces but found 4                               indent
+  139:1   error  Expected indentation of 2 spaces but found 4                               indent
+  140:1   error  Expected indentation of 2 spaces but found 4                               indent
+  141:1   error  Expected indentation of 4 spaces but found 8                               indent
+  141:30  error  Strings must use singlequote                                               quotes
+  142:1   error  Expected indentation of 2 spaces but found 4                               indent
+  143:1   error  Expected indentation of 2 spaces but found 4                               indent
+  144:1   error  Expected indentation of 2 spaces but found 4                               indent
+  145:1   error  Expected indentation of 4 spaces but found 8                               indent
+  145:30  error  Strings must use singlequote                                               quotes
+  146:1   error  Expected indentation of 2 spaces but found 4                               indent
+  148:1   error  Expected indentation of 2 spaces but found 4                               indent
+  149:1   error  Expected indentation of 2 spaces but found 4                               indent
+  150:1   error  Expected indentation of 4 spaces but found 8                               indent
+  150:30  error  Strings must use singlequote                                               quotes
+  151:1   error  Expected indentation of 2 spaces but found 4                               indent
+  153:1   error  Expected indentation of 2 spaces but found 4                               indent
+  154:1   error  Expected indentation of 4 spaces but found 8                               indent
+  155:1   error  Expected indentation of 4 spaces but found 8                               indent
+  156:1   error  Expected indentation of 4 spaces but found 8                               indent
+  157:1   error  Expected indentation of 2 spaces but found 4                               indent
+  157:6   error  Missing semicolon                                                          semi
+  158:1   error  Expected indentation of 2 spaces but found 4                               indent
+  159:1   error  Expected indentation of 2 spaces but found 4                               indent
+  161:1   error  Expected indentation of 2 spaces but found 4                               indent
+  164:59  error  Newline required at end of file but not found                              eol-last
+
+src/token.ts
+  16:31  error  Strings must use singlequote                                               quotes
+  16:34  error  A space is required before '}'                                             object-curly-spacing
+  20:20  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+  20:61  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+
+src/user.ts
+    3:31   error  'UserObj' is defined but never used                            no-unused-vars
+    6:8    error  'internal' is defined but never used                           no-unused-vars
+   14:7    error  'PORT' is assigned a value but never used                      no-unused-vars
+   15:7    error  'HOST' is assigned a value but never used                      no-unused-vars
+  139:1    error  Expected indentation of 0 spaces but found 1                   indent
+  148:26   error  Strings must use singlequote                                   quotes
+  151:26   error  Strings must use singlequote                                   quotes
+  203:1    error  Expected indentation of 0 spaces but found 1                   indent
+  212:26   error  Strings must use singlequote                                   quotes
+  220:28   error  Strings must use singlequote                                   quotes
+  268:147  error  Block must not be padded by blank lines                        padded-blocks
+  269:1    error  Trailing spaces not allowed                                    no-trailing-spaces
+  271:67   error  Missing semicolon                                              semi
+  272:3    error  Expected space or tab after '//' in comment                    spaced-comment
+  275:3    error  Expected space or tab after '//' in comment                    spaced-comment
+  276:24   error  Strings must use singlequote                                   quotes
+  276:32   error  Expected space(s) before "return"                              keyword-spacing
+  279:1    error  Expected indentation of 4 spaces but found 6                   indent
+  280:1    error  Expected indentation of 4 spaces but found 6                   indent
+  282:3    error  Expected space or tab after '//' in comment                    spaced-comment
+  286:63   error  Strings must use singlequote                                   quotes
+  289:30   error  Unexpected trailing comma                                      comma-dangle
+  289:32   error  Missing semicolon                                              semi
+  291:7    error  Statement inside of curly braces should be on next line        brace-style
+  291:29   error  A space is required after '{'                                  object-curly-spacing
+  291:85   error  A space is required before '}'                                 object-curly-spacing
+  292:5    error  Expected space(s) after "catch"                                keyword-spacing
+  302:37   error  Block must not be padded by blank lines                        padded-blocks
+  307:1    error  Trailing spaces not allowed                                    no-trailing-spaces
+  315:3    error  Split initialized 'let' declarations into multiple statements  one-var
+  316:1    error  Trailing spaces not allowed                                    no-trailing-spaces
+  317:3    error  Expected space(s) after "for"                                  keyword-spacing
+  318:1    error  Expected indentation of 4 spaces but found 6                   indent
+  319:1    error  Expected indentation of 6 spaces but found 8                   indent
+  319:9    error  Expected space(s) after "if"                                   keyword-spacing
+  320:1    error  Expected indentation of 8 spaces but found 10                  indent
+  321:1    error  Expected indentation of 6 spaces but found 8                   indent
+  322:1    error  Expected indentation of 4 spaces but found 6                   indent
+  327:7    error  Expected space(s) after "if"                                   keyword-spacing
+  337:1    error  Trailing spaces not allowed                                    no-trailing-spaces
+  338:3    error  Expected space(s) after "if"                                   keyword-spacing
+  338:18   error  Expected '!==' and instead saw '!='                            eqeqeq
+  339:3    error  Expected space(s) after "if"                                   keyword-spacing
+  343:1    error  Expected indentation of 4 spaces but found 6                   indent
+  343:24   error  A space is required after '{'                                  object-curly-spacing
+  343:80   error  A space is required before '}'                                 object-curly-spacing
+  344:1    error  Expected indentation of 4 spaces but found 6                   indent
+  344:19   error  A space is required after '{'                                  object-curly-spacing
+  344:65   error  A space is required before '}'                                 object-curly-spacing
+  345:1    error  Expected indentation of 4 spaces but found 6                   indent
+  345:22   error  A space is required after '{'                                  object-curly-spacing
+  345:74   error  A space is required before '}'                                 object-curly-spacing
+  346:1    error  Expected indentation of 4 spaces but found 6                   indent
+  357:1    error  Expected indentation of 0 spaces but found 1                   indent
+  366:26   error  Strings must use singlequote                                   quotes
+  371:26   error  Strings must use singlequote                                   quotes
+  378:28   error  Strings must use singlequote                                   quotes
+  391:1    error  Too many blank lines at the end of file. Max of 0 allowed      no-multiple-empty-lines
+
+src/users.ts
+  22:1   error  More than 1 blank line not allowed                             no-multiple-empty-lines
+  23:25  error  Block must not be padded by blank lines                        padded-blocks
+  24:1   error  Trailing spaces not allowed                                    no-trailing-spaces
+  27:3   error  Split initialized 'let' declarations into multiple statements  one-var
+  29:16  error  'message' is assigned a value but never used                   no-unused-vars
+  35:5   error  Expected space(s) after "for"                                  keyword-spacing
+  35:15  error  'message' is assigned a value but never used                   no-unused-vars
+  53:1   error  Expected indentation of 4 spaces but found 6                   indent
+  53:23  error  A space is required after '{'                                  object-curly-spacing
+  53:75  error  A space is required before '}'                                 object-curly-spacing
+  54:1   error  Expected indentation of 4 spaces but found 6                   indent
+  54:18  error  A space is required after '{'                                  object-curly-spacing
+  54:60  error  A space is required before '}'                                 object-curly-spacing
+  55:1   error  Expected indentation of 4 spaces but found 6                   indent
+  55:23  error  A space is required after '{'                                  object-curly-spacing
+  55:75  error  A space is required before '}'                                 object-curly-spacing
+  56:1   error  Expected indentation of 4 spaces but found 6                   indent
+  75:1   error  More than 1 blank line not allowed                             no-multiple-empty-lines
+
+src/wrapped.auth.ts
+  53:13  error  Unnecessarily quoted property 'token' found  quote-props
+
+src/wrapped.channel.ts
+  14:1   error  Expected space or tab after '///' in comment   spaced-comment
+  17:1   error  Expected indentation of 4 spaces but found 6   indent
+  18:1   error  Expected indentation of 6 spaces but found 8   indent
+  18:16  error  Extra space before value for key 'headers'     key-spacing
+  19:1   error  Expected indentation of 8 spaces but found 10  indent
+  20:1   error  Expected indentation of 6 spaces but found 8   indent
+  21:1   error  Expected indentation of 6 spaces but found 8   indent
+  22:1   error  Expected indentation of 8 spaces but found 10  indent
+  23:1   error  Expected indentation of 8 spaces but found 10  indent
+  24:1   error  Expected indentation of 6 spaces but found 8   indent
+  25:1   error  Expected indentation of 4 spaces but found 6   indent
+  31:1   error  Expected indentation of 4 spaces but found 6   indent
+  32:1   error  Expected indentation of 6 spaces but found 8   indent
+  32:16  error  Extra space before value for key 'headers'     key-spacing
+  33:1   error  Expected indentation of 8 spaces but found 10  indent
+  34:1   error  Expected indentation of 6 spaces but found 8   indent
+  35:1   error  Expected indentation of 6 spaces but found 8   indent
+  36:1   error  Expected indentation of 8 spaces but found 10  indent
+  37:1   error  Expected indentation of 6 spaces but found 8   indent
+  38:1   error  Expected indentation of 4 spaces but found 6   indent
+  42:1   error  Expected space or tab after '///' in comment   spaced-comment
+  45:1   error  Expected indentation of 4 spaces but found 6   indent
+  46:1   error  Expected indentation of 6 spaces but found 8   indent
+  47:1   error  Expected indentation of 8 spaces but found 10  indent
+  48:1   error  Expected indentation of 8 spaces but found 10  indent
+  49:1   error  Expected indentation of 8 spaces but found 10  indent
+  50:1   error  Expected indentation of 6 spaces but found 8   indent
+  51:1   error  Expected indentation of 4 spaces but found 6   indent
+  57:1   error  Expected indentation of 4 spaces but found 6   indent
+  58:1   error  Expected indentation of 6 spaces but found 8   indent
+  59:1   error  Expected indentation of 8 spaces but found 10  indent
+  60:1   error  Expected indentation of 8 spaces but found 10  indent
+  61:1   error  Expected indentation of 6 spaces but found 8   indent
+  62:1   error  Expected indentation of 4 spaces but found 6   indent
+  68:1   error  Expected indentation of 4 spaces but found 6   indent
+  69:1   error  Expected indentation of 6 spaces but found 8   indent
+  70:1   error  Expected indentation of 8 spaces but found 10  indent
+  71:1   error  Expected indentation of 8 spaces but found 10  indent
+  72:1   error  Expected indentation of 6 spaces but found 8   indent
+  73:1   error  Expected indentation of 4 spaces but found 6   indent
+  79:1   error  Expected indentation of 4 spaces but found 6   indent
+  80:1   error  Expected indentation of 6 spaces but found 8   indent
+  81:1   error  Expected indentation of 8 spaces but found 10  indent
+  82:1   error  Expected indentation of 8 spaces but found 10  indent
+  83:1   error  Expected indentation of 8 spaces but found 10  indent
+  84:1   error  Expected indentation of 6 spaces but found 8   indent
+  85:1   error  Expected indentation of 4 spaces but found 6   indent
+  91:1   error  Expected indentation of 4 spaces but found 6   indent
+  92:1   error  Expected indentation of 6 spaces but found 8   indent
+  93:1   error  Expected indentation of 8 spaces but found 10  indent
+  94:1   error  Expected indentation of 8 spaces but found 10  indent
+  95:1   error  Expected indentation of 8 spaces but found 10  indent
+  96:1   error  Expected indentation of 6 spaces but found 8   indent
+  97:1   error  Expected indentation of 4 spaces but found 6   indent
+  99:2   error  Newline required at end of file but not found  eol-last
+
+src/wrapped.channels.ts
+  17:1   error  Expected indentation of 4 spaces but found 8   indent
+  18:1   error  Expected indentation of 6 spaces but found 10  indent
+  19:1   error  Expected indentation of 8 spaces but found 12  indent
+  20:1   error  Expected indentation of 8 spaces but found 12  indent
+  21:1   error  Expected indentation of 8 spaces but found 12  indent
+  22:1   error  Expected indentation of 6 spaces but found 10  indent
+  23:1   error  Expected indentation of 4 spaces but found 8   indent
+  29:1   error  Expected indentation of 4 spaces but found 8   indent
+  30:1   error  Expected indentation of 6 spaces but found 10  indent
+  31:1   error  Expected indentation of 8 spaces but found 12  indent
+  32:1   error  Expected indentation of 8 spaces but found 12  indent
+  33:1   error  Expected indentation of 6 spaces but found 10  indent
+  34:1   error  Expected indentation of 6 spaces but found 10  indent
+  35:1   error  Expected indentation of 8 spaces but found 12  indent
+  35:13  error  Unnecessarily quoted property 'token' found    quote-props
+  36:1   error  Expected indentation of 6 spaces but found 10  indent
+  37:1   error  Expected indentation of 4 spaces but found 8   indent
+  42:2   error  Newline required at end of file but not found  eol-last
+
+src/wrapped.dm.ts
+  19:18  error  Trailing spaces not allowed                  no-trailing-spaces
+  46:9   error  Unnecessarily quoted property 'token' found  quote-props
+
+src/wrapped.message.ts
+   15:1   error  Expected space or tab after '///' in comment   spaced-comment
+   22:13  error  Unnecessarily quoted property 'token' found    quote-props
+   41:13  error  Unnecessarily quoted property 'token' found    quote-props
+   52:4   error  Missing semicolon                              semi
+   61:13  error  Unnecessarily quoted property 'token' found    quote-props
+   72:4   error  Missing semicolon                              semi
+   81:13  error  Unnecessarily quoted property 'token' found    quote-props
+   91:4   error  Missing semicolon                              semi
+  100:13  error  Unnecessarily quoted property 'token' found    quote-props
+  110:4   error  Missing semicolon                              semi
+  119:13  error  Unnecessarily quoted property 'token' found    quote-props
+  131:4   error  Missing semicolon                              semi
+  140:13  error  Unnecessarily quoted property 'token' found    quote-props
+  152:4   error  Missing semicolon                              semi
+  155:1   error  Expected space or tab after '///' in comment   spaced-comment
+  159:7   error  Unnecessarily quoted property 'token' found    quote-props
+  170:1   error  Expected indentation of 4 spaces but found 6   indent
+  174:11  error  Unnecessarily quoted property 'token' found    quote-props
+  181:1   error  Expected indentation of 2 spaces but found 4   indent
+  182:1   error  Expected indentation of 2 spaces but found 4   indent
+  191:13  error  Unnecessarily quoted property 'token' found    quote-props
+  208:13  error  Unnecessarily quoted property 'token' found    quote-props
+  219:4   error  Missing semicolon                              semi
+  221:1   error  Expected space or tab after '///' in comment   spaced-comment
+  234:1   error  Expected indentation of 4 spaces but found 6   indent
+  243:1   error  Expected indentation of 2 spaces but found 4   indent
+  244:1   error  Expected indentation of 2 spaces but found 4   indent
+  278:83  error  Newline required at end of file but not found  eol-last
+
+src/wrapped.standup.ts
+  16:1   error  Expected indentation of 2 spaces but found 4    indent
+  17:1   error  Expected indentation of 4 spaces but found 8    indent
+  20:1   error  Expected indentation of 14 spaces but found 16  indent
+  21:1   error  Expected indentation of 16 spaces but found 20  indent
+  22:1   error  Expected indentation of 16 spaces but found 20  indent
+  23:1   error  Expected indentation of 14 spaces but found 16  indent
+  24:1   error  Expected indentation of 14 spaces but found 16  indent
+  25:1   error  Expected indentation of 16 spaces but found 20  indent
+  25:21  error  Unnecessarily quoted property 'token' found     quote-props
+  26:1   error  Expected indentation of 14 spaces but found 18  indent
+  27:1   error  Expected indentation of 12 spaces but found 16  indent
+  28:1   error  Expected indentation of 2 spaces but found 4    indent
+  29:1   error  Expected indentation of 2 spaces but found 4    indent
+  30:1   error  Expected indentation of 4 spaces but found 8    indent
+  31:1   error  Expected indentation of 4 spaces but found 8    indent
+  32:1   error  Expected indentation of 2 spaces but found 4    indent
+  32:6   error  Missing semicolon                               semi
+  36:1   error  Expected indentation of 2 spaces but found 4    indent
+  37:1   error  Expected indentation of 4 spaces but found 8    indent
+  40:1   error  Expected indentation of 14 spaces but found 16  indent
+  41:1   error  Expected indentation of 16 spaces but found 20  indent
+  41:21  error  Unnecessarily quoted property 'token' found     quote-props
+  42:1   error  Expected indentation of 14 spaces but found 18  indent
+  43:1   error  Expected indentation of 14 spaces but found 18  indent
+  44:1   error  Expected indentation of 16 spaces but found 20  indent
+  45:1   error  Expected indentation of 14 spaces but found 18  indent
+  46:1   error  Expected indentation of 12 spaces but found 16  indent
+  47:1   error  Expected indentation of 2 spaces but found 4    indent
+  48:1   error  Expected indentation of 2 spaces but found 4    indent
+  49:1   error  Expected indentation of 4 spaces but found 8    indent
+  50:1   error  Expected indentation of 4 spaces but found 8    indent
+  51:1   error  Expected indentation of 2 spaces but found 4    indent
+  51:6   error  Missing semicolon                               semi
+  55:1   error  Expected indentation of 2 spaces but found 4    indent
+  56:1   error  Expected indentation of 4 spaces but found 8    indent
+  59:1   error  Expected indentation of 14 spaces but found 16  indent
+  60:1   error  Expected indentation of 16 spaces but found 20  indent
+  61:1   error  Expected indentation of 16 spaces but found 20  indent
+  62:1   error  Expected indentation of 14 spaces but found 16  indent
+  63:1   error  Expected indentation of 14 spaces but found 16  indent
+  64:1   error  Expected indentation of 16 spaces but found 20  indent
+  64:21  error  Unnecessarily quoted property 'token' found     quote-props
+  65:1   error  Expected indentation of 14 spaces but found 18  indent
+  66:1   error  Expected indentation of 12 spaces but found 16  indent
+  67:1   error  Expected indentation of 2 spaces but found 4    indent
+  68:1   error  Expected indentation of 2 spaces but found 4    indent
+  69:1   error  Expected indentation of 4 spaces but found 8    indent
+  70:1   error  Expected indentation of 4 spaces but found 8    indent
+  71:1   error  Expected indentation of 2 spaces but found 4    indent
+  71:6   error  Missing semicolon                               semi
+  72:2   error  Newline required at end of file but not found   eol-last
+
+src/wrapped.user.ts
+   82:1   error  Expected space or tab after '///' in comment     spaced-comment
+   88:20  error  A space is required after '{'                    object-curly-spacing
+   88:33  error  A space is required before '}'                   object-curly-spacing
+  100:20  error  A space is required after '{'                    object-curly-spacing
+  100:33  error  A space is required before '}'                   object-curly-spacing
+  112:20  error  A space is required after '{'                    object-curly-spacing
+  112:33  error  A space is required before '}'                   object-curly-spacing
+  125:1   error  Expected space or tab after '///' in comment     spaced-comment
+  126:8   error  Expected a line break after this opening brace   object-curly-newline
+  126:85  error  Trailing spaces not allowed                      no-trailing-spaces
+  127:88  error  Expected a line break before this closing brace  object-curly-newline
+
+✖ 700 problems (700 errors, 0 warnings)
+  664 errors, 0 warnings potentially fixable with the `--fix` option.
